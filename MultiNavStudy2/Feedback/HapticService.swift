@@ -57,12 +57,16 @@ final class HapticService {
 
     private func engineStopped(_ reason: CHHapticEngine.StoppedReason) {
         player = nil
+        // In the background the engine is meant to stop; it restarts when the
+        // app is active again.
+        guard UIApplication.shared.applicationState == .active else { return }
         onError?("Haptic engine stopped (reason \(reason.rawValue))")
         restart()
     }
 
     private func engineReset() {
         player = nil
+        guard UIApplication.shared.applicationState == .active else { return }
         restart()
     }
 
