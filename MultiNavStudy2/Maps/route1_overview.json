@@ -1,0 +1,508 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route 1: USM to 415 Forest Avenue",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      48.99,
+      68.35
+     ],
+     [
+      48.99,
+      72.35
+     ],
+     [
+      48.99,
+      104.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Bedford Street"
+   }
+  },
+  {
+   "id": "street_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      48.99,
+      104.95
+     ],
+     [
+      26.51,
+      104.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Deering Avenue"
+   }
+  },
+  {
+   "id": "street_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      104.95
+     ],
+     [
+      26.51,
+      63.22
+     ],
+     [
+      26.51,
+      27.78
+     ],
+     [
+      26.51,
+      11.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street"
+   }
+  },
+  {
+   "id": "street_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      11.05
+     ],
+     [
+      16.51,
+      11.05
+     ],
+     [
+      7.01,
+      11.05
+     ],
+     [
+      3.01,
+      11.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      48.99,
+      104.95
+     ],
+     [
+      56.99,
+      104.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Deering Avenue"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      104.95
+     ],
+     [
+      26.51,
+      112.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street"
+   }
+  },
+  {
+   "id": "cross_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      104.95
+     ],
+     [
+      20.85,
+      110.61
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Brighton Avenue"
+   }
+  },
+  {
+   "id": "cross_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      104.95
+     ],
+     [
+      18.51,
+      104.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Deering Avenue"
+   }
+  },
+  {
+   "id": "cross_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      63.22
+     ],
+     [
+      18.51,
+      63.22
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Oakdale Street"
+   }
+  },
+  {
+   "id": "cross_5",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      27.78
+     ],
+     [
+      34.51,
+      27.78
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Durham Street"
+   }
+  },
+  {
+   "id": "cross_6",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      11.05
+     ],
+     [
+      26.51,
+      3.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Preble Street Extension"
+   }
+  },
+  {
+   "id": "cross_7",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.51,
+      11.05
+     ],
+     [
+      34.51,
+      11.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "cross_8",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      16.51,
+      11.05
+     ],
+     [
+      16.51,
+      3.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Belmeade Road"
+   }
+  },
+  {
+   "id": "j_bedford_deering",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     48.99,
+     104.95
+    ]
+   },
+   "properties": {
+    "name": "Bedford Street and Deering Avenue",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route1_l2_bedford_deering",
+     "announcement": "3-way intersection of Bedford Street, and Deering Avenue"
+    }
+   }
+  },
+  {
+   "id": "j_roundabout",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     26.51,
+     104.95
+    ]
+   },
+   "properties": {
+    "name": "Deering Avenue, Falmouth Street and Brighton Avenue",
+    "custom": {
+     "kind": "roundabout",
+     "legs": "5",
+     "detail": "route1_l2_roundabout",
+     "announcement": "Roundabout of Deering Avenue, Falmouth Street, and Brighton Avenue"
+    }
+   }
+  },
+  {
+   "id": "j_falmouth_oakdale",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     26.51,
+     63.22
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street and Oakdale Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route1_l2_falmouth_oakdale",
+     "announcement": "3-way intersection of Falmouth Street, and Oakdale Street"
+    }
+   }
+  },
+  {
+   "id": "j_falmouth_durham",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     26.51,
+     27.78
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street and Durham Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route1_l2_falmouth_durham",
+     "announcement": "3-way intersection of Falmouth Street, and Durham Street"
+    }
+   }
+  },
+  {
+   "id": "j_forest_falmouth",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     26.51,
+     11.05
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street, Preble Street Extension and Forest Avenue",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route1_l2_forest_falmouth",
+     "announcement": "4-way intersection of Falmouth Street, Preble Street Extension, and Forest Avenue"
+    }
+   }
+  },
+  {
+   "id": "j_forest_belmeade",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.51,
+     11.05
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue and Belmeade Road",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route1_l2_forest_belmeade",
+     "announcement": "3-way intersection of Forest Avenue, and Belmeade Road"
+    }
+   }
+  },
+  {
+   "id": "landmark_dep",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     48.99,
+     72.35
+    ]
+   },
+   "properties": {
+    "name": "University of Southern Maine",
+    "side": "right",
+    "custom": {
+     "tag": "USM",
+     "announcement": "University of Southern Maine on your right",
+     "offset_x": "-1.0",
+     "offset_y": "0.0"
+    }
+   }
+  },
+  {
+   "id": "landmark_dest",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     7.01,
+     11.05
+    ]
+   },
+   "properties": {
+    "name": "415 Forest Avenue",
+    "side": "right",
+    "custom": {
+     "tag": "415",
+     "announcement": "415 Forest Avenue on your right",
+     "offset_x": "-0.0",
+     "offset_y": "-1.0"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      48.99,
+      72.35
+     ],
+     [
+      48.99,
+      104.95
+     ],
+     [
+      26.51,
+      104.95
+     ],
+     [
+      26.51,
+      63.22
+     ],
+     [
+      26.51,
+      27.78
+     ],
+     [
+      26.51,
+      11.05
+     ],
+     [
+      16.51,
+      11.05
+     ],
+     [
+      7.01,
+      11.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "USM to 415 Forest Avenue",
+    "custom": {
+     "departure": "U S M, Bedford Street",
+     "destination": "415 Forest Avenue",
+     "waypoints": "j_bedford_deering,j_roundabout,j_falmouth_oakdale,j_falmouth_durham,j_forest_falmouth,j_forest_belmeade"
+    }
+   }
+  }
+ ]
+}

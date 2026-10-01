@@ -1,0 +1,346 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Forest Avenue and Belmeade Road",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Forest Avenue and Belmeade Road. 3-way intersection.",
+    "custom": {
+     "title": "Forest Avenue and Belmeade Road",
+     "kind": "junction",
+     "legs": "3",
+     "spoken_title": "Forest Avenue, and Belmeade Road"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      6.89,
+      69.94
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_0",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      1.6,
+      16.26
+     ],
+     [
+      6.89,
+      69.94
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Forest Avenue",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.96,
+      3.29
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Belmeade Road",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -4.44,
+      -69.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_2",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -1.04,
+      -16.37
+     ],
+     [
+      -4.44,
+      -69.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Forest Avenue",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -7.65,
+      56.0
+     ],
+     [
+      -11.78,
+      14.06
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -11.78,
+      14.06
+     ],
+     [
+      -28.0,
+      15.34
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Belmeade Road"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -10.94
+     ],
+     [
+      -13.89,
+      -12.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Belmeade Road"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.89,
+      -12.05
+     ],
+     [
+      -16.68,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      9.57,
+      -56.0
+     ],
+     [
+      13.06,
+      -1.06
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.06,
+      -1.06
+     ],
+     [
+      18.68,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Forest Avenue"
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -11.78,
+      14.06
+     ],
+     [
+      -13.89,
+      -12.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Unmarked crossing across Belmeade Road",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -11.09,
+      21.03
+     ],
+     [
+      -11.78,
+      14.06
+     ],
+     [
+      -13.89,
+      -12.05
+     ],
+     [
+      -16.65,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location, 415 Forest Avenue",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,294 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Falmouth Street and Durham Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Falmouth Street and Durham Street. 3-way intersection.",
+    "custom": {
+     "title": "Falmouth Street and Durham Street",
+     "kind": "junction",
+     "legs": "3",
+     "spoken_title": "Falmouth Street, and Durham Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.39,
+      -70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.97,
+      -2.83
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Durham Street, one way",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -0.4,
+      70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.41,
+      -56.0
+     ],
+     [
+      13.18,
+      -14.02
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.18,
+      -14.02
+     ],
+     [
+      28.0,
+      -15.02
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Durham Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      11.24
+     ],
+     [
+      13.03,
+      12.25
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Durham Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.03,
+      12.25
+     ],
+     [
+      12.78,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.42,
+      56.0
+     ],
+     [
+      -13.1,
+      -0.07
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.1,
+      -0.07
+     ],
+     [
+      -12.79,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Falmouth Street"
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.18,
+      -14.02
+     ],
+     [
+      13.03,
+      12.25
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Durham Street, one-way street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.42,
+      55.5
+     ],
+     [
+      -13.1,
+      -0.07
+     ],
+     [
+      -12.79,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Falmouth Street, and Durham Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

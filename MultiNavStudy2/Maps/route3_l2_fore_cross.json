@@ -1,0 +1,434 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and Cross Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street and Cross Street. 4-way intersection. All-way stop.",
+    "custom": {
+     "title": "Fore Street and Cross Street",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Fore Street, and Cross Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      15.07,
+      -69.73
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.39,
+      13.72
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Cross Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -22.41,
+      69.42
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.47,
+      -12.8
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Cross Street, one way",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      25.5,
+      -56.0
+     ],
+     [
+      15.29,
+      -8.73
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      15.29,
+      -8.73
+     ],
+     [
+      28.0,
+      -4.52
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Cross Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      23.08
+     ],
+     [
+      8.41,
+      16.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Cross Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      8.41,
+      16.59
+     ],
+     [
+      -4.31,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      44.1
+     ],
+     [
+      -16.54,
+      8.6
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -16.54,
+      8.6
+     ],
+     [
+      -28.0,
+      5.07
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Cross Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -22.35
+     ],
+     [
+      -9.79,
+      -16.73
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Cross Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.79,
+      -16.73
+     ],
+     [
+      -1.3,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.79,
+      -16.73
+     ],
+     [
+      15.29,
+      -8.73
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "assumed": "yes",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      15.29,
+      -8.73
+     ],
+     [
+      8.41,
+      16.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Cross Street",
+    "custom": {
+     "assumed": "yes",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      8.41,
+      16.59
+     ],
+     [
+      -16.54,
+      8.6
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "assumed": "yes",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -16.54,
+      8.6
+     ],
+     [
+      -9.79,
+      -16.73
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Cross Street, one-way street",
+    "custom": {
+     "assumed": "yes",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -4.15,
+      55.5
+     ],
+     [
+      8.41,
+      16.59
+     ],
+     [
+      15.29,
+      -8.73
+     ],
+     [
+      25.39,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, and Cross Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,298 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Forest Avenue and Bank Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Forest Avenue and Bank Street. 3-way intersection.",
+    "custom": {
+     "title": "Forest Avenue and Bank Street",
+     "kind": "junction",
+     "legs": "3",
+     "spoken_title": "Forest Avenue, and Bank Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      4.39,
+      69.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.96,
+      3.41
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Bank Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -4.9,
+      -69.97
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.62,
+      56.0
+     ],
+     [
+      -12.24,
+      14.14
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -12.24,
+      14.14
+     ],
+     [
+      -28.0,
+      15.42
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Bank Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -10.87
+     ],
+     [
+      -13.97,
+      -12.01
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Bank Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.97,
+      -12.01
+     ],
+     [
+      -17.05,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      9.21,
+      -56.0
+     ],
+     [
+      13.07,
+      -0.92
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.07,
+      -0.92
+     ],
+     [
+      16.64,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Forest Avenue"
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -12.24,
+      14.14
+     ],
+     [
+      -13.97,
+      -12.01
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Unmarked crossing across Bank Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.65,
+      55.5
+     ],
+     [
+      -12.24,
+      14.14
+     ],
+     [
+      -13.97,
+      -12.01
+     ],
+     [
+      -17.02,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Forest Avenue, and Bank Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

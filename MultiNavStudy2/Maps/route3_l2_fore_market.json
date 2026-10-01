@@ -1,0 +1,454 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and Market Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street and Market Street. 4-way intersection.",
+    "custom": {
+     "title": "Fore Street and Market Street",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Fore Street, and Market Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      29.31,
+      -69.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.99,
+      1.47
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Market Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -8.58,
+      69.91
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_2",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -1.97,
+      16.05
+     ],
+     [
+      -8.58,
+      69.91
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Fore Street",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.93,
+      -4.41
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Market Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      -32.44
+     ],
+     [
+      19.51,
+      -12.43
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the north side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.51,
+      -12.43
+     ],
+     [
+      28.0,
+      -12.13
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Market Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      14.09
+     ],
+     [
+      11.54,
+      13.51
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Market Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.54,
+      13.51
+     ],
+     [
+      6.32,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -20.07,
+      56.0
+     ],
+     [
+      -14.63,
+      11.63
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.63,
+      11.63
+     ],
+     [
+      -28.0,
+      10.23
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Market Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -16.12
+     ],
+     [
+      -8.27,
+      -14.04
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Market Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -8.27,
+      -14.04
+     ],
+     [
+      9.54,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the south side of Fore Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -8.27,
+      -14.04
+     ],
+     [
+      19.51,
+      -12.43
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.51,
+      -12.43
+     ],
+     [
+      11.54,
+      13.51
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Market Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.54,
+      13.51
+     ],
+     [
+      -14.63,
+      11.63
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.63,
+      11.63
+     ],
+     [
+      -8.27,
+      -14.04
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Market Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.38,
+      55.5
+     ],
+     [
+      11.54,
+      13.51
+     ],
+     [
+      19.51,
+      -12.43
+     ],
+     [
+      27.5,
+      -31.26
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, and Market Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

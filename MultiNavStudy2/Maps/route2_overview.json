@@ -1,0 +1,400 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route 2: 300 Fore Street to 58 Fore Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      21.32,
+      112.95
+     ],
+     [
+      21.32,
+      108.95
+     ],
+     [
+      21.32,
+      91.1
+     ],
+     [
+      21.32,
+      66.9
+     ],
+     [
+      21.32,
+      50.15
+     ],
+     [
+      21.32,
+      30.77
+     ],
+     [
+      21.32,
+      11.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "street_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      21.32,
+      11.05
+     ],
+     [
+      42.68,
+      11.05
+     ],
+     [
+      46.68,
+      11.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Access road to 58 Fore Street"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.32,
+      91.1
+     ],
+     [
+      21.32,
+      91.1
+     ],
+     [
+      29.32,
+      91.1
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Franklin Street"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.32,
+      66.9
+     ],
+     [
+      21.32,
+      66.9
+     ],
+     [
+      29.32,
+      66.9
+     ]
+    ]
+   },
+   "properties": {
+    "name": "India Street"
+   }
+  },
+  {
+   "id": "cross_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.32,
+      50.15
+     ],
+     [
+      21.32,
+      50.15
+     ],
+     [
+      29.32,
+      50.15
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Hancock Street"
+   }
+  },
+  {
+   "id": "cross_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      21.32,
+      30.77
+     ],
+     [
+      13.32,
+      30.77
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Mountfort Street"
+   }
+  },
+  {
+   "id": "cross_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      21.32,
+      11.05
+     ],
+     [
+      15.67,
+      5.39
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Munjoy South"
+   }
+  },
+  {
+   "id": "cross_5",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      21.32,
+      11.05
+     ],
+     [
+      26.98,
+      5.39
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "j_fore_franklin",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.32,
+     91.1
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Franklin Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route2_l2_fore_franklin",
+     "announcement": "4-way intersection of Fore Street, and Franklin Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_india",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.32,
+     66.9
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and India Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route2_l2_fore_india",
+     "announcement": "4-way intersection of Fore Street, and India Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_hancock",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.32,
+     50.15
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Hancock Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route2_l2_fore_hancock",
+     "announcement": "4-way intersection of Fore Street, and Hancock Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_mountfort",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.32,
+     30.77
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Mountfort Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route2_l2_fore_mountfort",
+     "announcement": "3-way intersection of Fore Street, and Mountfort Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_munjoy",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.32,
+     11.05
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Munjoy South",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route2_l2_fore_munjoy",
+     "announcement": "4-way intersection of Fore Street, and Munjoy South"
+    }
+   }
+  },
+  {
+   "id": "landmark_dep",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.32,
+     108.95
+    ]
+   },
+   "properties": {
+    "name": "University of Maine School of Law",
+    "side": "right",
+    "custom": {
+     "tag": "LAW",
+     "announcement": "University of Maine School of Law on your right",
+     "offset_x": "1.0",
+     "offset_y": "0.0"
+    }
+   }
+  },
+  {
+   "id": "landmark_dest",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.68,
+     11.05
+    ]
+   },
+   "properties": {
+    "name": "58 Fore Street",
+    "side": "left",
+    "custom": {
+     "tag": "58",
+     "announcement": "58 Fore Street on your left",
+     "offset_x": "-0.0",
+     "offset_y": "-1.0"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      21.32,
+      108.95
+     ],
+     [
+      21.32,
+      91.1
+     ],
+     [
+      21.32,
+      66.9
+     ],
+     [
+      21.32,
+      50.15
+     ],
+     [
+      21.32,
+      30.77
+     ],
+     [
+      21.32,
+      11.05
+     ],
+     [
+      42.68,
+      11.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "300 Fore Street to 58 Fore Street",
+    "custom": {
+     "departure": "Maine Law, 300 Fore Street",
+     "destination": "58 Fore Street",
+     "waypoints": "j_fore_franklin,j_fore_india,j_fore_hancock,j_fore_mountfort,j_fore_munjoy"
+    }
+   }
+  }
+ ]
+}

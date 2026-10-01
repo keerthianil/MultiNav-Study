@@ -1,0 +1,344 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and Exchange Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street and Exchange Street. 3-way intersection. No traffic signals or stop signs.",
+    "custom": {
+     "title": "Fore Street and Exchange Street",
+     "kind": "junction",
+     "legs": "3",
+     "spoken_title": "Fore Street, and Exchange Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      13.54,
+      -69.78
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.96,
+      3.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Exchange Street, one way",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -29.18,
+      69.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      24.21,
+      -56.0
+     ],
+     [
+      15.64,
+      -11.84
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      15.64,
+      -11.84
+     ],
+     [
+      28.0,
+      -10.81
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Exchange Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      15.48
+     ],
+     [
+      8.37,
+      13.84
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Exchange Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      8.37,
+      13.84
+     ],
+     [
+      -9.44,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the north side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      32.61
+     ],
+     [
+      -12.6,
+      -3.84
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the south side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -12.6,
+      -3.84
+     ],
+     [
+      -2.48,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -10.08,
+      -16.83
+     ],
+     [
+      15.64,
+      -11.84
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      15.64,
+      -11.84
+     ],
+     [
+      8.37,
+      13.84
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Exchange Street, one-way street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      8.37,
+      13.84
+     ],
+     [
+      -15.76,
+      3.64
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.23,
+      55.5
+     ],
+     [
+      8.37,
+      13.84
+     ],
+     [
+      15.64,
+      -11.84
+     ],
+     [
+      24.11,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, and Exchange Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,432 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and Silver Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street and Silver Street. 4-way intersection. Stop sign for Silver Street only. Fore Street traffic does not stop.",
+    "custom": {
+     "title": "Fore Street and Silver Street",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Fore Street, and Silver Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      21.42,
+      -69.47
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_0",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      5.05,
+      -16.36
+     ],
+     [
+      21.42,
+      -69.47
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Fore Street",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.99,
+      1.83
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Silver Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -2.35,
+      69.99
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_2",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -0.55,
+      16.49
+     ],
+     [
+      -2.35,
+      69.99
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Fore Street",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.98,
+      -2.51
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Silver Street, one way",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      -46.34
+     ],
+     [
+      17.52,
+      -12.35
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.52,
+      -12.35
+     ],
+     [
+      28.0,
+      -11.89
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Silver Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      14.33
+     ],
+     [
+      12.65,
+      13.66
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Silver Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.65,
+      13.66
+     ],
+     [
+      11.23,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.99,
+      56.0
+     ],
+     [
+      -13.52,
+      12.31
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.52,
+      12.31
+     ],
+     [
+      -28.0,
+      11.45
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Silver Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -14.8
+     ],
+     [
+      -9.49,
+      -13.69
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Silver Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.49,
+      -13.69
+     ],
+     [
+      3.56,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.52,
+      -12.35
+     ],
+     [
+      12.65,
+      13.66
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Silver Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.52,
+      12.31
+     ],
+     [
+      -9.49,
+      -13.69
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Silver Street, one-way street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.24,
+      55.5
+     ],
+     [
+      12.65,
+      13.66
+     ],
+     [
+      17.52,
+      -12.35
+     ],
+     [
+      27.5,
+      -44.72
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, and Silver Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

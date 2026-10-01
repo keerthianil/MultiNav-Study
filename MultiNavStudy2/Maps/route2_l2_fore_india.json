@@ -1,0 +1,430 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and India Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street and India Street. 4-way intersection. All-way stop.",
+    "custom": {
+     "title": "Fore Street and India Street",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Fore Street, and India Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      19.49,
+      -69.56
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      42.0,
+      -0.57
+     ]
+    ]
+   },
+   "properties": {
+    "name": "India Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -30.36,
+      68.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -42.0,
+      1.14
+     ]
+    ]
+   },
+   "properties": {
+    "name": "India Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      -51.38
+     ],
+     [
+      17.34,
+      -13.34
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.34,
+      -13.34
+     ],
+     [
+      28.0,
+      -13.48
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of India Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      12.72
+     ],
+     [
+      8.6,
+      12.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of India Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      8.6,
+      12.98
+     ],
+     [
+      -10.33,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the south side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      31.1
+     ],
+     [
+      -20.32,
+      13.66
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the north side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -20.32,
+      13.66
+     ],
+     [
+      -28.0,
+      13.86
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of India Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -12.35
+     ],
+     [
+      -10.01,
+      -12.83
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of India Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -10.01,
+      -12.83
+     ],
+     [
+      2.08,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -10.01,
+      -12.83
+     ],
+     [
+      17.34,
+      -13.34
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.34,
+      -13.34
+     ],
+     [
+      8.6,
+      12.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across India Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      8.6,
+      12.98
+     ],
+     [
+      -20.32,
+      13.66
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -20.32,
+      13.66
+     ],
+     [
+      -10.01,
+      -12.83
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across India Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -10.11,
+      55.5
+     ],
+     [
+      8.6,
+      12.98
+     ],
+     [
+      17.34,
+      -13.34
+     ],
+     [
+      27.5,
+      -49.6
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, and India Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

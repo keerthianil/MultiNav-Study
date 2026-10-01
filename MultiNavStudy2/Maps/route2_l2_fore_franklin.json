@@ -1,0 +1,570 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and Franklin Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street and Franklin Street. 4-way intersection. Traffic signals.",
+    "custom": {
+     "title": "Fore Street and Franklin Street",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Fore Street, and Franklin Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.99,
+      -2.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Franklin Street",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_0",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      18.22,
+      -0.87
+     ],
+     [
+      41.99,
+      -2.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Franklin Street",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      19.57,
+      69.55
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.99,
+      -1.48
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Franklin Street",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_2",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -15.86,
+      -0.56
+     ],
+     [
+      -41.99,
+      -1.48
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Franklin Street",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -5.94,
+      -69.96
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      11.78
+     ],
+     [
+      17.07,
+      12.3
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Franklin Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.07,
+      12.3
+     ],
+     [
+      28.0,
+      51.16
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      2.15,
+      56.0
+     ],
+     [
+      -10.02,
+      12.75
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -10.02,
+      12.75
+     ],
+     [
+      -28.0,
+      12.12
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Franklin Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -14.1
+     ],
+     [
+      -14.3,
+      -13.61
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Franklin Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.3,
+      -13.61
+     ],
+     [
+      -17.9,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      8.4,
+      -56.0
+     ],
+     [
+      11.99,
+      -13.68
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.99,
+      -13.68
+     ],
+     [
+      28.0,
+      -14.45
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Franklin Street"
+   }
+  },
+  {
+   "id": "crosswalk_0_in",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.99,
+      -13.68
+     ],
+     [
+      14.44,
+      -2.49
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Franklin Street, push button, no audible signal, lanes entering the intersection",
+    "custom": {
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_0_out",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.61,
+      1.11
+     ],
+     [
+      17.07,
+      12.3
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Franklin Street, push button, no audible signal, lanes leaving the intersection",
+    "custom": {
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "refuge_0",
+   "type": "island",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.33,
+      -0.59
+     ],
+     [
+      16.73,
+      -0.8
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pedestrian refuge island in the middle of Franklin Street",
+    "custom": {
+     "width_mm": "3.0"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.07,
+      12.3
+     ],
+     [
+      -10.02,
+      12.75
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Fore Street, push button",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2_in",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -10.02,
+      12.75
+     ],
+     [
+      -12.22,
+      1.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Franklin Street, push button, lanes entering the intersection",
+    "custom": {
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2_out",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -12.1,
+      -2.23
+     ],
+     [
+      -14.3,
+      -13.61
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Franklin Street, push button, lanes leaving the intersection",
+    "custom": {
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "refuge_2",
+   "type": "island",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.96,
+      -0.35
+     ],
+     [
+      -14.36,
+      -0.51
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pedestrian refuge island in the middle of Franklin Street",
+    "custom": {
+     "width_mm": "3.0"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.3,
+      -13.61
+     ],
+     [
+      11.99,
+      -13.68
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Fore Street, push button, no audible signal",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      27.5,
+      49.38
+     ],
+     [
+      17.07,
+      12.3
+     ],
+     [
+      11.99,
+      -13.68
+     ],
+     [
+      8.44,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, and Franklin Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

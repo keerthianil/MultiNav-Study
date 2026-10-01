@@ -1,0 +1,711 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route 3: 300 Fore Street to Center and Spring Streets",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      113.0
+     ],
+     [
+      17.75,
+      109.0
+     ],
+     [
+      17.75,
+      101.0
+     ],
+     [
+      17.75,
+      91.0
+     ],
+     [
+      17.75,
+      81.0
+     ],
+     [
+      17.75,
+      71.0
+     ],
+     [
+      17.75,
+      61.0
+     ],
+     [
+      17.75,
+      51.0
+     ],
+     [
+      17.75,
+      41.0
+     ],
+     [
+      17.75,
+      31.0
+     ],
+     [
+      17.75,
+      21.0
+     ],
+     [
+      17.75,
+      11.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "street_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      11.0
+     ],
+     [
+      37.25,
+      11.0
+     ],
+     [
+      45.25,
+      11.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      101.0
+     ],
+     [
+      9.75,
+      101.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Custom House Street"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      25.75,
+      91.0
+     ],
+     [
+      17.75,
+      91.0
+     ],
+     [
+      9.75,
+      91.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pearl Street"
+   }
+  },
+  {
+   "id": "cross_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      25.75,
+      81.0
+     ],
+     [
+      17.75,
+      81.0
+     ],
+     [
+      9.75,
+      81.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Silver Street"
+   }
+  },
+  {
+   "id": "cross_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      25.75,
+      71.0
+     ],
+     [
+      17.75,
+      71.0
+     ],
+     [
+      9.75,
+      71.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Market Street"
+   }
+  },
+  {
+   "id": "cross_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      61.0
+     ],
+     [
+      9.75,
+      61.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Moulton Street"
+   }
+  },
+  {
+   "id": "cross_5",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      51.0
+     ],
+     [
+      25.75,
+      51.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Exchange Street"
+   }
+  },
+  {
+   "id": "cross_6",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      25.75,
+      41.0
+     ],
+     [
+      17.75,
+      41.0
+     ],
+     [
+      9.75,
+      41.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Street"
+   }
+  },
+  {
+   "id": "cross_7",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      25.75,
+      31.0
+     ],
+     [
+      17.75,
+      31.0
+     ],
+     [
+      9.75,
+      31.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Cross Street"
+   }
+  },
+  {
+   "id": "cross_8",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      21.0
+     ],
+     [
+      25.75,
+      21.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Cotton Street"
+   }
+  },
+  {
+   "id": "cross_9",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      11.0
+     ],
+     [
+      9.75,
+      11.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street"
+   }
+  },
+  {
+   "id": "cross_10",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      11.0
+     ],
+     [
+      12.1,
+      5.34
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "cross_11",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      11.0
+     ],
+     [
+      17.75,
+      3.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pleasant Street"
+   }
+  },
+  {
+   "id": "cross_12",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      45.25,
+      3.0
+     ],
+     [
+      45.25,
+      11.0
+     ],
+     [
+      45.25,
+      19.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Spring Street"
+   }
+  },
+  {
+   "id": "cross_13",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      45.25,
+      11.0
+     ],
+     [
+      53.25,
+      11.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street"
+   }
+  },
+  {
+   "id": "j_fore_custom_house",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     101.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Custom House Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route3_l2_fore_custom_house",
+     "announcement": "3-way intersection of Fore Street, and Custom House Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_pearl",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     91.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Pearl Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route3_l2_fore_pearl",
+     "announcement": "4-way intersection of Fore Street, and Pearl Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_silver",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     81.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Silver Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route3_l2_fore_silver",
+     "announcement": "4-way intersection of Fore Street, and Silver Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_market",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     71.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Market Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route3_l2_fore_market",
+     "announcement": "4-way intersection of Fore Street, and Market Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_moulton",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     61.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Moulton Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route3_l2_fore_moulton",
+     "announcement": "3-way intersection of Fore Street, and Moulton Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_exchange",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     51.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Exchange Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route3_l2_fore_exchange",
+     "announcement": "3-way intersection of Fore Street, and Exchange Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_union",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     41.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Union Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route3_l2_fore_union",
+     "announcement": "4-way intersection of Fore Street, and Union Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_cross",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     31.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Cross Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route3_l2_fore_cross",
+     "announcement": "4-way intersection of Fore Street, and Cross Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_cotton",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     21.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Cotton Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route3_l2_fore_cotton",
+     "announcement": "3-way intersection of Fore Street, and Cotton Street"
+    }
+   }
+  },
+  {
+   "id": "j_fore_center",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     11.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street, Center Street and Pleasant Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "5",
+     "detail": "route3_l2_fore_center",
+     "announcement": "5-way intersection of Fore Street, Center Street, and Pleasant Street"
+    }
+   }
+  },
+  {
+   "id": "j_center_spring",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     45.25,
+     11.0
+    ]
+   },
+   "properties": {
+    "name": "Center Street and Spring Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route3_l2_center_spring",
+     "announcement": "4-way intersection of Center Street, and Spring Street"
+    }
+   }
+  },
+  {
+   "id": "landmark_dep",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.75,
+     109.0
+    ]
+   },
+   "properties": {
+    "name": "University of Maine School of Law",
+    "side": "left",
+    "custom": {
+     "tag": "LAW",
+     "announcement": "University of Maine School of Law on your left",
+     "offset_x": "-1.0",
+     "offset_y": "-0.0"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.75,
+      109.0
+     ],
+     [
+      17.75,
+      101.0
+     ],
+     [
+      17.75,
+      91.0
+     ],
+     [
+      17.75,
+      81.0
+     ],
+     [
+      17.75,
+      71.0
+     ],
+     [
+      17.75,
+      61.0
+     ],
+     [
+      17.75,
+      51.0
+     ],
+     [
+      17.75,
+      41.0
+     ],
+     [
+      17.75,
+      31.0
+     ],
+     [
+      17.75,
+      21.0
+     ],
+     [
+      17.75,
+      11.0
+     ],
+     [
+      37.25,
+      11.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "300 Fore Street to Center and Spring Streets",
+    "custom": {
+     "departure": "Maine Law, 300 Fore Street",
+     "destination": "corner of Center Street and Spring Street",
+     "waypoints": "j_fore_custom_house,j_fore_pearl,j_fore_silver,j_fore_market,j_fore_moulton,j_fore_exchange,j_fore_union,j_fore_cross,j_fore_cotton,j_fore_center,j_center_spring"
+    }
+   }
+  }
+ ]
+}

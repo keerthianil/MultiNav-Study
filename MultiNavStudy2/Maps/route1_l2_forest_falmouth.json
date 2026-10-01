@@ -1,0 +1,548 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Falmouth Street, Preble Street Extension and Forest Avenue",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Falmouth Street, Preble Street Extension and Forest Avenue. 4-way intersection. Traffic signals.",
+    "custom": {
+     "title": "Falmouth Street, Preble Street Extension and Forest Avenue",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Falmouth Street, Preble Street Extension, and Forest Avenue"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      25.91,
+      -69.24
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Preble Street Extension",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_0",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.17,
+      -16.49
+     ],
+     [
+      25.91,
+      -69.24
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Preble Street Extension",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.98,
+      -2.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_1",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.08,
+      -1.18
+     ],
+     [
+      41.98,
+      -2.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Forest Avenue",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -7.6,
+      69.93
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.85,
+      6.71
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_3",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -15.69,
+      2.52
+     ],
+     [
+      -41.85,
+      6.71
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Forest Avenue",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      -37.44
+     ],
+     [
+      19.35,
+      -14.32
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Preble Street Extension"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.35,
+      -14.32
+     ],
+     [
+      28.0,
+      -14.85
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      11.4
+     ],
+     [
+      11.83,
+      12.39
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.83,
+      12.39
+     ],
+     [
+      7.09,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -19.26,
+      56.0
+     ],
+     [
+      -14.88,
+      15.65
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.88,
+      15.65
+     ],
+     [
+      -28.0,
+      17.76
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -8.78
+     ],
+     [
+      -9.6,
+      -11.73
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.6,
+      -11.73
+     ],
+     [
+      6.97,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Preble Street Extension"
+   }
+  },
+  {
+   "id": "crosswalk_0_in",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.6,
+      -11.73
+     ],
+     [
+      3.19,
+      -13.65
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Preble Street Extension, push button, lanes entering the intersection",
+    "custom": {
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_0_out",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.56,
+      -12.39
+     ],
+     [
+      19.35,
+      -14.32
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Preble Street Extension, push button, lanes leaving the intersection",
+    "custom": {
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "refuge_0",
+   "type": "island",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      4.1,
+      -10.96
+     ],
+     [
+      5.65,
+      -15.08
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pedestrian refuge island in the middle of Preble Street Extension",
+    "custom": {
+     "width_mm": "3.0"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.35,
+      -14.32
+     ],
+     [
+      11.83,
+      12.39
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Forest Avenue, push button",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.83,
+      12.39
+     ],
+     [
+      -14.88,
+      15.65
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Falmouth Street, push button",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.88,
+      15.65
+     ],
+     [
+      -9.6,
+      -11.73
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Forest Avenue, push button",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -19.21,
+      55.5
+     ],
+     [
+      -14.88,
+      15.65
+     ],
+     [
+      -9.6,
+      -11.73
+     ],
+     [
+      -27.5,
+      -8.86
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Falmouth Street, Preble Street Extension, and Forest Avenue",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

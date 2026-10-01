@@ -1,0 +1,504 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and Pearl Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street and Pearl Street. 4-way intersection. Traffic signals.",
+    "custom": {
+     "title": "Fore Street and Pearl Street",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Fore Street, and Pearl Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.95,
+      -4.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pearl Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      17.64,
+      69.63
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.93,
+      4.6
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pearl Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -1.9,
+      -70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_3",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -0.45,
+      -16.74
+     ],
+     [
+      -1.9,
+      -70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Fore Street",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      10.49
+     ],
+     [
+      16.45,
+      11.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Pearl Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      16.45,
+      11.59
+     ],
+     [
+      27.7,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.67,
+      56.0
+     ],
+     [
+      -9.9,
+      14.27
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.9,
+      14.27
+     ],
+     [
+      -28.0,
+      16.25
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Pearl Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -10.11
+     ],
+     [
+      -13.42,
+      -11.71
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Pearl Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.42,
+      -11.71
+     ],
+     [
+      -14.63,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.58,
+      -56.0
+     ],
+     [
+      12.71,
+      -14.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.71,
+      -14.37
+     ],
+     [
+      28.0,
+      -15.83
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Pearl Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.71,
+      -14.37
+     ],
+     [
+      16.45,
+      11.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Pearl Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      16.45,
+      11.59
+     ],
+     [
+      -9.9,
+      14.27
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.9,
+      14.27
+     ],
+     [
+      -13.42,
+      -11.71
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Pearl Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3_in",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.42,
+      -11.71
+     ],
+     [
+      -2.15,
+      -12.99
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Fore Street, lanes entering the intersection",
+    "custom": {
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3_out",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      1.45,
+      -13.09
+     ],
+     [
+      12.71,
+      -14.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Fore Street, lanes leaving the intersection",
+    "custom": {
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "refuge_3",
+   "type": "island",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -0.29,
+      -10.84
+     ],
+     [
+      -0.41,
+      -15.24
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pedestrian refuge island in the middle of Fore Street",
+    "custom": {
+     "width_mm": "3.0"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.54,
+      55.5
+     ],
+     [
+      -9.9,
+      14.27
+     ],
+     [
+      16.45,
+      11.59
+     ],
+     [
+      12.71,
+      -14.37
+     ],
+     [
+      11.6,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, and Pearl Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

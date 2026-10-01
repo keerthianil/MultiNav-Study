@@ -1,0 +1,466 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street, Center Street and Pleasant Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street, Center Street and Pleasant Street. 5-way intersection. Traffic signals.",
+    "custom": {
+     "title": "Fore Street, Center Street and Pleasant Street",
+     "kind": "junction",
+     "legs": "5",
+     "spoken_title": "Fore Street, Center Street, and Pleasant Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      14.74,
+      -69.74
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pleasant Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.95,
+      3.86
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -11.91,
+      69.83
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.94,
+      -4.18
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -36.71,
+      -54.43
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      25.23,
+      -56.0
+     ],
+     [
+      15.86,
+      -11.7
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Pleasant Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      15.86,
+      -11.7
+     ],
+     [
+      28.0,
+      -10.58
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      15.73
+     ],
+     [
+      10.88,
+      14.16
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      10.88,
+      14.16
+     ],
+     [
+      3.74,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -22.84,
+      56.0
+     ],
+     [
+      -15.27,
+      11.64
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -15.27,
+      11.64
+     ],
+     [
+      -28.0,
+      10.38
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -15.95
+     ],
+     [
+      -26.45,
+      -15.8
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -26.45,
+      -15.8
+     ],
+     [
+      -28.0,
+      -18.09
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the east side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_8",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -21.96,
+      -56.0
+     ],
+     [
+      -6.42,
+      -32.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the west side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_9",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.42,
+      -32.95
+     ],
+     [
+      -1.55,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Pleasant Street"
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      15.86,
+      -11.7
+     ],
+     [
+      10.88,
+      14.16
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Center Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      10.88,
+      14.16
+     ],
+     [
+      -15.27,
+      11.64
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -15.27,
+      11.64
+     ],
+     [
+      -26.45,
+      -15.8
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Center Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      3.83,
+      55.5
+     ],
+     [
+      10.88,
+      14.16
+     ],
+     [
+      27.5,
+      15.69
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, Center Street, and Pleasant Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

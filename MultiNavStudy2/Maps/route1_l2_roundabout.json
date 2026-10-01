@@ -1,0 +1,903 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Deering Avenue, Falmouth Street and Brighton Avenue",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Roundabout view. Deering Avenue, Falmouth Street and Brighton Avenue. 5 streets meet at a one-lane roundabout. Traffic moves counterclockwise and yields when entering. No signals.",
+    "custom": {
+     "title": "Deering Avenue, Falmouth Street and Brighton Avenue",
+     "kind": "roundabout",
+     "legs": "5",
+     "spoken_title": "Deering Avenue, Falmouth Street, and Brighton Avenue"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      1.09,
+      -9.94
+     ],
+     [
+      7.65,
+      -69.93
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street",
+    "custom": {
+     "width_mm": "7.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      9.99,
+      0.48
+     ],
+     [
+      41.99,
+      2.04
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Deering Avenue",
+    "custom": {
+     "width_mm": "7.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      1.94,
+      9.81
+     ],
+     [
+      13.83,
+      69.77
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street",
+    "custom": {
+     "width_mm": "7.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -8.93,
+      4.5
+     ],
+     [
+      -40.71,
+      20.54
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Brighton Avenue",
+    "custom": {
+     "width_mm": "7.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "road_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.75,
+      -2.23
+     ],
+     [
+      -41.7,
+      -9.56
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Deering Avenue",
+    "custom": {
+     "width_mm": "7.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "ring",
+   "type": "roundabout",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Roundabout. Traffic moves counterclockwise",
+    "custom": {
+     "radius_mm": "10.0",
+     "width_mm": "7.0"
+    }
+   }
+  },
+  {
+   "id": "central_island",
+   "type": "central_island",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center island. Not a walkway",
+    "custom": {
+     "radius_mm": "6.5"
+    }
+   }
+  },
+  {
+   "id": "splitter_0",
+   "type": "island",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      1.47,
+      -13.42
+     ],
+     [
+      2.5,
+      -22.86
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Splitter island on Falmouth Street. Pedestrian refuge between the entry and exit lanes",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "splitter_1",
+   "type": "island",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.48,
+      0.65
+     ],
+     [
+      22.97,
+      1.11
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Splitter island on Deering Avenue. Pedestrian refuge between the entry and exit lanes",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "splitter_3",
+   "type": "island",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -12.05,
+      6.08
+     ],
+     [
+      -20.54,
+      10.36
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Splitter island on Brighton Avenue. Pedestrian refuge between the entry and exit lanes",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "splitter_4",
+   "type": "island",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.16,
+      -3.02
+     ],
+     [
+      -22.42,
+      -5.14
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Splitter island on Deering Avenue. Pedestrian refuge between the entry and exit lanes",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.86,
+      -56.0
+     ],
+     [
+      8.32,
+      -14.48
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      8.32,
+      -14.48
+     ],
+     [
+      10.67,
+      -12.85
+     ],
+     [
+      12.7,
+      -10.84
+     ],
+     [
+      14.36,
+      -8.52
+     ],
+     [
+      15.6,
+      -5.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk around the roundabout"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      15.6,
+      -5.95
+     ],
+     [
+      28.0,
+      -5.35
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Deering Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      8.07
+     ],
+     [
+      14.95,
+      7.43
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Deering Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.95,
+      7.43
+     ],
+     [
+      13.51,
+      9.82
+     ],
+     [
+      11.69,
+      11.93
+     ],
+     [
+      9.55,
+      13.7
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk around the roundabout"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      9.55,
+      13.7
+     ],
+     [
+      17.93,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      4.27,
+      56.0
+     ],
+     [
+      -3.6,
+      16.31
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -3.6,
+      16.31
+     ],
+     [
+      -6.12,
+      15.54
+     ],
+     [
+      -8.48,
+      14.38
+     ],
+     [
+      -10.64,
+      12.87
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk around the roundabout"
+   }
+  },
+  {
+   "id": "sidewalk_8",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -10.64,
+      12.87
+     ],
+     [
+      -28.0,
+      21.63
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the south side of Brighton Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_9",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      6.62
+     ],
+     [
+      -19.6,
+      2.38
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the north side of Brighton Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_10",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -19.6,
+      2.38
+     ],
+     [
+      -28.0,
+      0.46
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Deering Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_11",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -13.29
+     ],
+     [
+      -13.41,
+      -9.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Deering Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_12",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.41,
+      -9.95
+     ],
+     [
+      -11.69,
+      -11.93
+     ],
+     [
+      -9.68,
+      -13.61
+     ],
+     [
+      -7.43,
+      -14.96
+     ],
+     [
+      -5.0,
+      -15.93
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk around the roundabout"
+   }
+  },
+  {
+   "id": "sidewalk_13",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -5.0,
+      -15.93
+     ],
+     [
+      -0.62,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Falmouth Street"
+   }
+  },
+  {
+   "id": "crosswalk_0_in",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -4.54,
+      -20.11
+     ],
+     [
+      0.53,
+      -19.56
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Falmouth Street, entry lane",
+    "custom": {
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_0_out",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      3.71,
+      -19.21
+     ],
+     [
+      8.78,
+      -18.66
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Falmouth Street, exit lane",
+    "custom": {
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1_in",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.8,
+      -5.75
+     ],
+     [
+      19.55,
+      -0.65
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Deering Avenue, entry lane",
+    "custom": {
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1_out",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.4,
+      2.54
+     ],
+     [
+      19.15,
+      7.64
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Deering Avenue, exit lane",
+    "custom": {
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      10.36,
+      17.83
+     ],
+     [
+      -2.78,
+      20.43
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Falmouth Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3_in",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.39,
+      14.76
+     ],
+     [
+      -16.69,
+      10.21
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Brighton Avenue, entry lane",
+    "custom": {
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3_out",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -18.13,
+      7.35
+     ],
+     [
+      -20.43,
+      2.8
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Brighton Avenue, exit lane",
+    "custom": {
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_4_in",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -20.5,
+      2.17
+     ],
+     [
+      -19.36,
+      -2.8
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Deering Avenue, entry lane",
+    "custom": {
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_4_out",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -18.65,
+      -5.92
+     ],
+     [
+      -17.51,
+      -10.89
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Raised crosswalk across Deering Avenue, exit lane",
+    "custom": {
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      27.5,
+      8.04
+     ],
+     [
+      19.15,
+      7.64
+     ],
+     [
+      19.8,
+      -5.75
+     ],
+     [
+      17.03,
+      -5.88
+     ],
+     [
+      16.37,
+      -5.99
+     ],
+     [
+      15.81,
+      -6.25
+     ],
+     [
+      15.34,
+      -6.67
+     ],
+     [
+      14.98,
+      -7.24
+     ],
+     [
+      14.36,
+      -8.52
+     ],
+     [
+      12.7,
+      -10.84
+     ],
+     [
+      10.67,
+      -12.85
+     ],
+     [
+      9.5,
+      -13.66
+     ],
+     [
+      8.99,
+      -14.11
+     ],
+     [
+      8.65,
+      -14.63
+     ],
+     [
+      8.48,
+      -15.23
+     ],
+     [
+      8.48,
+      -15.9
+     ],
+     [
+      8.78,
+      -18.66
+     ],
+     [
+      -4.54,
+      -20.11
+     ],
+     [
+      -0.67,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Deering Avenue, Falmouth Street, and Brighton Avenue",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

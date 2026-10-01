@@ -1,0 +1,361 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and Munjoy South",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Fore Street and Munjoy South. 4-way intersection.",
+    "custom": {
+     "title": "Fore Street and Munjoy South",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Fore Street, and Munjoy South"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      35.87,
+      -64.02
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.48,
+      12.68
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Access road to 58 Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -36.19,
+      60.14
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -38.33,
+      -39.71
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Munjoy South",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      -23.18
+     ],
+     [
+      19.37,
+      -7.78
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the south side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.37,
+      -7.78
+     ],
+     [
+      28.0,
+      -5.14
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Access road to 58 Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      22.26
+     ],
+     [
+      5.95,
+      15.52
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Access road to 58 Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      5.95,
+      15.52
+     ],
+     [
+      -18.41,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the south side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      21.13
+     ],
+     [
+      -16.41,
+      1.86
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the north side of Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -16.41,
+      1.86
+     ],
+     [
+      -28.0,
+      -10.15
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the west side of Munjoy South"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -47.87
+     ],
+     [
+      -2.81,
+      -21.78
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the east side of Munjoy South"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -2.81,
+      -21.78
+     ],
+     [
+      16.36,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the north side of Fore Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -2.81,
+      -21.78
+     ],
+     [
+      19.37,
+      -7.78
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -18.11,
+      55.5
+     ],
+     [
+      5.95,
+      15.52
+     ],
+     [
+      19.37,
+      -7.78
+     ],
+     [
+      27.5,
+      -5.29
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Fore Street, and Munjoy South",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

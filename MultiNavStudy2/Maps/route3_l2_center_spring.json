@@ -1,0 +1,422 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Center Street and Spring Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Center Street and Spring Street. 4-way intersection. Traffic signals.",
+    "custom": {
+     "title": "Center Street and Spring Street",
+     "kind": "junction",
+     "legs": "4",
+     "spoken_title": "Center Street, and Spring Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      3.9,
+      -69.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Spring Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      41.97,
+      2.74
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -6.18,
+      69.95
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Spring Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.97,
+      -2.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      16.24,
+      -56.0
+     ],
+     [
+      13.8,
+      -12.23
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Spring Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.8,
+      -12.23
+     ],
+     [
+      28.0,
+      -11.3
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      14.96
+     ],
+     [
+      11.92,
+      13.91
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.92,
+      13.91
+     ],
+     [
+      8.2,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Spring Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -18.1,
+      56.0
+     ],
+     [
+      -14.22,
+      12.12
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Spring Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.22,
+      12.12
+     ],
+     [
+      -28.0,
+      11.15
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -15.12
+     ],
+     [
+      -12.34,
+      -14.01
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -12.34,
+      -14.01
+     ],
+     [
+      -10.0,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Spring Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -12.34,
+      -14.01
+     ],
+     [
+      13.8,
+      -12.23
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Spring Street, push button",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.8,
+      -12.23
+     ],
+     [
+      11.92,
+      13.91
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Center Street, push button",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      11.92,
+      13.91
+     ],
+     [
+      -14.22,
+      12.12
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Spring Street, push button",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -14.22,
+      12.12
+     ],
+     [
+      -12.34,
+      -14.01
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk with signal across Center Street, push button",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -27.5,
+      11.18
+     ],
+     [
+      -14.22,
+      12.12
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Center Street, and Spring Street",
+     "destination": "Destination, corner of Center Street and Spring Street. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

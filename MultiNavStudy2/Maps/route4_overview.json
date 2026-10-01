@@ -1,0 +1,456 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route 4: 415 Forest Avenue to USM",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      109.87
+     ],
+     [
+      14.01,
+      105.87
+     ],
+     [
+      14.01,
+      96.32
+     ],
+     [
+      14.01,
+      81.51
+     ],
+     [
+      14.01,
+      53.64
+     ],
+     [
+      14.01,
+      33.03
+     ],
+     [
+      14.01,
+      14.13
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "street_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      14.13
+     ],
+     [
+      24.01,
+      14.13
+     ],
+     [
+      52.99,
+      14.13
+     ],
+     [
+      56.99,
+      14.13
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Bedford Street"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      96.32
+     ],
+     [
+      6.01,
+      96.32
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Belmeade Road"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      81.51
+     ],
+     [
+      6.01,
+      81.51
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Preble Street Extension"
+   }
+  },
+  {
+   "id": "cross_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      81.51
+     ],
+     [
+      22.01,
+      81.51
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street"
+   }
+  },
+  {
+   "id": "cross_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      53.64
+     ],
+     [
+      6.01,
+      53.64
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fenwick Road"
+   }
+  },
+  {
+   "id": "cross_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      33.03
+     ],
+     [
+      6.01,
+      33.03
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Bank Street"
+   }
+  },
+  {
+   "id": "cross_5",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      14.13
+     ],
+     [
+      6.01,
+      14.13
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Baxter Boulevard"
+   }
+  },
+  {
+   "id": "cross_6",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      14.13
+     ],
+     [
+      14.01,
+      6.13
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "cross_7",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      24.01,
+      14.13
+     ],
+     [
+      24.01,
+      22.13
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Durham Street"
+   }
+  },
+  {
+   "id": "j_forest_belmeade",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     14.01,
+     96.32
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue and Belmeade Road",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route4_l2_forest_belmeade",
+     "announcement": "3-way intersection of Forest Avenue, and Belmeade Road"
+    }
+   }
+  },
+  {
+   "id": "j_forest_falmouth",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     14.01,
+     81.51
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue, Preble Street Extension and Falmouth Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route4_l2_forest_falmouth",
+     "announcement": "4-way intersection of Forest Avenue, Preble Street Extension, and Falmouth Street"
+    }
+   }
+  },
+  {
+   "id": "j_forest_fenwick",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     14.01,
+     53.64
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue and Fenwick Road",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route4_l2_forest_fenwick",
+     "announcement": "3-way intersection of Forest Avenue, and Fenwick Road"
+    }
+   }
+  },
+  {
+   "id": "j_forest_bank",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     14.01,
+     33.03
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue and Bank Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route4_l2_forest_bank",
+     "announcement": "3-way intersection of Forest Avenue, and Bank Street"
+    }
+   }
+  },
+  {
+   "id": "j_forest_bedford",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     14.01,
+     14.13
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue, Baxter Boulevard and Bedford Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route4_l2_forest_bedford",
+     "announcement": "4-way intersection of Forest Avenue, Baxter Boulevard, and Bedford Street"
+    }
+   }
+  },
+  {
+   "id": "j_bedford_durham",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     24.01,
+     14.13
+    ]
+   },
+   "properties": {
+    "name": "Bedford Street and Durham Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route4_l2_bedford_durham",
+     "announcement": "3-way intersection of Bedford Street, and Durham Street"
+    }
+   }
+  },
+  {
+   "id": "landmark_dep",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     14.01,
+     105.87
+    ]
+   },
+   "properties": {
+    "name": "415 Forest Avenue",
+    "side": "left",
+    "custom": {
+     "tag": "415",
+     "announcement": "415 Forest Avenue on your left",
+     "offset_x": "-1.0",
+     "offset_y": "-0.0"
+    }
+   }
+  },
+  {
+   "id": "landmark_dest",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     52.99,
+     14.13
+    ]
+   },
+   "properties": {
+    "name": "University of Southern Maine",
+    "side": "right",
+    "custom": {
+     "tag": "USM",
+     "announcement": "University of Southern Maine on your right",
+     "offset_x": "0.0",
+     "offset_y": "1.0"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.01,
+      105.87
+     ],
+     [
+      14.01,
+      96.32
+     ],
+     [
+      14.01,
+      81.51
+     ],
+     [
+      14.01,
+      53.64
+     ],
+     [
+      14.01,
+      33.03
+     ],
+     [
+      14.01,
+      14.13
+     ],
+     [
+      24.01,
+      14.13
+     ],
+     [
+      52.99,
+      14.13
+     ]
+    ]
+   },
+   "properties": {
+    "name": "415 Forest Avenue to USM",
+    "custom": {
+     "departure": "415 Forest Avenue",
+     "destination": "U S M, Bedford Street",
+     "waypoints": "j_forest_belmeade,j_forest_falmouth,j_forest_fenwick,j_forest_bank,j_forest_bedford,j_bedford_durham"
+    }
+   }
+  }
+ ]
+}

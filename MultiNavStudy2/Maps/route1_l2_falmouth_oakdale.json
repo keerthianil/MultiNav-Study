@@ -1,0 +1,321 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Falmouth Street and Oakdale Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Falmouth Street and Oakdale Street. 3-way intersection. No traffic signals or stop signs.",
+    "custom": {
+     "title": "Falmouth Street and Oakdale Street",
+     "kind": "junction",
+     "legs": "3",
+     "spoken_title": "Falmouth Street, and Oakdale Street"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.4,
+      -70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -0.39,
+      70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -42.0,
+      -0.86
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Oakdale Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.42,
+      -56.0
+     ],
+     [
+      13.1,
+      0.07
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.1,
+      0.07
+     ],
+     [
+      12.79,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.41,
+      56.0
+     ],
+     [
+      -13.17,
+      12.83
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Falmouth Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.17,
+      12.83
+     ],
+     [
+      -28.0,
+      12.53
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Oakdale Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -13.68
+     ],
+     [
+      -13.02,
+      -13.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Oakdale Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.02,
+      -13.37
+     ],
+     [
+      -12.78,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Falmouth Street"
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.03,
+      12.98
+     ],
+     [
+      -13.17,
+      12.83
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Falmouth Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.17,
+      12.83
+     ],
+     [
+      -13.02,
+      -13.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Marked crosswalk across Oakdale Street",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.41,
+      55.5
+     ],
+     [
+      -13.17,
+      12.83
+     ],
+     [
+      -13.02,
+      -13.37
+     ],
+     [
+      -12.79,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Falmouth Street, and Oakdale Street",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

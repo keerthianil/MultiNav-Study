@@ -1,0 +1,322 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Forest Avenue and Fenwick Road",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "info",
+   "type": "info",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Intersection view. Forest Avenue and Fenwick Road. 3-way intersection.",
+    "custom": {
+     "title": "Forest Avenue and Fenwick Road",
+     "kind": "junction",
+     "legs": "3",
+     "spoken_title": "Forest Avenue, and Fenwick Road"
+    }
+   }
+  },
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      9.0,
+      69.9
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue",
+    "custom": {
+     "width_mm": "12.0",
+     "divided": "yes"
+    }
+   }
+  },
+  {
+   "id": "median_0",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      2.05,
+      15.92
+     ],
+     [
+      9.0,
+      69.9
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median of Forest Avenue",
+    "custom": {
+     "width_mm": "2.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -41.96,
+      3.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fenwick Road",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -4.62,
+      -69.97
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "6.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.0,
+      56.0
+     ],
+     [
+      -11.39,
+      14.12
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -11.39,
+      14.12
+     ],
+     [
+      -28.0,
+      15.55
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northwest side of Fenwick Road"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -10.75
+     ],
+     [
+      -13.92,
+      -11.96
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southeast side of Fenwick Road"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.92,
+      -11.96
+     ],
+     [
+      -16.83,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the northeast side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      9.43,
+      -56.0
+     ],
+     [
+      13.04,
+      -1.27
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Forest Avenue"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.04,
+      -1.27
+     ],
+     [
+      20.42,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk on the southwest side of Forest Avenue"
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -11.39,
+      14.12
+     ],
+     [
+      -13.92,
+      -11.96
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Unmarked crossing across Fenwick Road",
+    "custom": {
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.07,
+      55.5
+     ],
+     [
+      -11.39,
+      14.12
+     ],
+     [
+      -13.92,
+      -11.96
+     ],
+     [
+      -16.79,
+      -55.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "departure": "Your location at the intersection of Forest Avenue, and Fenwick Road",
+     "destination": "End of route. Double tap to return to map overview."
+    }
+   }
+  }
+ ]
+}

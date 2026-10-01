@@ -1,0 +1,76 @@
+{
+ "routes": [
+  {
+   "id": "route1",
+   "number": 1,
+   "title": "USM to 415 Forest Avenue",
+   "summary": "Bedford Street, Deering Avenue, the roundabout, Falmouth Street, Forest Avenue",
+   "overview": "route1_overview",
+   "details": [
+    "route1_l2_bedford_deering",
+    "route1_l2_roundabout",
+    "route1_l2_falmouth_oakdale",
+    "route1_l2_falmouth_durham",
+    "route1_l2_forest_falmouth",
+    "route1_l2_forest_belmeade"
+   ],
+   "departure": "U S M, Bedford Street",
+   "destination": "415 Forest Avenue"
+  },
+  {
+   "id": "route2",
+   "number": 2,
+   "title": "300 Fore Street to 58 Fore Street",
+   "summary": "Fore Street across Franklin Street, India Street and Hancock Street",
+   "overview": "route2_overview",
+   "details": [
+    "route2_l2_fore_franklin",
+    "route2_l2_fore_india",
+    "route2_l2_fore_hancock",
+    "route2_l2_fore_mountfort",
+    "route2_l2_fore_munjoy"
+   ],
+   "departure": "Maine Law, 300 Fore Street",
+   "destination": "58 Fore Street"
+  },
+  {
+   "id": "route3",
+   "number": 3,
+   "title": "300 Fore Street to Center and Spring Streets",
+   "summary": "Fore Street to Center Street, ending at Spring Street",
+   "overview": "route3_overview",
+   "details": [
+    "route3_l2_fore_custom_house",
+    "route3_l2_fore_pearl",
+    "route3_l2_fore_silver",
+    "route3_l2_fore_market",
+    "route3_l2_fore_moulton",
+    "route3_l2_fore_exchange",
+    "route3_l2_fore_union",
+    "route3_l2_fore_cross",
+    "route3_l2_fore_cotton",
+    "route3_l2_fore_center",
+    "route3_l2_center_spring"
+   ],
+   "departure": "Maine Law, 300 Fore Street",
+   "destination": "corner of Center Street and Spring Street"
+  },
+  {
+   "id": "route4",
+   "number": 4,
+   "title": "415 Forest Avenue to USM",
+   "summary": "Forest Avenue, then Bedford Street",
+   "overview": "route4_overview",
+   "details": [
+    "route4_l2_forest_belmeade",
+    "route4_l2_forest_falmouth",
+    "route4_l2_forest_fenwick",
+    "route4_l2_forest_bank",
+    "route4_l2_forest_bedford",
+    "route4_l2_bedford_durham"
+   ],
+   "departure": "415 Forest Avenue",
+   "destination": "U S M, Bedford Street"
+  }
+ ]
+}
