@@ -42,7 +42,10 @@ enum MapStyle {
         static let routeWidth: CGFloat = 3.5
         static let crosswalkStripeWidth: CGFloat = 2.8
         static let crosswalkStripeLength: CGFloat = 1.0
+        /// Most zebra bars on one crossing; a short span drops bars rather than
+        /// close the gap between them below the minimum.
         static let crosswalkStripes = 3
+        static let crosswalkStripeMinGap: CGFloat = 1.0
         static let crosswalkEndDiameter: CGFloat = 5.0
         static let dotBorder: CGFloat = 0.4
         static let turnDiameter: CGFloat = 6.0

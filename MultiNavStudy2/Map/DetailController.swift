@@ -104,7 +104,8 @@ final class DetailController: MapScene, TactileCanvasDelegate {
             MapDrawing.crosswalkStripes(from: t.point(crosswalk.paintStart), to: t.point(crosswalk.paintEnd),
                                         stripeLength: t.length(style.crosswalkStripeLength),
                                         stripeWidth: t.length(style.crosswalkStripeWidth),
-                                        count: style.crosswalkStripes, in: context)
+                                        maxCount: style.crosswalkStripes,
+                                        minGap: t.length(style.crosswalkStripeMinGap), in: context)
         }
         for end in map.crosswalkEnds where !map.turns.contains(where: { MapGeometry.distance($0, end) < 3 }) {
             MapDrawing.dot(at: t.point(end), diameter: t.length(style.crosswalkEndDiameter),

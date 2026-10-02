@@ -108,28 +108,32 @@ def render_level2(doc, path):
         _line(draw, [P(p) for p in f["geometry"]["coordinates"]], GREEN, float(f["properties"]["custom"]["width_mm"]))
     for f in _features(doc, "route"):
         _line(draw, [P(p) for p in f["geometry"]["coordinates"]], CYAN, 3.5)
+    roads = [(f["geometry"]["coordinates"], float(f["properties"]["custom"]["width_mm"]))
+             for f in _features(doc, "corridor")]
+    rings = [(float(f["properties"]["custom"]["radius_mm"]), float(f["properties"]["custom"]["width_mm"]))
+             for f in _features(doc, "roundabout")]
+
+    def on_roadway(p):
+        if any(abs(math.hypot(*p) - r) <= w / 2 for r, w in rings):
+            return True
+        return any(_polyline_distance(p, pts) <= w / 2 for pts, w in roads)
+
     pink = []
     for f in _features(doc, "crosswalk"):
-        a, b = [P(p) for p in f["geometry"]["coordinates"]]
-        length = math.hypot(b[0] - a[0], b[1] - a[1])
-        ux, uy = (b[0] - a[0]) / length, (b[1] - a[1]) / length
-        dash = 1.0 * PX_PER_MM
-        gap = max((length - 3 * dash) / 4, 0)
-        off = gap
-        for _ in range(3):
-            s = (a[0] + ux * off, a[1] + uy * off)
-            e = (a[0] + ux * (off + dash), a[1] + uy * (off + dash))
-            draw.line([s, e], fill=WHITE, width=int(2.8 * PX_PER_MM))
-            off += dash + gap
+        a, b = f["geometry"]["coordinates"][0], f["geometry"]["coordinates"][-1]
+        s, e = paint_span(a, b, on_roadway)
+        for x, y in stripe_segments(s, e):
+            draw.line([P(x), P(y)], fill=WHITE, width=int(STRIPE_WIDTH * PX_PER_MM))
         ends = f["properties"].get("custom", {}).get("endpoints", "both")
         for p, keep in ((a, ends in ("both", "start")), (b, ends in ("both", "end"))):
-            if keep and all(math.hypot(p[0] - q[0], p[1] - q[1]) > 2.0 * PX_PER_MM for q in pink):
+            if keep and all(math.hypot(p[0] - q[0], p[1] - q[1]) >= 2.0 for q in pink):
                 pink.append(p)
+    pink = [P(p) for p in pink]
     turns = []
     for f in _features(doc, "route"):
         turns = route_turns([P(p) for p in f["geometry"]["coordinates"]], pink)
     for p in pink:
-        if all(math.hypot(p[0] - q[0], p[1] - q[1]) > 3.0 * PX_PER_MM for q in turns):
+        if all(math.hypot(p[0] - q[0], p[1] - q[1]) >= 3.0 * PX_PER_MM for q in turns):
             _dot(draw, p, 5.0, PINK)
     for b in turns:
         _dot(draw, b, 6.0, ORANGE)
@@ -138,6 +142,50 @@ def render_level2(doc, path):
         _dot(draw, pts[0], 6.0, YELLOW)
         _dot(draw, pts[-1], 6.0, YELLOW)
     img.save(path)
+
+
+# Crosswalk stripes, mm. Must match the app's crosswalk style.
+STRIPE_LENGTH = 1.0   # along the crossing
+STRIPE_WIDTH = 2.8    # across it, parallel to traffic
+STRIPE_COUNT = 3      # at most
+STRIPE_MIN_GAP = 1.0  # shorter spans drop bars rather than close the gaps
+
+
+def paint_span(a, b, on_roadway, samples=60):
+    """The part of a crossing that lies over the roadway, where stripes are painted."""
+    inside = [i / samples for i in range(samples + 1)
+              if on_roadway((a[0] + (b[0] - a[0]) * i / samples, a[1] + (b[1] - a[1]) * i / samples))]
+    if inside and inside[-1] > inside[0]:
+        f, l = inside[0], inside[-1]
+        return (a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f), (a[0] + (b[0] - a[0]) * l, a[1] + (b[1] - a[1]) * l)
+    return a, b
+
+
+def stripe_segments(a, b):
+    """Zebra bars as the app draws them: the span cut into equal cells, one bar
+    centred in each, with fewer cells on a short span so bars never touch."""
+    length = math.hypot(b[0] - a[0], b[1] - a[1])
+    if length <= 0:
+        return []
+    ux, uy = (b[0] - a[0]) / length, (b[1] - a[1]) / length
+    count = min(STRIPE_COUNT, max(1, int(length // (STRIPE_LENGTH + STRIPE_MIN_GAP))))
+    cell = length / count
+    out = []
+    for i in range(count):
+        off = cell * (i + 0.5) - STRIPE_LENGTH / 2
+        out.append(((a[0] + ux * off, a[1] + uy * off),
+                    (a[0] + ux * (off + STRIPE_LENGTH), a[1] + uy * (off + STRIPE_LENGTH))))
+    return out
+
+
+def _polyline_distance(p, pts):
+    best = float("inf")
+    for a, b in zip(pts, pts[1:]):
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        ls = dx * dx + dy * dy
+        t = 0.0 if ls == 0 else max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / ls))
+        best = min(best, math.hypot(p[0] - a[0] - dx * t, p[1] - a[1] - dy * t))
+    return best
 
 
 def route_turns(pts, crosswalk_ends, threshold=40.0):

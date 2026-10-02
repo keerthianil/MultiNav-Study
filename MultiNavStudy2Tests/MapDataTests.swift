@@ -73,6 +73,35 @@ struct MapDataTests {
         }
     }
 
+    @Test func shortCrossingsGetFewerStripes() {
+        let style = MapStyle.Detail.self
+        func count(_ length: CGFloat) -> Int {
+            MapDrawing.stripeLayout(length: length, stripeLength: style.crosswalkStripeLength,
+                                    maxCount: style.crosswalkStripes, minGap: style.crosswalkStripeMinGap).offsets.count
+        }
+        #expect(count(11.4) == 3)
+        #expect(count(4.2) == 2)
+        #expect(count(1.9) == 1)
+    }
+
+    /// No zebra bars may run together, as they did on crossings split by an island.
+    @Test(arguments: RouteCatalog.routes.flatMap(\.details))
+    func crosswalkStripesStayApart(file: String) throws {
+        let map = try MapLoader.detail(named: file)
+        let style = MapStyle.Detail.self
+        for crosswalk in map.crosswalks {
+            let span = MapGeometry.distance(crosswalk.paintStart, crosswalk.paintEnd)
+            let layout = MapDrawing.stripeLayout(length: span, stripeLength: style.crosswalkStripeLength,
+                                                 maxCount: style.crosswalkStripes, minGap: style.crosswalkStripeMinGap)
+            #expect(!layout.offsets.isEmpty, "\(crosswalk.id) in \(file) has no stripes")
+            if layout.offsets.count > 1 {
+                #expect(layout.gap >= style.crosswalkStripeMinGap, "\(crosswalk.id) in \(file) stripes run together")
+            }
+            #expect(layout.offsets.allSatisfy { $0 >= 0 && $0 + style.crosswalkStripeLength <= span + 0.001 },
+                    "\(crosswalk.id) in \(file) stripes leave the road")
+        }
+    }
+
     @Test func turnsMergeAndSkipGentleBends() {
         let straight = [CGPoint(x: 0, y: 0), CGPoint(x: 0, y: 10), CGPoint(x: 1, y: 20)]
         #expect(MapLoader.routeTurns(straight).isEmpty)

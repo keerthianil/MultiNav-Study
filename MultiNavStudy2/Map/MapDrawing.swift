@@ -25,24 +25,37 @@ enum MapDrawing {
         context.strokeEllipse(in: rect.insetBy(dx: border / 2, dy: border / 2))
     }
 
-    /// Three evenly spaced zebra bars across a crossing, each bar parallel to traffic.
+    /// Where each zebra bar starts along a crossing of the given length, and the
+    /// gap between neighbouring bars. The span is cut into equal cells with one
+    /// bar centred in each: up to `maxCount` cells, but never so many that the
+    /// gap drops below `minGap`. A short span, such as one half of a crossing
+    /// split by an island, so gets fewer bars instead of bars that run together.
+    static func stripeLayout(length: CGFloat, stripeLength: CGFloat, maxCount: Int,
+                             minGap: CGFloat) -> (offsets: [CGFloat], gap: CGFloat) {
+        guard length > 0, maxCount > 0 else { return ([], 0) }
+        let fitting = Int((length / (stripeLength + minGap)).rounded(.down))
+        let count = min(maxCount, max(1, fitting))
+        let cell = length / CGFloat(count)
+        let offsets = (0..<count).map { cell * (CGFloat($0) + 0.5) - stripeLength / 2 }
+        return (offsets, max(cell - stripeLength, 0))
+    }
+
+    /// Zebra bars across a crossing, each bar parallel to traffic.
     static func crosswalkStripes(from a: CGPoint, to b: CGPoint, stripeLength: CGFloat, stripeWidth: CGFloat,
-                                 count: Int, in context: CGContext) {
+                                 maxCount: Int, minGap: CGFloat, in context: CGContext) {
         let length = hypot(b.x - a.x, b.y - a.y)
-        guard length > 1, count > 0 else { return }
+        guard length > 1 else { return }
         let ux = (b.x - a.x) / length
         let uy = (b.y - a.y) / length
-        let gap = max((length - CGFloat(count) * stripeLength) / CGFloat(count + 1), 0)
         context.setStrokeColor(MapStyle.crosswalkWhite.cgColor)
         context.setLineWidth(stripeWidth)
         context.setLineCap(.butt)
-        var offset = gap
-        for _ in 0..<count {
+        let layout = stripeLayout(length: length, stripeLength: stripeLength, maxCount: maxCount, minGap: minGap)
+        for offset in layout.offsets {
             context.beginPath()
             context.move(to: CGPoint(x: a.x + ux * offset, y: a.y + uy * offset))
             context.addLine(to: CGPoint(x: a.x + ux * (offset + stripeLength), y: a.y + uy * (offset + stripeLength)))
             context.strokePath()
-            offset += stripeLength + gap
         }
         context.setLineCap(.round)
     }

@@ -88,6 +88,10 @@ meets the crosswalk exactly where the sidewalk turns. Crossings with a refuge is
 island. The walking path follows the sidewalk on the chosen side, crossing arms corner to corner by the
 shorter way round, unless `via` in the spec says otherwise.
 
+Zebra bars are painted only where a crossing lies over the road: up to three, one centred in each equal share
+of that span, with fewer on a short span (half of a split crossing) so bars stay at least 1 mm apart.
+`MapDrawing.stripeLayout` and `tools/preview.py` use the same rule.
+
 Crosswalks marked *assumed* in `docs/ROUTES.md` come from `assume_crossing` in the spec and should be
 checked on site.
 
