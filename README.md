@@ -140,41 +140,6 @@ The app depends on [ProjectMultiNav](https://github.com/Hariprasath88/ProjectMul
 
 Feedback, rendering and gestures are the app's own, tuned for these maps.
 
-## Building and running
-
-Requirements: Xcode 16 or later, an iPhone on iOS 18 or later (haptics need a real device; the simulator
-draws the maps but cannot vibrate).
-
-1. Open `MultiNavStudy2.xcodeproj`. Xcode fetches the MultiNav package on first open.
-2. Choose an iPhone as the run destination and press Run.
-
-The app icon is drawn by `tools/make_app_icon.py` in light, dark and tinted versions: a piece of the
-overview map with vibration ripples round the start dot.
-
-Signing is automatic with the **UNAR labs, LLC** team (`XJ5MZJRQ8C`). The bundle ID is
-`edu.northeastern.unarlabs.MultiNavStudy2`. The app runs on iPhone only, in portrait.
-
-Tests: Product > Test (or `xcodebuild test -scheme MultiNavStudy2 -destination 'platform=iOS Simulator,name=iPhone 17 Pro'`).
-They check that every map loads, that each route's intersections have close-ups, that route ends stay on
-screen, that the roundabout has split crossings, and that no spoken text contains dashes or arrows.
-
-### Uploading to TestFlight
-
-1. In Xcode's Signing & Capabilities, confirm the team is **UNAR labs, LLC**, not a Personal Team. A bundle
-   ID first registered under a Personal Team cannot be used by the company team, and a Personal Team
-   cannot upload to TestFlight.
-2. Run once on a connected iPhone. Automatic signing registers the bundle ID with the team.
-3. In [App Store Connect](https://appstoreconnect.apple.com), Apps, **+**, New App: platform iOS, name
-   "MultiNav Study 2" (app names are unique across the App Store; add "UNAR" if it is taken), bundle ID
-   `edu.northeastern.unarlabs.MultiNavStudy2` from the list, any SKU such as `multinav-study-2`. Creating
-   an app needs the Account Holder, Admin or App Manager role.
-4. In Xcode, set the destination to *Any iOS Device (arm64)*, then Product > Archive. In the Organizer,
-   Distribute App > TestFlight Internal Only, and upload. Xcode creates the distribution signing for you.
-5. The encryption question is already answered in the build settings (App Uses Non-Exempt Encryption:
-   No), so the build goes straight to testing. Add testers under TestFlight in App Store Connect.
-
-Raise the build number (`CURRENT_PROJECT_VERSION`) before each new upload.
-
 ## Changing the maps
 
 The JSON maps in `MultiNavStudy2/Maps` are generated; do not edit them by hand.
