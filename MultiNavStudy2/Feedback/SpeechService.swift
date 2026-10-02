@@ -1,8 +1,11 @@
 // SpeechService.swift
-// Speaks map names the moment the finger reaches them, cutting off the last.
-// With VoiceOver on, speech goes through VoiceOver as an interrupting
-// announcement so it uses the listener's own voice and rate. Without it,
-// the system speech synthesiser is used.
+// Speaks map names the moment the finger reaches them. A phrase plays to the
+// end unless something new is said or the screen changes.
+// With VoiceOver on, speech goes through VoiceOver as an announcement so it
+// uses the listener's own voice and rate. Default priority, not high: a high
+// priority announcement cannot be interrupted once started, so it kept
+// talking after the listener moved on or went back. Without VoiceOver, the
+// system speech synthesiser is used.
 
 import AVFoundation
 import UIKit
@@ -16,7 +19,7 @@ final class SpeechService {
         if UIAccessibility.isVoiceOverRunning {
             let announcement = NSAttributedString(string: text, attributes: [
                 .accessibilitySpeechQueueAnnouncement: NSNumber(value: false),
-                .accessibilitySpeechAnnouncementPriority: UIAccessibilityPriority.high.rawValue,
+                .accessibilitySpeechAnnouncementPriority: UIAccessibilityPriority.default.rawValue,
             ])
             UIAccessibility.post(notification: .announcement, argument: announcement)
         } else {
@@ -31,6 +34,8 @@ final class SpeechService {
         }
     }
 
+    /// Cuts off the system voice. A VoiceOver announcement is cut off by
+    /// VoiceOver itself when it reads the screen the listener moves to.
     func stop() {
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)

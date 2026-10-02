@@ -384,7 +384,7 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         isLeaving = true
         log.event(.gesture, "Back", detail: gesture)
         canvas.reset()
-        feedback.stopAll()
+        feedback.silence()
         feedback.backTap()
         onBack?()
     }

@@ -336,7 +336,7 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
             feedback.speak("This intersection is not on your route.")
             return
         }
-        feedback.stopAll()
+        feedback.silence()
         onOpenIntersection?(tapped)
     }
 
@@ -345,7 +345,7 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         isLeaving = true
         log.event(.gesture, "Back", detail: gesture)
         canvas.reset()
-        feedback.stopAll()
+        feedback.silence()
         feedback.backTap()
         onBack?()
     }

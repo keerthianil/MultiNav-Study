@@ -81,10 +81,11 @@ screen. The navigation bar Back button still works for sighted researchers.
 ## VoiceOver
 
 The map is a VoiceOver direct-touch area that stays silent on touch, so every finger movement reaches the
-map rather than VoiceOver. With VoiceOver on, the map's speech is sent as VoiceOver announcements that cut
-off the previous one, in the listener's own voice and rate; with it off, the system voice is used. When a
-map opens, VoiceOver focus moves onto it and reads its name ("Map overview. Route 1, USM to 415 Forest
-Avenue") and how to use it. Haptics and sounds behave the same either way.
+map rather than VoiceOver. With VoiceOver on, the map's speech is sent as VoiceOver announcements in the
+listener's own voice and rate; with it off, the system voice is used. Either way a phrase plays to the end
+until the next thing is spoken, which cuts it off, and stops as soon as the map is left (back, or opening an
+intersection). When a map opens, VoiceOver focus moves onto it and reads its name ("Map overview. Route 1,
+USM to 415 Forest Avenue") and how to use it. Haptics and sounds behave the same either way.
 
 ## The roundabout
 

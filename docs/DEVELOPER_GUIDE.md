@@ -41,7 +41,7 @@ docs/                         this guide, ROUTES.md, map previews
 | `Feedback/FeedbackManager.swift` | one feedback mode at a time; switching mode stops everything the last one started |
 | `Feedback/HapticService.swift` | Core Haptics patterns; restarts the engine after a reset or a VoiceOver change |
 | `Feedback/AudioService.swift` | the ding and the crosswalk click, synthesised once, played from one engine |
-| `Feedback/SpeechService.swift` | VoiceOver announcement or system voice, cutting off the previous phrase |
+| `Feedback/SpeechService.swift` | VoiceOver announcement (default priority, so it can be cut off) or system voice |
 | `Logging/StudyLog.swift` | session touch and event CSVs (the touch log is a MultiNav `TouchLogger`), the app log |
 | `Logging/LogFilesView.swift` | list, share and delete logs |
 | `Support/DisableInteractivePopGesture.swift` | turns off swipe-back on map screens |
