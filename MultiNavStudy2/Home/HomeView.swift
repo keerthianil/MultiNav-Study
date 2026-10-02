@@ -1,6 +1,5 @@
 // HomeView.swift
-// Main menu: the four routes, an optional participant ID for the log file
-// names, and the data files.
+// Main menu: the four routes and the data files.
 
 import SwiftUI
 
@@ -12,7 +11,6 @@ enum AppScreen: Hashable {
 
 struct HomeView: View {
     @State private var path: [AppScreen] = []
-    @AppStorage(StudyLog.participantKey) private var participantID = ""
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -26,17 +24,6 @@ struct HomeView: View {
                     }
                 } header: {
                     Text("Routes")
-                }
-
-                Section {
-                    TextField("Participant ID", text: $participantID)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                        .accessibilityHint("Optional. Added to the names of new log files.")
-                } header: {
-                    Text("Participant")
-                } footer: {
-                    Text("Optional. Added to the names of new log files.")
                 }
 
                 Section {
@@ -81,23 +68,15 @@ private struct RouteRow: View {
     let route: RouteInfo
 
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-            Text("\(route.number)")
-                .font(.title2.weight(.bold))
-                .foregroundStyle(.white)
-                .frame(width: 44, height: 44)
-                .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 10))
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(route.title)
-                    .font(.headline)
-                Text(route.summary)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+        VStack(alignment: .leading, spacing: 3) {
+            Text("Route \(route.number)")
+                .font(.title3.weight(.semibold))
+            Text(route.title)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
         .padding(.vertical, 6)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Route \(route.number). \(route.title). \(route.summary)")
+        .accessibilityLabel("Route \(route.number), \(route.title)")
     }
 }

@@ -28,7 +28,7 @@ docs/                         this guide, ROUTES.md, map previews
 | File | What it does |
 |---|---|
 | `App/MultiNavStudy2App.swift` | `@main`; starts the feedback engines, logs launch, background and foreground |
-| `Home/HomeView.swift` | route list, participant ID, Data Files; ends the log session on returning to the list |
+| `Home/HomeView.swift` | route list, Data Files; ends the log session on returning to the list |
 | `Home/RouteCatalog.swift` | reads `Maps/routes.json` |
 | `Screens/MapScreens.swift` | Level 1 and Level 2 screens; loads a map when the screen is created, starts the log session, announces the screen |
 | `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps and double taps, VoiceOver direct touch, back gestures |

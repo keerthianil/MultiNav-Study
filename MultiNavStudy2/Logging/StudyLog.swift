@@ -3,9 +3,9 @@
 // app under On My iPhone > MultiNav Study 2, and from Finder over USB).
 //
 // Each time a route is opened, one session writes two CSV files:
-//   Route1_20260930_153012_P07_touches.csv  every touch down, move (10 per
+//   Route1_20260930_153012_touches.csv  every touch down, move (10 per
 //       second) and up, with the element under the finger, in points and mm
-//   Route1_20260930_153012_P07_events.csv   screens opened, taps, double
+//   Route1_20260930_153012_events.csv   screens opened, taps, double
 //       taps, back gestures, everything spoken, VoiceOver changes, errors
 // Across all sessions, MultiNav_app_log.csv keeps app starts, background and
 // foreground changes, and every error.
@@ -136,8 +136,7 @@ final class StudyLog {
     private var condition = ""
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "MultiNavStudy2", category: "study")
 
-    static let participantKey = "participantID"
-    static let appLogName = "MultiNav_app_log.csv"
+    nonisolated static let appLogName = "MultiNav_app_log.csv"
 
     static var documents: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -162,8 +161,7 @@ final class StudyLog {
         condition = "Route \(route.number) - Map Overview"
 
         let stamp = Self.fileStamp(now)
-        var base = "Route\(route.number)_\(stamp)"
-        if let participant = Self.participantID { base += "_\(participant)" }
+        let base = "Route\(route.number)_\(stamp)"
         let touchURL = Self.documents.appendingPathComponent(base + "_touches.csv")
         let eventURL = Self.documents.appendingPathComponent(base + "_events.csv")
 
@@ -177,9 +175,6 @@ final class StudyLog {
         event(.session, "Session started", detail: "Route \(route.number): \(route.title)")
         event(.session, "Device", detail: "\(UIDevice.current.model), \(AppInfo.versionDescription)")
         event(.voiceOver, UIAccessibility.isVoiceOverRunning ? "VoiceOver on" : "VoiceOver off")
-        if let participant = Self.participantID {
-            event(.session, "Participant", detail: participant)
-        }
         appEvent("Session started", detail: base)
     }
 
@@ -246,13 +241,6 @@ final class StudyLog {
     }
 
     // MARK: Formatting
-
-    static var participantID: String? {
-        let raw = UserDefaults.standard.string(forKey: participantKey) ?? ""
-        let cleaned = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-            .filter { $0.isLetter || $0.isNumber || $0 == "-" }
-        return cleaned.isEmpty ? nil : cleaned
-    }
 
     private static let timestampFormatter: DateFormatter = {
         let formatter = DateFormatter()

@@ -10,14 +10,12 @@ struct LogFile: Identifiable, Hashable {
     var id: URL { url }
     var name: String { url.lastPathComponent }
 
-    /// "Route 3 touches, P07" from Route3_20260930_153012_P07_touches.csv.
+    /// "Route 3 touches" from Route3_20260930_153012_touches.csv.
     var title: String {
         if name == StudyLog.appLogName { return "App log" }
         let parts = url.deletingPathExtension().lastPathComponent.split(separator: "_").map(String.init)
         guard parts.count >= 4, parts[0].hasPrefix("Route"), let kind = parts.last else { return name }
-        var title = "Route \(parts[0].dropFirst("Route".count)) \(kind)"
-        if parts.count >= 5 { title += ", \(parts[3])" }
-        return title
+        return "Route \(parts[0].dropFirst("Route".count)) \(kind)"
     }
 }
 

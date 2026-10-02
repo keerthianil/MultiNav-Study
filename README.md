@@ -22,8 +22,8 @@ control, its crosswalks and the streets each walk crosses are listed in [docs/RO
 
 ## Using the app
 
-The home screen lists the four routes, an optional participant ID (added to log file names) and the data
-files. Choosing a route opens its overview.
+The home screen lists Route 1 to Route 4, each with its name in small type underneath, and the data files.
+Choosing a route opens its overview.
 
 ### Level 1, the route overview
 
@@ -121,12 +121,12 @@ app under *On My iPhone > MultiNav Study 2*, or copied off over USB in Finder.
 
 | File | Contents |
 |---|---|
-| `Route1_20260930_153012_P07_touches.csv` | every touch down, move (10 per second) and up: time, trial time, element under the finger, position in points and in mm, screen, VoiceOver on or off |
-| `Route1_20260930_153012_P07_events.csv` | session start and end, screens opened, taps, double taps, back gestures, everything spoken, VoiceOver changes, errors |
+| `Route1_20260930_153012_touches.csv` | every touch down, move (10 per second) and up: time, trial time, element under the finger, position in points and in mm, screen, VoiceOver on or off |
+| `Route1_20260930_153012_events.csv` | session start and end, screens opened, taps, double taps, back gestures, everything spoken, VoiceOver changes, errors |
 | `MultiNav_app_log.csv` | across all sessions: app launches, background and foreground, sessions, and every error |
 
 A session starts when a route is opened and ends when the app returns to the route list; visits to
-intersection close-ups belong to the same session. `P07` appears when a participant ID is entered.
+intersection close-ups belong to the same session.
 
 ## The MultiNav package
 
