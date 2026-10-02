@@ -127,29 +127,6 @@
    }
   },
   {
-   "id": "median_3",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -0.45,
-      -16.74
-     ],
-     [
-      -1.9,
-      -70.0
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Fore Street",
-    "custom": {
-     "width_mm": "2.0"
-    }
-   }
-  },
-  {
    "id": "center",
    "type": "center",
    "geometry": {

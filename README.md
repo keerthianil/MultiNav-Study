@@ -57,7 +57,7 @@ roads, sidewalks, crosswalks and islands it really has, and the walking path thr
 | Path over a crosswalk | cyan on stripes | rhythmic pulse | clicks | crosswalk name |
 | Path | cyan line | rhythmic pulse | | "Route" |
 | Crosswalk | white stripes | road buzz under it | clicks | "Crosswalk with signal across Franklin Street, push button" |
-| Refuge, splitter island or median | green | two soft taps, repeating | | "Splitter island on Deering Avenue. Pedestrian refuge between the entry and exit lanes" |
+| Refuge or splitter island | green | two soft taps, repeating | | "Splitter island on Deering Avenue. Pedestrian refuge between the entry and exit lanes" |
 | Sidewalk | grey line | softer steady buzz | | "Sidewalk on the northwest side of Fore Street" |
 | Road | blue | steady heavy buzz | | street name, "one way" where it is |
 

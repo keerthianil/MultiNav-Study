@@ -769,11 +769,6 @@ def build_level2(route, stop, previous_stop, next_stop):
         name = arm.name + (", one way" if arm.oneway else "")
         features.append(feature("road_%d" % k, "corridor", line_geom([start, end]), name,
                                 custom={"width_mm": road_half * 2, "divided": "yes" if arm.divided else None}))
-        if arm.divided and not j.is_roundabout:
-            t0 = math.hypot(*geo.axis_crossing(arm)) + (L2_ISLAND_HALF_LEN + 1.5 if arm.island else 3.5)
-            features.append(feature("median_%d" % k, "median",
-                                    line_geom([scale(unit(th), t0), scale(unit(th), geo.far(arm, 0) + 12)]),
-                                    "Median of %s" % arm.name, custom={"width_mm": 2.0}))
     if j.is_roundabout:
         features.append(feature("ring", "roundabout", point_geom((0, 0)),
                                 "Roundabout. Traffic moves counterclockwise",

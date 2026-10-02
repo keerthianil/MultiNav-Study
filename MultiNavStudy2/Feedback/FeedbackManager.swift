@@ -32,7 +32,7 @@ final class FeedbackManager {
         case turn
         /// Crosswalk end dot: one ding, nothing else.
         case crosswalkEnd
-        /// Refuge, splitter and median islands: two soft taps, repeating.
+        /// Refuge and splitter islands: two soft taps, repeating.
         case island
     }
 

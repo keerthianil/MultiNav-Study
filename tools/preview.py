@@ -104,7 +104,7 @@ def render_level2(doc, path):
         r = float(f["properties"]["custom"]["radius_mm"]) * PX_PER_MM
         x, y = P((0, 0))
         draw.ellipse([x - r, y - r, x + r, y + r], fill=GREEN)
-    for f in _features(doc, "median") + _features(doc, "island"):
+    for f in _features(doc, "island"):
         _line(draw, [P(p) for p in f["geometry"]["coordinates"]], GREEN, float(f["properties"]["custom"]["width_mm"]))
     for f in _features(doc, "route"):
         _line(draw, [P(p) for p in f["geometry"]["coordinates"]], CYAN, 3.5)

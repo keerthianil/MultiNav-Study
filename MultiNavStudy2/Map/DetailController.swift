@@ -9,7 +9,7 @@
 //   route on a crosswalk       route pulse plus crosswalk clicks, crosswalk name
 //   route (cyan)               rhythmic pulse, "Route"
 //   crosswalk (white stripes)  clicks, with the road buzz under them, crosswalk name
-//   island (green)             double-tap pattern, island name
+//   island (green)             double-tap pattern, refuge or splitter island name
 //   centre island (green)      silence, "Center island. Not a walkway"
 //   sidewalk (grey)            softer steady buzz, sidewalk name
 //   roundabout road (blue)     heavy buzz, "Roundabout. Traffic moves counterclockwise"
@@ -45,7 +45,6 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         case route
         case crosswalk(Int, overRoad: Bool)
         case island(Int)
-        case median(Int)
         case centralIsland
         case sidewalk(Int)
         case ring
@@ -96,7 +95,7 @@ final class DetailController: MapScene, TactileCanvasDelegate {
             context.setFillColor(MapStyle.islandGreen.cgColor)
             context.fillEllipse(in: CGRect(x: center.x - r, y: center.y - r, width: 2 * r, height: 2 * r))
         }
-        for line in map.medians + map.islands {
+        for line in map.islands {
             MapDrawing.stroke(line.points, width: line.width, color: MapStyle.islandGreen, in: context, t)
         }
         MapDrawing.stroke(map.route, width: style.routeWidth, color: MapStyle.routeCyan, in: context, t)
@@ -156,11 +155,6 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         }) {
             return .island(i)
         }
-        if let i = map.medians.firstIndex(where: {
-            MapGeometry.polylineDistance(p, $0.points) <= $0.width / 2 + h.islandSlack / 2 + slack
-        }) {
-            return .median(i)
-        }
         if let island = map.centralIsland, hypot(p.x, p.y) <= island.radius + slack {
             return .centralIsland
         }
@@ -214,12 +208,11 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         case .route: return 5
         case .crosswalk: return 6
         case .island: return 7
-        case .median: return 8
-        case .centralIsland: return 9
-        case .sidewalk: return 10
-        case .ring: return 11
-        case .road: return 12
-        case .none: return 13
+        case .centralIsland: return 8
+        case .sidewalk: return 9
+        case .ring: return 10
+        case .road: return 11
+        case .none: return 12
         }
     }
 
@@ -256,9 +249,6 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         case .island(let i):
             feedback.set(.island)
             speak(map.islands[i].name, for: hit)
-        case .median(let i):
-            feedback.set(.island)
-            speak(map.medians[i].name, for: hit)
         case .centralIsland:
             feedback.set(.none)
             speak(map.centralIsland?.name ?? "Center island", for: hit)
@@ -289,7 +279,6 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         case .route: return "Route"
         case .crosswalk(let i, _): return map.crosswalks[i].name
         case .island(let i): return map.islands[i].name
-        case .median(let i): return map.medians[i].name
         case .centralIsland: return map.centralIsland?.name
         case .sidewalk(let i): return map.sidewalks[i].name
         case .ring: return map.ring?.name
@@ -308,7 +297,6 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         case .route: return "Route"
         case .crosswalk(let i, _): return map.crosswalks[i].name
         case .island(let i): return map.islands[i].name
-        case .median(let i): return map.medians[i].name
         case .centralIsland: return "Center island"
         case .sidewalk(let i): return map.sidewalks[i].name
         case .ring: return "Roundabout roadway"

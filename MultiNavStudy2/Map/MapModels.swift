@@ -10,7 +10,6 @@ import TactileMapCore
 
 extension TactileElementType {
     static let sidewalk = TactileElementType(rawValue: "sidewalk")
-    static let median = TactileElementType(rawValue: "median")
     static let island = TactileElementType(rawValue: "island")
     static let roundabout = TactileElementType(rawValue: "roundabout")
     static let centralIsland = TactileElementType(rawValue: "central_island")
@@ -123,7 +122,6 @@ struct DetailMap {
     let isRoundabout: Bool
     let size: CGSize
     let roads: [MapLine]
-    let medians: [MapLine]
     let islands: [MapLine]
     let sidewalks: [MapLine]
     let crosswalks: [Crosswalk]
@@ -215,7 +213,6 @@ enum MapLoader {
         var intro = title
         var isRoundabout = false
         var roads: [MapLine] = []
-        var medians: [MapLine] = []
         var islands: [MapLine] = []
         var sidewalks: [MapLine] = []
         var crosswalks: [Crosswalk] = []
@@ -238,8 +235,6 @@ enum MapLoader {
                 isRoundabout = custom["kind"] == "roundabout"
             case .corridor:
                 roads.append(MapLine(id: element.id, name: name, points: element.points, width: width))
-            case .median:
-                medians.append(MapLine(id: element.id, name: name, points: element.points, width: width))
             case .island:
                 islands.append(MapLine(id: element.id, name: name, points: element.points, width: width))
             case .sidewalk:
@@ -304,7 +299,7 @@ enum MapLoader {
         return DetailMap(
             title: title, spokenTitle: spokenTitle, intro: intro, isRoundabout: isRoundabout,
             size: CGSize(width: document.bounds.width, height: document.bounds.height),
-            roads: roads, medians: medians, islands: islands, sidewalks: sidewalks,
+            roads: roads, islands: islands, sidewalks: sidewalks,
             crosswalks: crosswalks, ring: ring, centralIsland: centralIsland, center: center,
             route: route,
             endpoints: [

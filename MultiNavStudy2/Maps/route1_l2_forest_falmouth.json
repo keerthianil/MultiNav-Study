@@ -58,29 +58,6 @@
    }
   },
   {
-   "id": "median_0",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      6.17,
-      -16.49
-     ],
-     [
-      25.91,
-      -69.24
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Preble Street Extension",
-    "custom": {
-     "width_mm": "2.0"
-    }
-   }
-  },
-  {
    "id": "road_1",
    "type": "corridor",
    "geometry": {
@@ -101,29 +78,6 @@
     "custom": {
      "width_mm": "12.0",
      "divided": "yes"
-    }
-   }
-  },
-  {
-   "id": "median_1",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      19.08,
-      -1.18
-     ],
-     [
-      41.98,
-      -2.59
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Forest Avenue",
-    "custom": {
-     "width_mm": "2.0"
     }
    }
   },
@@ -171,29 +125,6 @@
     "custom": {
      "width_mm": "12.0",
      "divided": "yes"
-    }
-   }
-  },
-  {
-   "id": "median_3",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -15.69,
-      2.52
-     ],
-     [
-      -41.85,
-      6.71
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Forest Avenue",
-    "custom": {
-     "width_mm": "2.0"
     }
    }
   },

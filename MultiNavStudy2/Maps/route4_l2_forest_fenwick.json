@@ -58,29 +58,6 @@
    }
   },
   {
-   "id": "median_0",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      2.05,
-      15.92
-     ],
-     [
-      9.0,
-      69.9
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Forest Avenue",
-    "custom": {
-     "width_mm": "2.0"
-    }
-   }
-  },
-  {
    "id": "road_1",
    "type": "corridor",
    "geometry": {

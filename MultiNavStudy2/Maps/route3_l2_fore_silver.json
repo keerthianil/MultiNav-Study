@@ -58,29 +58,6 @@
    }
   },
   {
-   "id": "median_0",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      5.05,
-      -16.36
-     ],
-     [
-      21.42,
-      -69.47
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Fore Street",
-    "custom": {
-     "width_mm": "2.0"
-    }
-   }
-  },
-  {
    "id": "road_1",
    "type": "corridor",
    "geometry": {
@@ -124,29 +101,6 @@
     "custom": {
      "width_mm": "12.0",
      "divided": "yes"
-    }
-   }
-  },
-  {
-   "id": "median_2",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -0.55,
-      16.49
-     ],
-     [
-      -2.35,
-      69.99
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Fore Street",
-    "custom": {
-     "width_mm": "2.0"
     }
    }
   },

@@ -58,29 +58,6 @@
    }
   },
   {
-   "id": "median_0",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      16.37,
-      -1.04
-     ],
-     [
-      41.98,
-      -2.66
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Forest Avenue",
-    "custom": {
-     "width_mm": "2.0"
-    }
-   }
-  },
-  {
    "id": "road_1",
    "type": "corridor",
    "geometry": {
@@ -101,29 +78,6 @@
     "custom": {
      "width_mm": "12.0",
      "divided": "yes"
-    }
-   }
-  },
-  {
-   "id": "median_1",
-   "type": "median",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -16.26,
-      1.6
-     ],
-     [
-      -41.94,
-      4.13
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Median of Forest Avenue",
-    "custom": {
-     "width_mm": "2.0"
     }
    }
   },
