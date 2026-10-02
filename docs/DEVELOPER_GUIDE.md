@@ -7,7 +7,7 @@ to make common changes.
 
 ```
 MultiNavStudy2.xcodeproj      project; the app folder is a synchronized group
-Config/Info.plist             keys merged into the generated Info.plist
+Config/Info.plist             file sharing key, merged into the generated Info.plist
 MultiNavStudy2/
   App/                        app entry, lifecycle
   Home/                       route list (HomeView) and routes.json reader (RouteCatalog)
@@ -19,7 +19,7 @@ MultiNavStudy2/
   Maps/                       generated map JSON, bundled as resources
   Assets.xcassets             app icon and accent colour
 MultiNavStudy2Tests/          map data tests (Swift Testing)
-tools/                        map generator, OSM extracts, the team's KML, icon script
+tools/                        map generator, OSM extracts, the team's KML, icon script (make_app_icon.py)
 docs/                         this guide, ROUTES.md, map previews
 ```
 

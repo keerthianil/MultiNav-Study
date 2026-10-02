@@ -147,6 +147,9 @@ draws the maps but cannot vibrate).
 1. Open `MultiNavStudy2.xcodeproj`. Xcode fetches the MultiNav package on first open.
 2. Choose an iPhone as the run destination and press Run.
 
+The app icon is drawn by `tools/make_app_icon.py` in light, dark and tinted versions: a piece of the
+overview map with vibration ripples round the start dot.
+
 Signing is automatic with the **UNAR labs, LLC** team (`XJ5MZJRQ8C`). The bundle ID is
 `edu.northeastern.unarlabs.MultiNavStudy2`. The app runs on iPhone only, in portrait.
 
@@ -166,8 +169,8 @@ screen, that the roundabout has split crossings, and that no spoken text contain
    an app needs the Account Holder, Admin or App Manager role.
 4. In Xcode, set the destination to *Any iOS Device (arm64)*, then Product > Archive. In the Organizer,
    Distribute App > TestFlight Internal Only, and upload. Xcode creates the distribution signing for you.
-5. The encryption question is already answered in `Config/Info.plist`, so the build goes straight to
-   testing. Add testers under TestFlight in App Store Connect.
+5. The encryption question is already answered in the build settings (App Uses Non-Exempt Encryption:
+   No), so the build goes straight to testing. Add testers under TestFlight in App Store Connect.
 
 Raise the build number (`CURRENT_PROJECT_VERSION`) before each new upload.
 
