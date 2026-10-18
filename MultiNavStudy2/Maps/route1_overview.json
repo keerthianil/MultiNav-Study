@@ -309,7 +309,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route1_l2_bedford_deering",
-     "announcement": "3-way intersection of Bedford Street, and Deering Avenue"
+     "announcement": "3-way intersection of Bedford Street, and Deering Avenue",
+     "type_text": "3-way intersection",
+     "names_text": "Bedford Street, and Deering Avenue"
     }
    }
   },
@@ -329,7 +331,9 @@
      "kind": "roundabout",
      "legs": "5",
      "detail": "route1_l2_roundabout",
-     "announcement": "Roundabout of Deering Avenue, Falmouth Street, and Brighton Avenue"
+     "announcement": "Roundabout of Deering Avenue, Falmouth Street, and Brighton Avenue",
+     "type_text": "Roundabout",
+     "names_text": "Deering Avenue, Falmouth Street, and Brighton Avenue"
     }
    }
   },
@@ -349,7 +353,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route1_l2_falmouth_oakdale",
-     "announcement": "3-way intersection of Falmouth Street, and Oakdale Street"
+     "announcement": "3-way intersection of Falmouth Street, and Oakdale Street",
+     "type_text": "3-way intersection",
+     "names_text": "Falmouth Street, and Oakdale Street"
     }
    }
   },
@@ -369,7 +375,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route1_l2_falmouth_durham",
-     "announcement": "3-way intersection of Falmouth Street, and Durham Street"
+     "announcement": "3-way intersection of Falmouth Street, and Durham Street",
+     "type_text": "3-way intersection",
+     "names_text": "Falmouth Street, and Durham Street"
     }
    }
   },
@@ -389,7 +397,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route1_l2_forest_falmouth",
-     "announcement": "4-way intersection of Falmouth Street, Preble Street Extension, and Forest Avenue"
+     "announcement": "4-way intersection of Falmouth Street, Preble Street Extension, and Forest Avenue",
+     "type_text": "4-way intersection",
+     "names_text": "Falmouth Street, Preble Street Extension, and Forest Avenue"
     }
    }
   },
@@ -409,7 +419,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route1_l2_forest_belmeade",
-     "announcement": "3-way intersection of Forest Avenue, and Belmeade Road"
+     "announcement": "3-way intersection of Forest Avenue, and Belmeade Road",
+     "type_text": "3-way intersection",
+     "names_text": "Forest Avenue, and Belmeade Road"
     }
    }
   },

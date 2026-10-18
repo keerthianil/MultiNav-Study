@@ -29,7 +29,9 @@
      "title": "Fore Street and Custom House Street",
      "kind": "junction",
      "legs": "3",
-     "spoken_title": "Fore Street, and Custom House Street"
+     "spoken_title": "Fore Street, and Custom House Street",
+     "type_text": "3-way intersection",
+     "control_text": ""
     }
    }
   },
@@ -136,7 +138,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -156,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Custom House Street"
+    "name": "Sidewalk on the northeast side of Custom House Street",
+    "custom": {
+     "simple_name": "Sidewalk along Custom House Street"
+    }
    }
   },
   {
@@ -176,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Custom House Street"
+    "name": "Sidewalk on the southwest side of Custom House Street",
+    "custom": {
+     "simple_name": "Sidewalk along Custom House Street"
+    }
    }
   },
   {
@@ -196,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -216,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -236,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -258,7 +278,8 @@
    "properties": {
     "name": "Crosswalk across Custom House Street, one-way street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Custom House Street"
     }
    }
   },
@@ -290,7 +311,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, and Custom House Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

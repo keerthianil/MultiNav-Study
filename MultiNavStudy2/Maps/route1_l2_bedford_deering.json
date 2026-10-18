@@ -29,7 +29,9 @@
      "title": "Bedford Street and Deering Avenue",
      "kind": "junction",
      "legs": "3",
-     "spoken_title": "Bedford Street, and Deering Avenue"
+     "spoken_title": "Bedford Street, and Deering Avenue",
+     "type_text": "3-way intersection",
+     "control_text": "No traffic signals or stop signs."
     }
    }
   },
@@ -136,7 +138,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Bedford Street"
+    "name": "Sidewalk on the southeast side of Bedford Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bedford Street"
+    }
    }
   },
   {
@@ -156,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Deering Avenue"
+    "name": "Sidewalk on the northeast side of Deering Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Deering Avenue"
+    }
    }
   },
   {
@@ -176,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Deering Avenue"
+    "name": "Sidewalk on the southwest side of Deering Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Deering Avenue"
+    }
    }
   },
   {
@@ -196,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Deering Avenue"
+    "name": "Sidewalk on the southwest side of Deering Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Deering Avenue"
+    }
    }
   },
   {
@@ -216,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Deering Avenue"
+    "name": "Sidewalk on the northeast side of Deering Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Deering Avenue"
+    }
    }
   },
   {
@@ -236,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Bedford Street"
+    "name": "Sidewalk on the northwest side of Bedford Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bedford Street"
+    }
    }
   },
   {
@@ -258,7 +278,8 @@
    "properties": {
     "name": "Marked crosswalk across Bedford Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Bedford Street"
     }
    }
   },
@@ -281,7 +302,8 @@
    "properties": {
     "name": "Marked crosswalk across Deering Avenue",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Deering Avenue"
     }
    }
   },
@@ -304,7 +326,8 @@
    "properties": {
     "name": "Marked crosswalk across Deering Avenue",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Deering Avenue"
     }
    }
   },
@@ -336,7 +359,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Bedford Street, and Deering Avenue",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

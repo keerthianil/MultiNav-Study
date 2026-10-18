@@ -14,6 +14,16 @@
     "route1_l2_forest_falmouth",
     "route1_l2_forest_belmeade"
    ],
+   "sections": [
+    "route1_section_1",
+    "route1_section_2",
+    "route1_section_3",
+    "route1_section_4",
+    "route1_section_5",
+    "route1_section_6",
+    "route1_section_7"
+   ],
+   "directions": "route1_directions",
    "departure": "U S M, Bedford Street",
    "destination": "415 Forest Avenue"
   },
@@ -30,6 +40,15 @@
     "route2_l2_fore_mountfort",
     "route2_l2_fore_munjoy"
    ],
+   "sections": [
+    "route2_section_1",
+    "route2_section_2",
+    "route2_section_3",
+    "route2_section_4",
+    "route2_section_5",
+    "route2_section_6"
+   ],
+   "directions": "route2_directions",
    "departure": "Maine Law, 300 Fore Street",
    "destination": "58 Fore Street"
   },
@@ -52,6 +71,20 @@
     "route3_l2_fore_center",
     "route3_l2_center_spring"
    ],
+   "sections": [
+    "route3_section_1",
+    "route3_section_2",
+    "route3_section_3",
+    "route3_section_4",
+    "route3_section_5",
+    "route3_section_6",
+    "route3_section_7",
+    "route3_section_8",
+    "route3_section_9",
+    "route3_section_10",
+    "route3_section_11"
+   ],
+   "directions": "route3_directions",
    "departure": "Maine Law, 300 Fore Street",
    "destination": "corner of Center Street and Spring Street"
   },
@@ -69,6 +102,16 @@
     "route4_l2_forest_bedford",
     "route4_l2_bedford_durham"
    ],
+   "sections": [
+    "route4_section_1",
+    "route4_section_2",
+    "route4_section_3",
+    "route4_section_4",
+    "route4_section_5",
+    "route4_section_6",
+    "route4_section_7"
+   ],
+   "directions": "route4_directions",
    "departure": "415 Forest Avenue",
    "destination": "U S M, Bedford Street"
   }

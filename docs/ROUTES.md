@@ -62,6 +62,20 @@ Drawn with northeast at the top of the screen.
 
 </details>
 
+<details><summary>Turn-by-turn directions, as spoken with every detail on</summary>
+
+Distances in feet and sides as compass words. In the app, each setting that is off leaves its part out; nothing else changes.
+
+1. Start at U S M, Bedford Street. Walk along Bedford Street, on the northwest side, about 550 feet, to Deering Avenue. At Deering Avenue. 3-way intersection. No traffic signals or stop signs. Cross Deering Avenue. Marked crosswalk. Then turn right onto Deering Avenue, on the southwest side.
+2. Walk along Deering Avenue, on the southwest side, about 500 feet, to the roundabout. At the roundabout. 5 streets meet at a one-lane roundabout. Traffic moves counterclockwise and yields when entering. No signals. Cross Deering Avenue. Raised crosswalk. Two stages, with a splitter island. Walk around the east side of the roundabout. Cross Falmouth Street. Raised crosswalk. Two stages, with a splitter island. Then turn right onto Falmouth Street, on the northwest side.
+3. Walk along Falmouth Street, on the northwest side, about 700 feet, to Oakdale Street. At Oakdale Street. 3-way intersection. No traffic signals or stop signs. Cross Oakdale Street. Marked crosswalk. Then continue straight on Falmouth Street, on the northwest side.
+4. Walk along Falmouth Street, on the northwest side, about 600 feet, to Durham Street. At Durham Street. 3-way intersection. Continue straight on Falmouth Street, on the northwest side.
+5. Walk along Falmouth Street, on the northwest side, about 280 feet, to Preble Street Extension and Forest Avenue. At Preble Street Extension and Forest Avenue. 4-way intersection. Traffic signals. Cross Forest Avenue. Traffic signal, push button. Then turn left onto Forest Avenue, on the northeast side.
+6. Walk along Forest Avenue, on the northeast side, about 170 feet, to Belmeade Road. At Belmeade Road. 3-way intersection. Cross Belmeade Road. Unmarked crossing. Then continue straight on Forest Avenue, on the northeast side.
+7. Walk along Forest Avenue, on the northeast side, about 110 feet, to 415 Forest Avenue. It is on your right.
+
+</details>
+
 ## Route 2: 300 Fore Street to 58 Fore Street
 
 From University of Maine School of Law to 58 Fore Street. Fore Street across Franklin Street, India Street and Hancock Street.
@@ -110,6 +124,19 @@ Drawn with northeast at the top of the screen.
 - Fore Street leg, to the east: Crosswalk across Fore Street
 - Access road to 58 Fore Street leg, to the southeast: no crosswalk in OSM
 - Fore Street leg, to the west: no crosswalk in OSM
+
+</details>
+
+<details><summary>Turn-by-turn directions, as spoken with every detail on</summary>
+
+Distances in feet and sides as compass words. In the app, each setting that is off leaves its part out; nothing else changes.
+
+1. Start at Maine Law, 300 Fore Street. Walk along Fore Street, on the southeast side, about 420 feet, to Franklin Street. At Franklin Street. 4-way intersection. Traffic signals. Cross Franklin Street. Traffic signal, push button, no audible signal. Two stages, with a refuge island. Then continue straight on Fore Street, on the southeast side.
+2. Walk along Fore Street, on the southeast side, about 550 feet, to India Street. At India Street. 4-way intersection. All-way stop. Cross India Street. Marked crosswalk. Then continue straight on Fore Street, on the southeast side.
+3. Walk along Fore Street, on the southeast side, about 400 feet, to Hancock Street. At Hancock Street. 4-way intersection. All-way stop. Cross Hancock Street. Marked crosswalk. Then continue straight on Fore Street, on the southeast side.
+4. Walk along Fore Street, on the southeast side, about 460 feet, to Mountfort Street. At Mountfort Street. 3-way intersection. Continue straight on Fore Street, on the southeast side.
+5. Walk along Fore Street, on the southeast side, about 470 feet, to Munjoy South. At Munjoy South. 4-way intersection. Cross the access road to 58 Fore Street. No crosswalk. Then turn right onto the access road to 58 Fore Street, on the northeast side.
+6. Walk along the access road to 58 Fore Street, on the northeast side, about 190 feet, to 58 Fore Street. It is on your left.
 
 </details>
 
@@ -210,6 +237,24 @@ Drawn with southwest at the top of the screen.
 
 </details>
 
+<details><summary>Turn-by-turn directions, as spoken with every detail on</summary>
+
+Distances in feet and sides as compass words. In the app, each setting that is off leaves its part out; nothing else changes.
+
+1. Start at Maine Law, 300 Fore Street. Walk along Fore Street, on the southeast side, about 70 feet, to Custom House Street. At Custom House Street. 3-way intersection. Cross Custom House Street. Crosswalk. One-way street. Then continue straight on Fore Street, on the southeast side.
+2. Walk along Fore Street, on the southeast side, about 130 feet, to Pearl Street. At Pearl Street. 4-way intersection. Traffic signals. Cross Fore Street. Traffic signal. Cross Pearl Street. Traffic signal. Then continue straight on Fore Street, on the northwest side.
+3. Walk along Fore Street, on the northwest side, about 200 feet, to Silver Street. At Silver Street. 4-way intersection. Stop sign for Silver Street only. Fore Street traffic does not stop. Cross Silver Street. Marked crosswalk. Then continue straight on Fore Street, on the northwest side.
+4. Walk along Fore Street, on the northwest side, about 140 feet, to Market Street. At Market Street. 4-way intersection. Cross Market Street. Marked crosswalk. Then continue straight on Fore Street, on the northwest side.
+5. Walk along Fore Street, on the northwest side, about 140 feet, to Moulton Street. At Moulton Street. 3-way intersection. Continue straight on Fore Street, on the northwest side.
+6. Walk along Fore Street, on the northwest side, about 50 feet, to Exchange Street. At Exchange Street. 3-way intersection. No traffic signals or stop signs. Cross Exchange Street. Marked crosswalk. One-way street. Then continue straight on Fore Street, on the northwest side.
+7. Walk along Fore Street, on the northwest side, about 550 feet, to Union Street. At Union Street. 4-way intersection. Traffic signals. Cross Union Street. Traffic signal. Then continue straight on Fore Street, on the northwest side.
+8. Walk along Fore Street, on the northwest side, about 250 feet, to Cross Street. At Cross Street. 4-way intersection. All-way stop. Cross Cross Street. Crosswalk. Then continue straight on Fore Street, on the northwest side.
+9. Walk along Fore Street, on the northwest side, about 210 feet, to Cotton Street. At Cotton Street. 3-way intersection. Cross Cotton Street. Crosswalk. Then continue straight on Fore Street, on the northwest side.
+10. Walk along Fore Street, on the northwest side, about 160 feet, to Center Street and Pleasant Street. At Center Street and Pleasant Street. 5-way intersection. Traffic signals. Turn right onto Center Street, on the northeast side.
+11. Walk along Center Street, on the northeast side, about 420 feet, to the corner of Center Street and Spring Street.
+
+</details>
+
 ## Route 4: 415 Forest Avenue to USM
 
 From 415 Forest Avenue to University of Southern Maine. Forest Avenue, then Bedford Street.
@@ -263,5 +308,19 @@ Drawn with southeast at the top of the screen.
 - Bedford Street leg, to the northeast: no crosswalk in OSM
 - Bedford Street leg, to the southwest: no crosswalk in OSM
 - Durham Street leg, to the northwest: Crosswalk across Durham Street, one-way street (assumed)
+
+</details>
+
+<details><summary>Turn-by-turn directions, as spoken with every detail on</summary>
+
+Distances in feet and sides as compass words. In the app, each setting that is off leaves its part out; nothing else changes.
+
+1. Start at 415 Forest Avenue. Walk along Forest Avenue, on the northeast side, about 110 feet, to Belmeade Road. At Belmeade Road. 3-way intersection. Cross Belmeade Road. Unmarked crossing. Then continue straight on Forest Avenue, on the northeast side.
+2. Walk along Forest Avenue, on the northeast side, about 170 feet, to Preble Street Extension and Falmouth Street. At Preble Street Extension and Falmouth Street. 4-way intersection. Traffic signals. Cross Preble Street Extension. Traffic signal, push button. Two stages, with a refuge island. Then continue straight on Forest Avenue, on the northeast side.
+3. Walk along Forest Avenue, on the northeast side, about 330 feet, to Fenwick Road. At Fenwick Road. 3-way intersection. Cross Fenwick Road. Unmarked crossing. Then continue straight on Forest Avenue, on the northeast side.
+4. Walk along Forest Avenue, on the northeast side, about 240 feet, to Bank Street. At Bank Street. 3-way intersection. Cross Bank Street. Unmarked crossing. Then continue straight on Forest Avenue, on the northeast side.
+5. Walk along Forest Avenue, on the northeast side, about 220 feet, to Baxter Boulevard and Bedford Street. At Baxter Boulevard and Bedford Street. 4-way intersection. Traffic signals. Cross Forest Avenue. Traffic signal, push button. Then turn right onto Bedford Street, on the northwest side.
+6. Walk along Bedford Street, on the northwest side, about 280 feet, to Durham Street. At Durham Street. 3-way intersection. Cross Durham Street. Crosswalk. One-way street. Then continue straight on Bedford Street, on the northwest side.
+7. Walk along Bedford Street, on the northwest side, about 900 feet, to U S M, Bedford Street. It is on your right.
 
 </details>

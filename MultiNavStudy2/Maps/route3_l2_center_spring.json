@@ -29,7 +29,9 @@
      "title": "Center Street and Spring Street",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Center Street, and Spring Street"
+     "spoken_title": "Center Street, and Spring Street",
+     "type_text": "4-way intersection",
+     "control_text": "Traffic signals."
     }
    }
   },
@@ -159,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Spring Street"
+    "name": "Sidewalk on the northwest side of Spring Street",
+    "custom": {
+     "simple_name": "Sidewalk along Spring Street"
+    }
    }
   },
   {
@@ -179,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Center Street"
+    "name": "Sidewalk on the southwest side of Center Street",
+    "custom": {
+     "simple_name": "Sidewalk along Center Street"
+    }
    }
   },
   {
@@ -199,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Center Street"
+    "name": "Sidewalk on the northeast side of Center Street",
+    "custom": {
+     "simple_name": "Sidewalk along Center Street"
+    }
    }
   },
   {
@@ -219,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Spring Street"
+    "name": "Sidewalk on the northwest side of Spring Street",
+    "custom": {
+     "simple_name": "Sidewalk along Spring Street"
+    }
    }
   },
   {
@@ -239,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Spring Street"
+    "name": "Sidewalk on the southeast side of Spring Street",
+    "custom": {
+     "simple_name": "Sidewalk along Spring Street"
+    }
    }
   },
   {
@@ -259,7 +276,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Center Street"
+    "name": "Sidewalk on the northeast side of Center Street",
+    "custom": {
+     "simple_name": "Sidewalk along Center Street"
+    }
    }
   },
   {
@@ -279,7 +299,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Center Street"
+    "name": "Sidewalk on the southwest side of Center Street",
+    "custom": {
+     "simple_name": "Sidewalk along Center Street"
+    }
    }
   },
   {
@@ -299,7 +322,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Spring Street"
+    "name": "Sidewalk on the southeast side of Spring Street",
+    "custom": {
+     "simple_name": "Sidewalk along Spring Street"
+    }
    }
   },
   {
@@ -321,7 +347,8 @@
    "properties": {
     "name": "Crosswalk with signal across Spring Street, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Spring Street"
     }
    }
   },
@@ -344,7 +371,8 @@
    "properties": {
     "name": "Crosswalk with signal across Center Street, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Center Street"
     }
    }
   },
@@ -367,7 +395,8 @@
    "properties": {
     "name": "Crosswalk with signal across Spring Street, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Spring Street"
     }
    }
   },
@@ -390,7 +419,8 @@
    "properties": {
     "name": "Crosswalk with signal across Center Street, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Center Street"
     }
    }
   },
@@ -414,7 +444,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Center Street, and Spring Street",
-     "destination": "Destination, corner of Center Street and Spring Street. Double tap to return to map overview."
+     "destination": "Destination, corner of Center Street and Spring Street. Double tap to return to the map."
     }
    }
   }

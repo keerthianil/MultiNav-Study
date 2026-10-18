@@ -83,8 +83,11 @@ def render_level1(doc, path):
         draw.text((cx - hw + 8, cy - 8), c["tag"], fill=WHITE)
     for f in _features(doc, "route"):
         pts = f["geometry"]["coordinates"]
-        for p in (pts[0], pts[-1]):
-            _dot(draw, P(p), 6.0, YELLOW)
+        custom = f["properties"].get("custom", {})
+        if custom.get("start_kind", "departure") == "departure":
+            _dot(draw, P(pts[0]), 6.0, YELLOW)
+        if custom.get("end_kind", "destination") == "destination":
+            _dot(draw, P(pts[-1]), 6.0, YELLOW)
     img.save(path)
 
 

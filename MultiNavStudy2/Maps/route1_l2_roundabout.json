@@ -29,7 +29,9 @@
      "title": "Deering Avenue, Falmouth Street and Brighton Avenue",
      "kind": "roundabout",
      "legs": "5",
-     "spoken_title": "Deering Avenue, Falmouth Street, and Brighton Avenue"
+     "spoken_title": "Deering Avenue, Falmouth Street, and Brighton Avenue",
+     "type_text": "5 streets meet at a one-lane roundabout",
+     "control_text": "Traffic moves counterclockwise and yields when entering. No signals."
     }
    }
   },
@@ -297,7 +299,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Falmouth Street"
+    "name": "Sidewalk on the southeast side of Falmouth Street",
+    "custom": {
+     "simple_name": "Sidewalk along Falmouth Street"
+    }
    }
   },
   {
@@ -329,7 +334,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk around the roundabout"
+    "name": "Sidewalk around the roundabout",
+    "custom": {
+     "simple_name": "Sidewalk around the roundabout"
+    }
    }
   },
   {
@@ -349,7 +357,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Deering Avenue"
+    "name": "Sidewalk on the northeast side of Deering Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Deering Avenue"
+    }
    }
   },
   {
@@ -369,7 +380,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Deering Avenue"
+    "name": "Sidewalk on the southwest side of Deering Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Deering Avenue"
+    }
    }
   },
   {
@@ -397,7 +411,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk around the roundabout"
+    "name": "Sidewalk around the roundabout",
+    "custom": {
+     "simple_name": "Sidewalk around the roundabout"
+    }
    }
   },
   {
@@ -417,7 +434,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Falmouth Street"
+    "name": "Sidewalk on the southeast side of Falmouth Street",
+    "custom": {
+     "simple_name": "Sidewalk along Falmouth Street"
+    }
    }
   },
   {
@@ -437,7 +457,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Falmouth Street"
+    "name": "Sidewalk on the northwest side of Falmouth Street",
+    "custom": {
+     "simple_name": "Sidewalk along Falmouth Street"
+    }
    }
   },
   {
@@ -465,7 +488,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk around the roundabout"
+    "name": "Sidewalk around the roundabout",
+    "custom": {
+     "simple_name": "Sidewalk around the roundabout"
+    }
    }
   },
   {
@@ -485,7 +511,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the south side of Brighton Avenue"
+    "name": "Sidewalk on the south side of Brighton Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Brighton Avenue"
+    }
    }
   },
   {
@@ -505,7 +534,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the north side of Brighton Avenue"
+    "name": "Sidewalk on the north side of Brighton Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Brighton Avenue"
+    }
    }
   },
   {
@@ -525,7 +557,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Deering Avenue"
+    "name": "Sidewalk on the southwest side of Deering Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Deering Avenue"
+    }
    }
   },
   {
@@ -545,7 +580,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Deering Avenue"
+    "name": "Sidewalk on the northeast side of Deering Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Deering Avenue"
+    }
    }
   },
   {
@@ -577,7 +615,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk around the roundabout"
+    "name": "Sidewalk around the roundabout",
+    "custom": {
+     "simple_name": "Sidewalk around the roundabout"
+    }
    }
   },
   {
@@ -597,7 +638,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Falmouth Street"
+    "name": "Sidewalk on the northwest side of Falmouth Street",
+    "custom": {
+     "simple_name": "Sidewalk along Falmouth Street"
+    }
    }
   },
   {
@@ -619,7 +663,8 @@
    "properties": {
     "name": "Raised crosswalk across Falmouth Street, entry lane",
     "custom": {
-     "endpoints": "start"
+     "endpoints": "start",
+     "simple_name": "Crosswalk across Falmouth Street, entry lane"
     }
    }
   },
@@ -642,7 +687,8 @@
    "properties": {
     "name": "Raised crosswalk across Falmouth Street, exit lane",
     "custom": {
-     "endpoints": "end"
+     "endpoints": "end",
+     "simple_name": "Crosswalk across Falmouth Street, exit lane"
     }
    }
   },
@@ -665,7 +711,8 @@
    "properties": {
     "name": "Raised crosswalk across Deering Avenue, entry lane",
     "custom": {
-     "endpoints": "start"
+     "endpoints": "start",
+     "simple_name": "Crosswalk across Deering Avenue, entry lane"
     }
    }
   },
@@ -688,7 +735,8 @@
    "properties": {
     "name": "Raised crosswalk across Deering Avenue, exit lane",
     "custom": {
-     "endpoints": "end"
+     "endpoints": "end",
+     "simple_name": "Crosswalk across Deering Avenue, exit lane"
     }
    }
   },
@@ -711,7 +759,8 @@
    "properties": {
     "name": "Raised crosswalk across Falmouth Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Falmouth Street"
     }
    }
   },
@@ -734,7 +783,8 @@
    "properties": {
     "name": "Raised crosswalk across Brighton Avenue, entry lane",
     "custom": {
-     "endpoints": "start"
+     "endpoints": "start",
+     "simple_name": "Crosswalk across Brighton Avenue, entry lane"
     }
    }
   },
@@ -757,7 +807,8 @@
    "properties": {
     "name": "Raised crosswalk across Brighton Avenue, exit lane",
     "custom": {
-     "endpoints": "end"
+     "endpoints": "end",
+     "simple_name": "Crosswalk across Brighton Avenue, exit lane"
     }
    }
   },
@@ -780,7 +831,8 @@
    "properties": {
     "name": "Raised crosswalk across Deering Avenue, entry lane",
     "custom": {
-     "endpoints": "start"
+     "endpoints": "start",
+     "simple_name": "Crosswalk across Deering Avenue, entry lane"
     }
    }
   },
@@ -803,7 +855,8 @@
    "properties": {
     "name": "Raised crosswalk across Deering Avenue, exit lane",
     "custom": {
-     "endpoints": "end"
+     "endpoints": "end",
+     "simple_name": "Crosswalk across Deering Avenue, exit lane"
     }
    }
   },
@@ -895,7 +948,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Deering Avenue, Falmouth Street, and Brighton Avenue",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

@@ -225,7 +225,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route2_l2_fore_franklin",
-     "announcement": "4-way intersection of Fore Street, and Franklin Street"
+     "announcement": "4-way intersection of Fore Street, and Franklin Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Franklin Street"
     }
    }
   },
@@ -245,7 +247,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route2_l2_fore_india",
-     "announcement": "4-way intersection of Fore Street, and India Street"
+     "announcement": "4-way intersection of Fore Street, and India Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and India Street"
     }
    }
   },
@@ -265,7 +269,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route2_l2_fore_hancock",
-     "announcement": "4-way intersection of Fore Street, and Hancock Street"
+     "announcement": "4-way intersection of Fore Street, and Hancock Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Hancock Street"
     }
    }
   },
@@ -285,7 +291,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route2_l2_fore_mountfort",
-     "announcement": "3-way intersection of Fore Street, and Mountfort Street"
+     "announcement": "3-way intersection of Fore Street, and Mountfort Street",
+     "type_text": "3-way intersection",
+     "names_text": "Fore Street, and Mountfort Street"
     }
    }
   },
@@ -305,7 +313,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route2_l2_fore_munjoy",
-     "announcement": "4-way intersection of Fore Street, and Munjoy South"
+     "announcement": "4-way intersection of Fore Street, and Munjoy South",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Munjoy South"
     }
    }
   },

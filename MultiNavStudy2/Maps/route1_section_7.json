@@ -1,0 +1,150 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route 1, section 7 of 7",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      26.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      46.0,
+      88.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Belmeade Road"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      104.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "j_forest_belmeade",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.0,
+     88.0
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue and Belmeade Road",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route1_l2_forest_belmeade",
+     "announcement": "3-way intersection of Forest Avenue, and Belmeade Road",
+     "type_text": "3-way intersection",
+     "names_text": "Forest Avenue, and Belmeade Road",
+     "role": "from"
+    }
+   }
+  },
+  {
+   "id": "landmark_dest",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.0,
+     32.0
+    ]
+   },
+   "properties": {
+    "name": "415 Forest Avenue",
+    "side": "right",
+    "custom": {
+     "tag": "415",
+     "announcement": "415 Forest Avenue on your right",
+     "offset_x": "1.0",
+     "offset_y": "0.0"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "USM to 415 Forest Avenue",
+    "custom": {
+     "departure": "U S M, Bedford Street",
+     "destination": "415 Forest Avenue",
+     "waypoints": "",
+     "start_kind": "intersection",
+     "end_kind": "destination",
+     "section": "7",
+     "sections": "7"
+    }
+   }
+  }
+ ]
+}

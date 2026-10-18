@@ -29,7 +29,9 @@
      "title": "Forest Avenue and Bank Street",
      "kind": "junction",
      "legs": "3",
-     "spoken_title": "Forest Avenue, and Bank Street"
+     "spoken_title": "Forest Avenue, and Bank Street",
+     "type_text": "3-way intersection",
+     "control_text": ""
     }
    }
   },
@@ -136,7 +138,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Forest Avenue"
+    "name": "Sidewalk on the northeast side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -156,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Bank Street"
+    "name": "Sidewalk on the northwest side of Bank Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bank Street"
+    }
    }
   },
   {
@@ -176,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Bank Street"
+    "name": "Sidewalk on the southeast side of Bank Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bank Street"
+    }
    }
   },
   {
@@ -196,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Forest Avenue"
+    "name": "Sidewalk on the northeast side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -216,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Forest Avenue"
+    "name": "Sidewalk on the southwest side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -236,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Forest Avenue"
+    "name": "Sidewalk on the southwest side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -258,7 +278,8 @@
    "properties": {
     "name": "Unmarked crossing across Bank Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Bank Street"
     }
    }
   },
@@ -290,7 +311,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Forest Avenue, and Bank Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

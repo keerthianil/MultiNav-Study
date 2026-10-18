@@ -29,7 +29,9 @@
      "title": "Fore Street and Hancock Street",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Fore Street, and Hancock Street"
+     "spoken_title": "Fore Street, and Hancock Street",
+     "type_text": "4-way intersection",
+     "control_text": "All-way stop."
     }
    }
   },
@@ -159,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Hancock Street"
+    "name": "Sidewalk on the southwest side of Hancock Street",
+    "custom": {
+     "simple_name": "Sidewalk along Hancock Street"
+    }
    }
   },
   {
@@ -179,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -199,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -219,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Hancock Street"
+    "name": "Sidewalk on the southwest side of Hancock Street",
+    "custom": {
+     "simple_name": "Sidewalk along Hancock Street"
+    }
    }
   },
   {
@@ -239,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Hancock Street"
+    "name": "Sidewalk on the northeast side of Hancock Street",
+    "custom": {
+     "simple_name": "Sidewalk along Hancock Street"
+    }
    }
   },
   {
@@ -259,7 +276,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the west side of Fore Street"
+    "name": "Sidewalk on the west side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -279,7 +299,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the east side of Fore Street"
+    "name": "Sidewalk on the east side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -299,7 +322,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Hancock Street"
+    "name": "Sidewalk on the northeast side of Hancock Street",
+    "custom": {
+     "simple_name": "Sidewalk along Hancock Street"
+    }
    }
   },
   {
@@ -321,7 +347,8 @@
    "properties": {
     "name": "Marked crosswalk across Hancock Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Hancock Street"
     }
    }
   },
@@ -344,7 +371,8 @@
    "properties": {
     "name": "Marked crosswalk across Fore Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -367,7 +395,8 @@
    "properties": {
     "name": "Marked crosswalk across Hancock Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Hancock Street"
     }
    }
   },
@@ -390,7 +419,8 @@
    "properties": {
     "name": "Marked crosswalk across Fore Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -422,7 +452,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, and Hancock Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

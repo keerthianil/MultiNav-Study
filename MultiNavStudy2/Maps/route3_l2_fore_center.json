@@ -29,7 +29,9 @@
      "title": "Fore Street, Center Street and Pleasant Street",
      "kind": "junction",
      "legs": "5",
-     "spoken_title": "Fore Street, Center Street, and Pleasant Street"
+     "spoken_title": "Fore Street, Center Street, and Pleasant Street",
+     "type_text": "5-way intersection",
+     "control_text": "Traffic signals."
     }
    }
   },
@@ -182,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Pleasant Street"
+    "name": "Sidewalk on the northwest side of Pleasant Street",
+    "custom": {
+     "simple_name": "Sidewalk along Pleasant Street"
+    }
    }
   },
   {
@@ -202,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Center Street"
+    "name": "Sidewalk on the southwest side of Center Street",
+    "custom": {
+     "simple_name": "Sidewalk along Center Street"
+    }
    }
   },
   {
@@ -222,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Center Street"
+    "name": "Sidewalk on the northeast side of Center Street",
+    "custom": {
+     "simple_name": "Sidewalk along Center Street"
+    }
    }
   },
   {
@@ -242,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -262,7 +276,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -282,7 +299,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Center Street"
+    "name": "Sidewalk on the northeast side of Center Street",
+    "custom": {
+     "simple_name": "Sidewalk along Center Street"
+    }
    }
   },
   {
@@ -302,7 +322,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Center Street"
+    "name": "Sidewalk on the southwest side of Center Street",
+    "custom": {
+     "simple_name": "Sidewalk along Center Street"
+    }
    }
   },
   {
@@ -322,7 +345,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the east side of Fore Street"
+    "name": "Sidewalk on the east side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -342,7 +368,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the west side of Fore Street"
+    "name": "Sidewalk on the west side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -362,7 +391,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Pleasant Street"
+    "name": "Sidewalk on the southeast side of Pleasant Street",
+    "custom": {
+     "simple_name": "Sidewalk along Pleasant Street"
+    }
    }
   },
   {
@@ -384,7 +416,8 @@
    "properties": {
     "name": "Crosswalk with signal across Center Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Center Street"
     }
    }
   },
@@ -407,7 +440,8 @@
    "properties": {
     "name": "Crosswalk with signal across Fore Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -430,7 +464,8 @@
    "properties": {
     "name": "Crosswalk with signal across Center Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Center Street"
     }
    }
   },
@@ -458,7 +493,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, Center Street, and Pleasant Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

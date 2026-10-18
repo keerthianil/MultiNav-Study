@@ -29,7 +29,9 @@
      "title": "Forest Avenue, Baxter Boulevard and Bedford Street",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Forest Avenue, Baxter Boulevard, and Bedford Street"
+     "spoken_title": "Forest Avenue, Baxter Boulevard, and Bedford Street",
+     "type_text": "4-way intersection",
+     "control_text": "Traffic signals."
     }
    }
   },
@@ -161,7 +163,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Bedford Street"
+    "name": "Sidewalk on the northwest side of Bedford Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bedford Street"
+    }
    }
   },
   {
@@ -181,7 +186,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Forest Avenue"
+    "name": "Sidewalk on the southwest side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -201,7 +209,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Forest Avenue"
+    "name": "Sidewalk on the northeast side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -221,7 +232,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Baxter Boulevard"
+    "name": "Sidewalk on the northwest side of Baxter Boulevard",
+    "custom": {
+     "simple_name": "Sidewalk along Baxter Boulevard"
+    }
    }
   },
   {
@@ -241,7 +255,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Baxter Boulevard"
+    "name": "Sidewalk on the southeast side of Baxter Boulevard",
+    "custom": {
+     "simple_name": "Sidewalk along Baxter Boulevard"
+    }
    }
   },
   {
@@ -261,7 +278,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Forest Avenue"
+    "name": "Sidewalk on the northeast side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -281,7 +301,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Forest Avenue"
+    "name": "Sidewalk on the southwest side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -301,7 +324,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Bedford Street"
+    "name": "Sidewalk on the southeast side of Bedford Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bedford Street"
+    }
    }
   },
   {
@@ -323,7 +349,8 @@
    "properties": {
     "name": "Crosswalk with signal across Bedford Street, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Bedford Street"
     }
    }
   },
@@ -346,7 +373,8 @@
    "properties": {
     "name": "Crosswalk with signal across Forest Avenue, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Forest Avenue"
     }
    }
   },
@@ -369,7 +397,8 @@
    "properties": {
     "name": "Crosswalk with signal across Baxter Boulevard, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Baxter Boulevard"
     }
    }
   },
@@ -392,7 +421,8 @@
    "properties": {
     "name": "Crosswalk with signal across Forest Avenue, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Forest Avenue"
     }
    }
   },
@@ -424,7 +454,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Forest Avenue, Baxter Boulevard, and Bedford Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

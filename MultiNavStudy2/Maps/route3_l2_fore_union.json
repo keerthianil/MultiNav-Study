@@ -29,7 +29,9 @@
      "title": "Fore Street and Union Street",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Fore Street, and Union Street"
+     "spoken_title": "Fore Street, and Union Street",
+     "type_text": "4-way intersection",
+     "control_text": "Traffic signals."
     }
    }
   },
@@ -159,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -179,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Union Street"
+    "name": "Sidewalk on the southwest side of Union Street",
+    "custom": {
+     "simple_name": "Sidewalk along Union Street"
+    }
    }
   },
   {
@@ -199,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Union Street"
+    "name": "Sidewalk on the northeast side of Union Street",
+    "custom": {
+     "simple_name": "Sidewalk along Union Street"
+    }
    }
   },
   {
@@ -219,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -239,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -259,7 +276,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Union Street"
+    "name": "Sidewalk on the northeast side of Union Street",
+    "custom": {
+     "simple_name": "Sidewalk along Union Street"
+    }
    }
   },
   {
@@ -279,7 +299,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Union Street"
+    "name": "Sidewalk on the southwest side of Union Street",
+    "custom": {
+     "simple_name": "Sidewalk along Union Street"
+    }
    }
   },
   {
@@ -299,7 +322,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -322,7 +348,8 @@
     "name": "Crosswalk with signal across Fore Street",
     "custom": {
      "assumed": "yes",
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -346,7 +373,8 @@
     "name": "Crosswalk with signal across Union Street",
     "custom": {
      "assumed": "yes",
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Union Street"
     }
    }
   },
@@ -369,7 +397,8 @@
    "properties": {
     "name": "Crosswalk with signal across Fore Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -393,7 +422,8 @@
     "name": "Crosswalk with signal across Union Street",
     "custom": {
      "assumed": "yes",
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Union Street"
     }
    }
   },
@@ -425,7 +455,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, and Union Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

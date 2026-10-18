@@ -29,7 +29,9 @@
      "title": "Bedford Street and Durham Street",
      "kind": "junction",
      "legs": "3",
-     "spoken_title": "Bedford Street, and Durham Street"
+     "spoken_title": "Bedford Street, and Durham Street",
+     "type_text": "3-way intersection",
+     "control_text": ""
     }
    }
   },
@@ -136,7 +138,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Bedford Street"
+    "name": "Sidewalk on the northwest side of Bedford Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bedford Street"
+    }
    }
   },
   {
@@ -156,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Durham Street"
+    "name": "Sidewalk on the southwest side of Durham Street",
+    "custom": {
+     "simple_name": "Sidewalk along Durham Street"
+    }
    }
   },
   {
@@ -176,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Durham Street"
+    "name": "Sidewalk on the northeast side of Durham Street",
+    "custom": {
+     "simple_name": "Sidewalk along Durham Street"
+    }
    }
   },
   {
@@ -196,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Bedford Street"
+    "name": "Sidewalk on the northwest side of Bedford Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bedford Street"
+    }
    }
   },
   {
@@ -216,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Bedford Street"
+    "name": "Sidewalk on the southeast side of Bedford Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bedford Street"
+    }
    }
   },
   {
@@ -236,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Bedford Street"
+    "name": "Sidewalk on the southeast side of Bedford Street",
+    "custom": {
+     "simple_name": "Sidewalk along Bedford Street"
+    }
    }
   },
   {
@@ -259,7 +279,8 @@
     "name": "Crosswalk across Durham Street, one-way street",
     "custom": {
      "assumed": "yes",
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Durham Street"
     }
    }
   },
@@ -287,7 +308,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Bedford Street, and Durham Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

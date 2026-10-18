@@ -1,0 +1,200 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route 1, section 5 of 7",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      46.0,
+      88.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Durham Street"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      104.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street"
+   }
+  },
+  {
+   "id": "cross_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      32.0
+     ],
+     [
+      30.0,
+      16.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Preble Street Extension"
+   }
+  },
+  {
+   "id": "cross_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.0,
+      32.0
+     ],
+     [
+      30.0,
+      32.0
+     ],
+     [
+      46.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "j_falmouth_durham",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.0,
+     88.0
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street and Durham Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route1_l2_falmouth_durham",
+     "announcement": "3-way intersection of Falmouth Street, and Durham Street",
+     "type_text": "3-way intersection",
+     "names_text": "Falmouth Street, and Durham Street",
+     "role": "from"
+    }
+   }
+  },
+  {
+   "id": "j_forest_falmouth",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.0,
+     32.0
+    ]
+   },
+   "properties": {
+    "name": "Falmouth Street, Preble Street Extension and Forest Avenue",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route1_l2_forest_falmouth",
+     "announcement": "4-way intersection of Falmouth Street, Preble Street Extension, and Forest Avenue",
+     "type_text": "4-way intersection",
+     "names_text": "Falmouth Street, Preble Street Extension, and Forest Avenue",
+     "role": "to"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      32.0
+     ],
+     [
+      16.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "USM to 415 Forest Avenue",
+    "custom": {
+     "departure": "U S M, Bedford Street",
+     "destination": "415 Forest Avenue",
+     "waypoints": "j_forest_falmouth",
+     "start_kind": "intersection",
+     "end_kind": "continues",
+     "section": "5",
+     "sections": "7"
+    }
+   }
+  }
+ ]
+}

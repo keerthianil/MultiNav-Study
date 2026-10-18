@@ -29,7 +29,9 @@
      "title": "Fore Street and Cross Street",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Fore Street, and Cross Street"
+     "spoken_title": "Fore Street, and Cross Street",
+     "type_text": "4-way intersection",
+     "control_text": "All-way stop."
     }
    }
   },
@@ -159,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -179,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Cross Street"
+    "name": "Sidewalk on the southwest side of Cross Street",
+    "custom": {
+     "simple_name": "Sidewalk along Cross Street"
+    }
    }
   },
   {
@@ -199,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Cross Street"
+    "name": "Sidewalk on the northeast side of Cross Street",
+    "custom": {
+     "simple_name": "Sidewalk along Cross Street"
+    }
    }
   },
   {
@@ -219,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -239,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -259,7 +276,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Cross Street"
+    "name": "Sidewalk on the northeast side of Cross Street",
+    "custom": {
+     "simple_name": "Sidewalk along Cross Street"
+    }
    }
   },
   {
@@ -279,7 +299,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Cross Street"
+    "name": "Sidewalk on the southwest side of Cross Street",
+    "custom": {
+     "simple_name": "Sidewalk along Cross Street"
+    }
    }
   },
   {
@@ -299,7 +322,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -322,7 +348,8 @@
     "name": "Crosswalk across Fore Street",
     "custom": {
      "assumed": "yes",
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -346,7 +373,8 @@
     "name": "Crosswalk across Cross Street",
     "custom": {
      "assumed": "yes",
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Cross Street"
     }
    }
   },
@@ -370,7 +398,8 @@
     "name": "Crosswalk across Fore Street",
     "custom": {
      "assumed": "yes",
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -394,7 +423,8 @@
     "name": "Crosswalk across Cross Street, one-way street",
     "custom": {
      "assumed": "yes",
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Cross Street"
     }
    }
   },
@@ -426,7 +456,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, and Cross Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

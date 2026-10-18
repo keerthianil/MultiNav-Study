@@ -1,0 +1,158 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route 2, section 1 of 6",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      94.0
+     ],
+     [
+      30.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      32.0
+     ],
+     [
+      30.0,
+      16.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      14.0,
+      32.0
+     ],
+     [
+      30.0,
+      32.0
+     ],
+     [
+      46.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Franklin Street"
+   }
+  },
+  {
+   "id": "j_fore_franklin",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.0,
+     32.0
+    ]
+   },
+   "properties": {
+    "name": "Fore Street and Franklin Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route2_l2_fore_franklin",
+     "announcement": "4-way intersection of Fore Street, and Franklin Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Franklin Street",
+     "role": "to"
+    }
+   }
+  },
+  {
+   "id": "landmark_dep",
+   "type": "landmark",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.0,
+     88.0
+    ]
+   },
+   "properties": {
+    "name": "University of Maine School of Law",
+    "side": "right",
+    "custom": {
+     "tag": "LAW",
+     "announcement": "University of Maine School of Law on your right",
+     "offset_x": "1.0",
+     "offset_y": "0.0"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      32.0
+     ],
+     [
+      30.0,
+      18.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "300 Fore Street to 58 Fore Street",
+    "custom": {
+     "departure": "Maine Law, 300 Fore Street",
+     "destination": "58 Fore Street",
+     "waypoints": "j_fore_franklin",
+     "start_kind": "departure",
+     "end_kind": "continues",
+     "section": "1",
+     "sections": "6"
+    }
+   }
+  }
+ ]
+}

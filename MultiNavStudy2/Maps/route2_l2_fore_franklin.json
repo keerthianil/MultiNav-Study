@@ -29,7 +29,9 @@
      "title": "Fore Street and Franklin Street",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Fore Street, and Franklin Street"
+     "spoken_title": "Fore Street, and Franklin Street",
+     "type_text": "4-way intersection",
+     "control_text": "Traffic signals."
     }
    }
   },
@@ -161,7 +163,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Franklin Street"
+    "name": "Sidewalk on the southwest side of Franklin Street",
+    "custom": {
+     "simple_name": "Sidewalk along Franklin Street"
+    }
    }
   },
   {
@@ -181,7 +186,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -201,7 +209,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -221,7 +232,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Franklin Street"
+    "name": "Sidewalk on the southwest side of Franklin Street",
+    "custom": {
+     "simple_name": "Sidewalk along Franklin Street"
+    }
    }
   },
   {
@@ -241,7 +255,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Franklin Street"
+    "name": "Sidewalk on the northeast side of Franklin Street",
+    "custom": {
+     "simple_name": "Sidewalk along Franklin Street"
+    }
    }
   },
   {
@@ -261,7 +278,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -281,7 +301,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -301,7 +324,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Franklin Street"
+    "name": "Sidewalk on the northeast side of Franklin Street",
+    "custom": {
+     "simple_name": "Sidewalk along Franklin Street"
+    }
    }
   },
   {
@@ -323,7 +349,8 @@
    "properties": {
     "name": "Crosswalk with signal across Franklin Street, push button, no audible signal, lanes entering the intersection",
     "custom": {
-     "endpoints": "start"
+     "endpoints": "start",
+     "simple_name": "Crosswalk across Franklin Street, lanes entering the intersection"
     }
    }
   },
@@ -346,7 +373,8 @@
    "properties": {
     "name": "Crosswalk with signal across Franklin Street, push button, no audible signal, lanes leaving the intersection",
     "custom": {
-     "endpoints": "end"
+     "endpoints": "end",
+     "simple_name": "Crosswalk across Franklin Street, lanes leaving the intersection"
     }
    }
   },
@@ -392,7 +420,8 @@
    "properties": {
     "name": "Crosswalk with signal across Fore Street, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -415,7 +444,8 @@
    "properties": {
     "name": "Crosswalk with signal across Franklin Street, push button, lanes entering the intersection",
     "custom": {
-     "endpoints": "start"
+     "endpoints": "start",
+     "simple_name": "Crosswalk across Franklin Street, lanes entering the intersection"
     }
    }
   },
@@ -438,7 +468,8 @@
    "properties": {
     "name": "Crosswalk with signal across Franklin Street, push button, lanes leaving the intersection",
     "custom": {
-     "endpoints": "end"
+     "endpoints": "end",
+     "simple_name": "Crosswalk across Franklin Street, lanes leaving the intersection"
     }
    }
   },
@@ -484,7 +515,8 @@
    "properties": {
     "name": "Crosswalk with signal across Fore Street, push button, no audible signal",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -516,7 +548,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, and Franklin Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

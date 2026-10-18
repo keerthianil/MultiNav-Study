@@ -29,7 +29,9 @@
      "title": "Falmouth Street, Preble Street Extension and Forest Avenue",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Falmouth Street, Preble Street Extension, and Forest Avenue"
+     "spoken_title": "Falmouth Street, Preble Street Extension, and Forest Avenue",
+     "type_text": "4-way intersection",
+     "control_text": "Traffic signals."
     }
    }
   },
@@ -162,7 +164,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Preble Street Extension"
+    "name": "Sidewalk on the southeast side of Preble Street Extension",
+    "custom": {
+     "simple_name": "Sidewalk along Preble Street Extension"
+    }
    }
   },
   {
@@ -182,7 +187,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Forest Avenue"
+    "name": "Sidewalk on the northeast side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -202,7 +210,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Forest Avenue"
+    "name": "Sidewalk on the southwest side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -222,7 +233,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Falmouth Street"
+    "name": "Sidewalk on the southeast side of Falmouth Street",
+    "custom": {
+     "simple_name": "Sidewalk along Falmouth Street"
+    }
    }
   },
   {
@@ -242,7 +256,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Falmouth Street"
+    "name": "Sidewalk on the northwest side of Falmouth Street",
+    "custom": {
+     "simple_name": "Sidewalk along Falmouth Street"
+    }
    }
   },
   {
@@ -262,7 +279,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Forest Avenue"
+    "name": "Sidewalk on the southwest side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -282,7 +302,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Forest Avenue"
+    "name": "Sidewalk on the northeast side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -302,7 +325,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Preble Street Extension"
+    "name": "Sidewalk on the northwest side of Preble Street Extension",
+    "custom": {
+     "simple_name": "Sidewalk along Preble Street Extension"
+    }
    }
   },
   {
@@ -324,7 +350,8 @@
    "properties": {
     "name": "Crosswalk with signal across Preble Street Extension, push button, lanes entering the intersection",
     "custom": {
-     "endpoints": "start"
+     "endpoints": "start",
+     "simple_name": "Crosswalk across Preble Street Extension, lanes entering the intersection"
     }
    }
   },
@@ -347,7 +374,8 @@
    "properties": {
     "name": "Crosswalk with signal across Preble Street Extension, push button, lanes leaving the intersection",
     "custom": {
-     "endpoints": "end"
+     "endpoints": "end",
+     "simple_name": "Crosswalk across Preble Street Extension, lanes leaving the intersection"
     }
    }
   },
@@ -393,7 +421,8 @@
    "properties": {
     "name": "Crosswalk with signal across Forest Avenue, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Forest Avenue"
     }
    }
   },
@@ -416,7 +445,8 @@
    "properties": {
     "name": "Crosswalk with signal across Falmouth Street, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Falmouth Street"
     }
    }
   },
@@ -439,7 +469,8 @@
    "properties": {
     "name": "Crosswalk with signal across Forest Avenue, push button",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Forest Avenue"
     }
    }
   },
@@ -471,7 +502,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Falmouth Street, Preble Street Extension, and Forest Avenue",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

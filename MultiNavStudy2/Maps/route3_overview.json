@@ -417,7 +417,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route3_l2_fore_custom_house",
-     "announcement": "3-way intersection of Fore Street, and Custom House Street"
+     "announcement": "3-way intersection of Fore Street, and Custom House Street",
+     "type_text": "3-way intersection",
+     "names_text": "Fore Street, and Custom House Street"
     }
    }
   },
@@ -437,7 +439,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route3_l2_fore_pearl",
-     "announcement": "4-way intersection of Fore Street, and Pearl Street"
+     "announcement": "4-way intersection of Fore Street, and Pearl Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Pearl Street"
     }
    }
   },
@@ -457,7 +461,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route3_l2_fore_silver",
-     "announcement": "4-way intersection of Fore Street, and Silver Street"
+     "announcement": "4-way intersection of Fore Street, and Silver Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Silver Street"
     }
    }
   },
@@ -477,7 +483,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route3_l2_fore_market",
-     "announcement": "4-way intersection of Fore Street, and Market Street"
+     "announcement": "4-way intersection of Fore Street, and Market Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Market Street"
     }
    }
   },
@@ -497,7 +505,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route3_l2_fore_moulton",
-     "announcement": "3-way intersection of Fore Street, and Moulton Street"
+     "announcement": "3-way intersection of Fore Street, and Moulton Street",
+     "type_text": "3-way intersection",
+     "names_text": "Fore Street, and Moulton Street"
     }
    }
   },
@@ -517,7 +527,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route3_l2_fore_exchange",
-     "announcement": "3-way intersection of Fore Street, and Exchange Street"
+     "announcement": "3-way intersection of Fore Street, and Exchange Street",
+     "type_text": "3-way intersection",
+     "names_text": "Fore Street, and Exchange Street"
     }
    }
   },
@@ -537,7 +549,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route3_l2_fore_union",
-     "announcement": "4-way intersection of Fore Street, and Union Street"
+     "announcement": "4-way intersection of Fore Street, and Union Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Union Street"
     }
    }
   },
@@ -557,7 +571,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route3_l2_fore_cross",
-     "announcement": "4-way intersection of Fore Street, and Cross Street"
+     "announcement": "4-way intersection of Fore Street, and Cross Street",
+     "type_text": "4-way intersection",
+     "names_text": "Fore Street, and Cross Street"
     }
    }
   },
@@ -577,7 +593,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route3_l2_fore_cotton",
-     "announcement": "3-way intersection of Fore Street, and Cotton Street"
+     "announcement": "3-way intersection of Fore Street, and Cotton Street",
+     "type_text": "3-way intersection",
+     "names_text": "Fore Street, and Cotton Street"
     }
    }
   },
@@ -597,7 +615,9 @@
      "kind": "junction",
      "legs": "5",
      "detail": "route3_l2_fore_center",
-     "announcement": "5-way intersection of Fore Street, Center Street, and Pleasant Street"
+     "announcement": "5-way intersection of Fore Street, Center Street, and Pleasant Street",
+     "type_text": "5-way intersection",
+     "names_text": "Fore Street, Center Street, and Pleasant Street"
     }
    }
   },
@@ -617,7 +637,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route3_l2_center_spring",
-     "announcement": "4-way intersection of Center Street, and Spring Street"
+     "announcement": "4-way intersection of Center Street, and Spring Street",
+     "type_text": "4-way intersection",
+     "names_text": "Center Street, and Spring Street"
     }
    }
   },

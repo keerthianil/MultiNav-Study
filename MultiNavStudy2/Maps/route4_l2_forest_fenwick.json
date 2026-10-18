@@ -29,7 +29,9 @@
      "title": "Forest Avenue and Fenwick Road",
      "kind": "junction",
      "legs": "3",
-     "spoken_title": "Forest Avenue, and Fenwick Road"
+     "spoken_title": "Forest Avenue, and Fenwick Road",
+     "type_text": "3-way intersection",
+     "control_text": ""
     }
    }
   },
@@ -137,7 +139,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Forest Avenue"
+    "name": "Sidewalk on the northeast side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -157,7 +162,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fenwick Road"
+    "name": "Sidewalk on the northwest side of Fenwick Road",
+    "custom": {
+     "simple_name": "Sidewalk along Fenwick Road"
+    }
    }
   },
   {
@@ -177,7 +185,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fenwick Road"
+    "name": "Sidewalk on the southeast side of Fenwick Road",
+    "custom": {
+     "simple_name": "Sidewalk along Fenwick Road"
+    }
    }
   },
   {
@@ -197,7 +208,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Forest Avenue"
+    "name": "Sidewalk on the northeast side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -217,7 +231,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Forest Avenue"
+    "name": "Sidewalk on the southwest side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -237,7 +254,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Forest Avenue"
+    "name": "Sidewalk on the southwest side of Forest Avenue",
+    "custom": {
+     "simple_name": "Sidewalk along Forest Avenue"
+    }
    }
   },
   {
@@ -259,7 +279,8 @@
    "properties": {
     "name": "Unmarked crossing across Fenwick Road",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fenwick Road"
     }
    }
   },
@@ -291,7 +312,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Forest Avenue, and Fenwick Road",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

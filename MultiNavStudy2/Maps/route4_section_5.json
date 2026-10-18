@@ -1,0 +1,216 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route 4, section 5 of 7",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      14.0,
+      88.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Bank Street"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      104.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "cross_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      32.0
+     ],
+     [
+      14.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Baxter Boulevard"
+   }
+  },
+  {
+   "id": "cross_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      32.0
+     ],
+     [
+      30.0,
+      16.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue"
+   }
+  },
+  {
+   "id": "cross_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      32.0
+     ],
+     [
+      46.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Bedford Street"
+   }
+  },
+  {
+   "id": "j_forest_bank",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.0,
+     88.0
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue and Bank Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "3",
+     "detail": "route4_l2_forest_bank",
+     "announcement": "3-way intersection of Forest Avenue, and Bank Street",
+     "type_text": "3-way intersection",
+     "names_text": "Forest Avenue, and Bank Street",
+     "role": "from"
+    }
+   }
+  },
+  {
+   "id": "j_forest_bedford",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.0,
+     32.0
+    ]
+   },
+   "properties": {
+    "name": "Forest Avenue, Baxter Boulevard and Bedford Street",
+    "custom": {
+     "kind": "junction",
+     "legs": "4",
+     "detail": "route4_l2_forest_bedford",
+     "announcement": "4-way intersection of Forest Avenue, Baxter Boulevard, and Bedford Street",
+     "type_text": "4-way intersection",
+     "names_text": "Forest Avenue, Baxter Boulevard, and Bedford Street",
+     "role": "to"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      30.0,
+      88.0
+     ],
+     [
+      30.0,
+      32.0
+     ],
+     [
+      44.0,
+      32.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "415 Forest Avenue to USM",
+    "custom": {
+     "departure": "415 Forest Avenue",
+     "destination": "U S M, Bedford Street",
+     "waypoints": "j_forest_bedford",
+     "start_kind": "intersection",
+     "end_kind": "continues",
+     "section": "5",
+     "sections": "7"
+    }
+   }
+  }
+ ]
+}

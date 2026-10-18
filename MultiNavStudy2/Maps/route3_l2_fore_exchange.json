@@ -29,7 +29,9 @@
      "title": "Fore Street and Exchange Street",
      "kind": "junction",
      "legs": "3",
-     "spoken_title": "Fore Street, and Exchange Street"
+     "spoken_title": "Fore Street, and Exchange Street",
+     "type_text": "3-way intersection",
+     "control_text": "No traffic signals or stop signs."
     }
    }
   },
@@ -136,7 +138,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -156,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Exchange Street"
+    "name": "Sidewalk on the southwest side of Exchange Street",
+    "custom": {
+     "simple_name": "Sidewalk along Exchange Street"
+    }
    }
   },
   {
@@ -176,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Exchange Street"
+    "name": "Sidewalk on the northeast side of Exchange Street",
+    "custom": {
+     "simple_name": "Sidewalk along Exchange Street"
+    }
    }
   },
   {
@@ -196,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the north side of Fore Street"
+    "name": "Sidewalk on the north side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -216,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the south side of Fore Street"
+    "name": "Sidewalk on the south side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -236,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -258,7 +278,8 @@
    "properties": {
     "name": "Marked crosswalk across Fore Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -281,7 +302,8 @@
    "properties": {
     "name": "Marked crosswalk across Exchange Street, one-way street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Exchange Street"
     }
    }
   },
@@ -304,7 +326,8 @@
    "properties": {
     "name": "Marked crosswalk across Fore Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -336,7 +359,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, and Exchange Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

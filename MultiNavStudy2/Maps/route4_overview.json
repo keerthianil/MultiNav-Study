@@ -257,7 +257,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route4_l2_forest_belmeade",
-     "announcement": "3-way intersection of Forest Avenue, and Belmeade Road"
+     "announcement": "3-way intersection of Forest Avenue, and Belmeade Road",
+     "type_text": "3-way intersection",
+     "names_text": "Forest Avenue, and Belmeade Road"
     }
    }
   },
@@ -277,7 +279,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route4_l2_forest_falmouth",
-     "announcement": "4-way intersection of Forest Avenue, Preble Street Extension, and Falmouth Street"
+     "announcement": "4-way intersection of Forest Avenue, Preble Street Extension, and Falmouth Street",
+     "type_text": "4-way intersection",
+     "names_text": "Forest Avenue, Preble Street Extension, and Falmouth Street"
     }
    }
   },
@@ -297,7 +301,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route4_l2_forest_fenwick",
-     "announcement": "3-way intersection of Forest Avenue, and Fenwick Road"
+     "announcement": "3-way intersection of Forest Avenue, and Fenwick Road",
+     "type_text": "3-way intersection",
+     "names_text": "Forest Avenue, and Fenwick Road"
     }
    }
   },
@@ -317,7 +323,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route4_l2_forest_bank",
-     "announcement": "3-way intersection of Forest Avenue, and Bank Street"
+     "announcement": "3-way intersection of Forest Avenue, and Bank Street",
+     "type_text": "3-way intersection",
+     "names_text": "Forest Avenue, and Bank Street"
     }
    }
   },
@@ -337,7 +345,9 @@
      "kind": "junction",
      "legs": "4",
      "detail": "route4_l2_forest_bedford",
-     "announcement": "4-way intersection of Forest Avenue, Baxter Boulevard, and Bedford Street"
+     "announcement": "4-way intersection of Forest Avenue, Baxter Boulevard, and Bedford Street",
+     "type_text": "4-way intersection",
+     "names_text": "Forest Avenue, Baxter Boulevard, and Bedford Street"
     }
    }
   },
@@ -357,7 +367,9 @@
      "kind": "junction",
      "legs": "3",
      "detail": "route4_l2_bedford_durham",
-     "announcement": "3-way intersection of Bedford Street, and Durham Street"
+     "announcement": "3-way intersection of Bedford Street, and Durham Street",
+     "type_text": "3-way intersection",
+     "names_text": "Bedford Street, and Durham Street"
     }
    }
   },

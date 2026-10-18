@@ -29,7 +29,9 @@
      "title": "Fore Street and Silver Street",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Fore Street, and Silver Street"
+     "spoken_title": "Fore Street, and Silver Street",
+     "type_text": "4-way intersection",
+     "control_text": "Stop sign for Silver Street only. Fore Street traffic does not stop."
     }
    }
   },
@@ -161,7 +163,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -181,7 +186,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Silver Street"
+    "name": "Sidewalk on the southwest side of Silver Street",
+    "custom": {
+     "simple_name": "Sidewalk along Silver Street"
+    }
    }
   },
   {
@@ -201,7 +209,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Silver Street"
+    "name": "Sidewalk on the northeast side of Silver Street",
+    "custom": {
+     "simple_name": "Sidewalk along Silver Street"
+    }
    }
   },
   {
@@ -221,7 +232,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northwest side of Fore Street"
+    "name": "Sidewalk on the northwest side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -241,7 +255,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -261,7 +278,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Silver Street"
+    "name": "Sidewalk on the northeast side of Silver Street",
+    "custom": {
+     "simple_name": "Sidewalk along Silver Street"
+    }
    }
   },
   {
@@ -281,7 +301,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Silver Street"
+    "name": "Sidewalk on the southwest side of Silver Street",
+    "custom": {
+     "simple_name": "Sidewalk along Silver Street"
+    }
    }
   },
   {
@@ -301,7 +324,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southeast side of Fore Street"
+    "name": "Sidewalk on the southeast side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -323,7 +349,8 @@
    "properties": {
     "name": "Marked crosswalk across Silver Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Silver Street"
     }
    }
   },
@@ -346,7 +373,8 @@
    "properties": {
     "name": "Marked crosswalk across Silver Street, one-way street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Silver Street"
     }
    }
   },
@@ -378,7 +406,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, and Silver Street",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }

@@ -3,16 +3,21 @@
     python3 tools/build_maps.py            # writes MultiNavStudy2/Maps/*.json
     python3 tools/build_maps.py --preview  # also writes docs/map_previews/*.png
 
-Two kinds of map come out, both in the MultiNav TactileMapDocument format
+Three kinds of map come out, all in the MultiNav TactileMapDocument format
 with coordinates in millimetres on screen:
 
-* Level 1, one per route: a schematic of the walk. Street order, turn
-  direction and the side each cross street joins come from OSM; the
-  streets are squared to the screen and spaced so every intersection is
-  finger-sized. Origin top-left, y down.
-* Level 2, one per intersection on a route: the junction at its true
-  angles with roads, sidewalks, crosswalks, islands and the walking path.
-  Origin at the junction centre, y down.
+* Level 1, the full route map, one per route: a schematic of the walk.
+  Street order, turn direction and the side each cross street joins come
+  from OSM; the streets are squared to the screen and spaced so every
+  intersection is finger-sized. Origin top-left, y down.
+* Section maps, one per stretch of a route: from where the traveller is to
+  the next intersection, turned so walking is up. Origin top-left, y down.
+* Level 2, the intersection close-up, one per intersection on a route: the
+  junction at its true angles with roads, sidewalks, crosswalks, islands and
+  the walking path. Origin at the junction centre, y down.
+
+Each route also gets its turn-by-turn directions (routeN_directions.json),
+written as pieces the app joins into sentences.
 
 Physical sizes are fixed in millimetres so the maps feel the same on
 every phone; the app only scales down if a screen is smaller than the
@@ -327,6 +332,16 @@ def crosswalk_name(arm, half=None, roundabout=False):
     return text
 
 
+def crosswalk_simple_name(arm, half=None, roundabout=False):
+    """The crosswalk name without signal, marking or one-way details."""
+    text = "Crosswalk across %s" % arm.name
+    if half == "outbound":
+        text += ", exit lane" if roundabout else ", lanes leaving the intersection"
+    elif half == "inbound":
+        text += ", entry lane" if roundabout else ", lanes entering the intersection"
+    return text
+
+
 def side_name(arm, side):
     """Compass side of the street for an arm and a 'cw'/'ccw' side."""
     b = arm.bearing + (90 if side == "cw" else -90)
@@ -339,6 +354,27 @@ def resolve_side(arm, compass_word):
     if abs(abs(d) - 90) > 50:
         raise ValueError("%s side %s is not beside the street" % (arm, compass_word))
     return "cw" if d > 0 else "ccw"
+
+
+def type_text(j):
+    """What kind of junction this is, as spoken ("3-way intersection")."""
+    if j.is_roundabout:
+        return "%d streets meet at a one-lane roundabout" % len(j.arms)
+    return "%s intersection" % ordinal_legs(len(j.arms))
+
+
+def intersection_announcement(j, street):
+    names = j.title(first=street)
+    if j.is_roundabout:
+        return "Roundabout of %s" % spoken_list(names)
+    return "%s intersection of %s" % (ordinal_legs(len(j.arms)), spoken_list(names))
+
+
+def spoken_street(name):
+    """A street name as it reads inside a sentence."""
+    if name.startswith("Access road"):
+        return "the " + name[0].lower() + name[1:]
+    return name
 
 
 # ================================================================ Level 1
@@ -364,18 +400,28 @@ def level2_file(route, key):
     return "%s_l2_%s" % (route["id"], key)
 
 
-def build_level1(route):
+def intersection_feature(route, j, street, position, role=None):
+    """An intersection square or roundabout ring on a route map."""
+    names = j.title(first=street)
+    return feature("j_%s" % j.key, "intersection", point_geom(position), join_names(names), custom={
+        "kind": "roundabout" if j.is_roundabout else "junction", "legs": len(j.arms),
+        "detail": level2_file(route, j.key), "announcement": intersection_announcement(j, street),
+        "type_text": "Roundabout" if j.is_roundabout else type_text(j), "names_text": spoken_list(names),
+        "role": role})
+
+
+def route_sequence(route):
+    """Departure, each junction and the destination, in walking order.
+
+    The destination may sit just before the last junction, as on the Center
+    Street walk. Each item after the first carries the street that leads to it.
+    """
     area = AREAS[route["area"]]
-    up = route["up"]
-    dep = route["departure"]
     dest = route["destination"]
     stops = route["stops"]
-    juncs = [junction(s["junction"]) for s in stops]
-
-    # Sequence of points: departure, junctions, destination (the destination
-    # may sit just before the last junction, as on the Center Street walk).
-    seq = [{"kind": "dep", "xy": area.xy(*dep["latlon"])}]
-    for s, j in zip(stops, juncs):
+    seq = [{"kind": "dep", "xy": area.xy(*route["departure"]["latlon"])}]
+    for s in stops:
+        j = junction(s["junction"])
         if s.get("destination_before_junction"):
             seq.append({"kind": "dest", "xy": area.xy(*dest["latlon"]), "street": s["street_before"]})
         seq.append({"kind": "junction", "xy": j.center, "stop": s, "j": j, "street": s["street_before"]})
@@ -383,6 +429,14 @@ def build_level1(route):
         seq.append({"kind": "dest", "xy": area.xy(*dest["latlon"]), "street": route["street_after"]})
     for i in range(1, len(seq)):
         seq[i]["street"] = seq[i].get("street") or seq[i - 1].get("street")
+    return seq
+
+
+def build_level1(route):
+    up = route["up"]
+    dep = route["departure"]
+    dest = route["destination"]
+    seq = route_sequence(route)
 
     # Street runs get one squared direction each.
     runs = []
@@ -583,17 +637,7 @@ def build_level1(route):
         j, s = item["j"], item["stop"]
         fid = "j_%s" % j.key
         waypoint_ids.append(fid)
-        route_street = s["street_before"]
-        names = j.title(first=route_street)
-        if j.is_roundabout:
-            announcement = "Roundabout of %s" % spoken_list(names)
-            kind = "roundabout"
-        else:
-            announcement = "%s intersection of %s" % (ordinal_legs(len(j.arms)), spoken_list(names))
-            kind = "junction"
-        features.append(feature(fid, "intersection", point_geom(T(pos[i])), join_names(names), custom={
-            "kind": kind, "legs": len(j.arms), "detail": level2_file(route, j.key),
-            "announcement": announcement}))
+        features.append(intersection_feature(route, j, s["street_before"], T(pos[i])))
 
     for which, ep, anchor, normal, center in g["boxes"]:
         direction = ep["side"]
@@ -740,6 +784,12 @@ class Level2Geometry:
         return side_limit(self.theta[id(arm)], side, self.d, inset)
 
 
+def sidewalk_feature(index, points, arm, side):
+    return feature("sidewalk_%d" % index, "sidewalk", line_geom(points),
+                   "Sidewalk on the %s side of %s" % (side_name(arm, side), arm.name),
+                   custom={"simple_name": "Sidewalk along %s" % arm.name})
+
+
 def build_level2(route, stop, previous_stop, next_stop):
     j = junction(stop["junction"])
     up = route["up"]
@@ -758,7 +808,8 @@ def build_level2(route, stop, previous_stop, next_stop):
             title, ordinal_legs(len(j.arms)), control_sentence(j))
     features.append(feature("info", "info", point_geom((0, 0)), intro.strip(), custom={
         "title": title, "kind": "roundabout" if j.is_roundabout else "junction",
-        "legs": len(j.arms), "spoken_title": spoken_list(names)}))
+        "legs": len(j.arms), "spoken_title": spoken_list(names),
+        "type_text": type_text(j), "control_text": control_sentence(j)}))
 
     road_half = RB_ROAD_HALF if j.is_roundabout else L2_ROAD_HALF
     # Roads.
@@ -799,12 +850,11 @@ def build_level2(route, stop, previous_stop, next_stop):
         if j.is_roundabout and corner["kind"] == "arc":
             edge_a = geo.side_point(a, "cw", corner["t_a"])
             edge_b = geo.side_point(b, "ccw", corner["t_b"])
-            features.append(feature("sidewalk_%d" % sw, "sidewalk", line_geom([far_a, edge_a]),
-                                    "Sidewalk on the %s side of %s" % (side_name(a, "cw"), a.name)))
+            features.append(sidewalk_feature(sw, [far_a, edge_a], a, "cw"))
             features.append(feature("sidewalk_%d" % (sw + 1), "sidewalk", line_geom(pts),
-                                    "Sidewalk around the roundabout"))
-            features.append(feature("sidewalk_%d" % (sw + 2), "sidewalk", line_geom([edge_b, far_b]),
-                                    "Sidewalk on the %s side of %s" % (side_name(b, "ccw"), b.name)))
+                                    "Sidewalk around the roundabout",
+                                    custom={"simple_name": "Sidewalk around the roundabout"}))
+            features.append(sidewalk_feature(sw + 2, [edge_b, far_b], b, "ccw"))
             sw += 3
             continue
         if corner["kind"] == "point":
@@ -812,10 +862,8 @@ def build_level2(route, stop, previous_stop, next_stop):
         else:
             mid = len(pts) // 2
             first, second = [far_a] + pts[:mid + 1], pts[mid:] + [far_b]
-        features.append(feature("sidewalk_%d" % sw, "sidewalk", line_geom(first),
-                                "Sidewalk on the %s side of %s" % (side_name(a, "cw"), a.name)))
-        features.append(feature("sidewalk_%d" % (sw + 1), "sidewalk", line_geom(second),
-                                "Sidewalk on the %s side of %s" % (side_name(b, "ccw"), b.name)))
+        features.append(sidewalk_feature(sw, first, a, "cw"))
+        features.append(sidewalk_feature(sw + 1, second, b, "ccw"))
         sw += 2
 
     # Crosswalks and refuge islands.
@@ -833,10 +881,12 @@ def build_level2(route, stop, previous_stop, next_stop):
             n = cw_normal(th)
             features.append(feature("crosswalk_%d_in" % k, "crosswalk", line_geom([ccw_end, add(mid, n, -gap)]),
                                     crosswalk_name(arm, "inbound", j.is_roundabout),
-                                    custom=dict(common, endpoints="start")))
+                                    custom=dict(common, endpoints="start",
+                                                simple_name=crosswalk_simple_name(arm, "inbound", j.is_roundabout))))
             features.append(feature("crosswalk_%d_out" % k, "crosswalk", line_geom([add(mid, n, gap), cw_end]),
                                     crosswalk_name(arm, "outbound", j.is_roundabout),
-                                    custom=dict(common, endpoints="end")))
+                                    custom=dict(common, endpoints="end",
+                                                simple_name=crosswalk_simple_name(arm, "outbound", j.is_roundabout))))
             if not j.is_roundabout:
                 u = unit(th)
                 features.append(feature("refuge_%d" % k, "island",
@@ -846,19 +896,20 @@ def build_level2(route, stop, previous_stop, next_stop):
         else:
             features.append(feature("crosswalk_%d" % k, "crosswalk", line_geom([ccw_end, cw_end]),
                                     crosswalk_name(arm, None, j.is_roundabout),
-                                    custom=dict(common, endpoints="both")))
+                                    custom=dict(common, endpoints="both",
+                                                simple_name=crosswalk_simple_name(arm, None, j.is_roundabout))))
 
     # Walking path through the junction.
-    path, crossed = walking_path(geo, stop)
+    path, crossed, _ = walking_path(geo, stop)
     first_is_route_start = bool(stop.get("starts_here"))
     last_is_route_end = bool(stop.get("ends_here"))
     pair = spoken_list(names)
     departure = ("Your location, %s" % route["departure"]["spoken"]) if first_is_route_start \
         else "Your location at the intersection of %s" % pair
     if last_is_route_end:
-        destination = "Destination, %s. Double tap to return to map overview." % route["destination"]["spoken"]
+        destination = "Destination, %s. Double tap to return to the map." % route["destination"]["spoken"]
     else:
-        destination = "End of route. Double tap to return to map overview."
+        destination = "End of route. Double tap to return to the map."
     features.append(feature("route", "route", line_geom(path), "Route", custom={
         "departure": departure, "destination": destination}))
 
@@ -959,7 +1010,7 @@ def walking_path(geo, stop):
     if geo.rb:
         crossing_ends = [geo.cross_end(a, s) for a in geo.arms for s in ("cw", "ccw")]
         points = round_bends(points, crossing_ends)
-    return points, crossed
+    return points, crossed, via
 
 
 def round_bends(points, keep, radius=2.5, threshold=40.0):
@@ -1008,6 +1059,358 @@ def dedupe(points):
     return cleaned
 
 
+# ================================================================ directions and sections
+#
+# Turn-by-turn directions are written as structured pieces so the app can
+# leave out what the researcher has switched off (distances, sides, details)
+# without rewording anything. Section maps show one stretch of a route, from
+# where the traveller is (bottom) to the next intersection (top), turned so
+# the walking direction is up, with the route bending at the top to show the
+# turn made there.
+
+SEC_P = (REF_W / 2, 88.0)    # where the section starts
+SEC_Q = (REF_W / 2, 32.0)    # the next intersection or the destination
+SEC_STUB = 16.0              # cross streets at each end
+SEC_TURN = 14.0              # route drawn past the next intersection to show the turn
+SEC_EXT = 6.0                # street shown past a start or destination dot
+SEC_BEYOND = 14.0            # a junction just past the destination
+
+
+def turn_word(heading_in, heading_out):
+    """'straight', 'left', 'slight right', ... for a change of walking direction."""
+    d = om.angle_diff(heading_out, heading_in)
+    side = "right" if d > 0 else "left"
+    a = abs(d)
+    if a < 25:
+        return "straight"
+    if a < 60:
+        return "slight " + side
+    if a <= 150:
+        return side
+    return "sharp " + side
+
+
+def relative_side(arm, compass_word, leaving):
+    """'left' or 'right' for a traveller on that side of an arm.
+
+    Leaving the junction along the arm, its clockwise side is on the right;
+    walking towards the junction, it is on the left.
+    """
+    cw = resolve_side(arm, compass_word) == "cw"
+    if leaving:
+        return "right" if cw else "left"
+    return "left" if cw else "right"
+
+
+def crossing_detail(arm, roundabout):
+    x = arm.crossing
+    if not x:
+        return "No crosswalk"
+    if roundabout and x.get("raised"):
+        return "Raised crosswalk"
+    if x.get("signal"):
+        text = "Traffic signal"
+        if x.get("button"):
+            text += ", push button"
+        if x.get("no_sound"):
+            text += ", no audible signal"
+        return text
+    if x.get("marked"):
+        return "Marked crosswalk"
+    if x.get("unmarked"):
+        return "Unmarked crossing"
+    return "Crosswalk"
+
+
+def around_side(a, b, via):
+    """Compass side of a roundabout walked between crossing arm a and arm b."""
+    if via == "cw":
+        diff = (b.bearing - a.bearing) % 360.0
+    else:
+        diff = -((a.bearing - b.bearing) % 360.0)
+    return om.compass8(a.bearing + diff / 2.0)
+
+
+def to_phrase(j, street):
+    """How the next intersection is named in "walk ... to ..."."""
+    if j.is_roundabout:
+        return "the roundabout"
+    others = [n for n in j.title(first=street) if n != street]
+    return join_names(others or j.title(first=street))
+
+
+def junction_title(j, street):
+    return j.conf.get("name") or join_names(j.title(first=street))
+
+
+def maneuver(route, stop, j):
+    """What the traveller does at one junction: crossings, then the turn."""
+    geo = Level2Geometry(j, route["up"])
+    _, crossed, via = walking_path(geo, stop)
+    crossings = []
+    for arm in crossed:
+        two_stage = bool(arm.island and arm.crossing)
+        crossings.append({
+            "street": spoken_street(arm.name),
+            "detail": crossing_detail(arm, j.is_roundabout),
+            "two_stage": two_stage,
+            "island": ("splitter island" if j.is_roundabout else "refuge island") if two_stage else "",
+            "one_way": bool(arm.oneway),
+        })
+    around = around_side(crossed[0], crossed[1], via) if j.is_roundabout and len(crossed) >= 2 else ""
+    result = {"crossings": crossings, "around": around, "turn": "", "next_street": "",
+              "next_side": "", "next_side_relative": ""}
+    if stop.get("out"):
+        in_arm = j.arm(stop["in"][0])
+        out_arm = j.arm(stop["out"][0])
+        result.update({
+            "turn": turn_word((in_arm.bearing + 180.0) % 360.0, out_arm.bearing),
+            "next_street": spoken_street(out_arm.name),
+            "next_side": stop["out"][1],
+            "next_side_relative": relative_side(out_arm, stop["out"][1], leaving=True),
+        })
+    return result
+
+
+def build_directions(route):
+    """Turn-by-turn directions, one entry per section of the walk."""
+    seq = route_sequence(route)
+    dest_index = next(i for i, item in enumerate(seq) if item["kind"] == "dest")
+    sections = []
+    total = 0.0
+    for k in range(1, dest_index + 1):
+        here, there = seq[k - 1], seq[k]
+        distance = om.dist(here["xy"], there["xy"])
+        total += distance
+        street = there["street"]
+        sec = {"index": k, "count": dest_index, "map": "%s_section_%d" % (route["id"], k),
+               "street": spoken_street(street), "distance_m": int(round(distance))}
+        if here["kind"] == "dep":
+            sec.update({"from": route["departure"]["spoken"], "from_kind": "start"})
+        else:
+            sec.update({"from": junction_title(here["j"], here["stop"]["street_before"]),
+                        "from_kind": "intersection"})
+        if there["kind"] == "junction":
+            j, stop = there["j"], there["stop"]
+            sec.update({
+                "to": to_phrase(j, street),
+                "to_kind": "roundabout" if j.is_roundabout else "intersection",
+                "to_name": junction_title(j, street),
+                "junction_id": "j_%s" % j.key,
+                "detail": level2_file(route, j.key),
+                "type_text": type_text(j),
+                "control_text": control_sentence(j),
+                "side": stop["in"][1],
+                "side_relative": relative_side(j.arm(stop["in"][0]), stop["in"][1], leaving=False),
+            })
+            sec.update(maneuver(route, stop, j))
+        else:
+            side, side_relative = "", ""
+            if here["kind"] == "junction" and here["stop"].get("out"):
+                out = here["stop"]["out"]
+                side = out[1]
+                side_relative = relative_side(here["j"].arm(out[0]), out[1], leaving=True)
+            spoken = route["destination"]["spoken"]
+            sec.update({"to": ("the " + spoken) if spoken[0].islower() else spoken, "to_kind": "destination",
+                        "to_name": route["destination"]["name"], "junction_id": "", "detail": "",
+                        "type_text": "", "control_text": "", "side": side, "side_relative": side_relative,
+                        "crossings": [], "around": "", "turn": "", "next_street": "", "next_side": "",
+                        "next_side_relative": ""})
+        sections.append(sec)
+    doc = {
+        "route": route["id"], "number": route["number"], "title": route["title"],
+        "start": route["departure"]["spoken"], "destination": route["destination"]["spoken"],
+        "destination_side": route["destination"].get("side") or "",
+        "intersections": len(route["stops"]), "total_m": int(round(total)), "sections": sections,
+    }
+    return doc, seq
+
+
+def section_stubs(j, skip_arm, heading, taken):
+    """Squared screen direction for every arm of j except skip_arm."""
+    stubs = []
+    for arm in j.arms:
+        if arm is skip_arm:
+            continue
+        exact = (arm.bearing - heading) % 360.0
+        want = snap(exact)
+        options = sorted({(want + d) % 360 for d in (0, 45, -45, 90, -90, 135, -135)},
+                         key=lambda o: abs(om.angle_diff(o, exact)))
+        chosen = next((o for o in options if all(abs(om.angle_diff(o, t)) >= 44 for t in taken)), want)
+        taken.append(chosen)
+        stubs.append((arm, chosen))
+    return stubs
+
+
+def stub_lines(stubs):
+    """Opposite stubs of one street through a junction become one line."""
+    lines = []
+    used = set()
+    for x, (name, centre, end, d) in enumerate(stubs):
+        if x in used:
+            continue
+        partner = next((y for y, other in enumerate(stubs) if y != x and y not in used and other[0] == name
+                        and other[1] == centre and abs(om.angle_diff(other[3], d + 180)) < 1), None)
+        if partner is not None:
+            used.update({x, partner})
+            lines.append((name, [stubs[partner][2], centre, end]))
+        else:
+            used.add(x)
+            lines.append((name, [centre, end]))
+    return lines
+
+
+def section_heading(here, there):
+    """Walking direction drawn as up: along the street, not the straight line
+    between the two points, so the street walked runs straight up the screen."""
+    if there["kind"] == "junction":
+        return (there["j"].arm(there["stop"]["in"][0]).bearing + 180.0) % 360.0
+    if here["kind"] == "junction" and here["stop"].get("out"):
+        return here["j"].arm(here["stop"]["out"][0]).bearing
+    return om.bearing(here["xy"], there["xy"])
+
+
+def build_section(route, seq, sec):
+    """One stretch of the walk: from where the traveller is to the next intersection."""
+    k = sec["index"]
+    here, there = seq[k - 1], seq[k]
+    heading = section_heading(here, there)
+    p, q = SEC_P, SEC_Q
+    features = []
+    stubs = []
+    junctions = []
+
+    if here["kind"] == "dep":
+        street_start = add(p, unit(180.0), SEC_EXT)
+    else:
+        street_start = p
+        j, stop = here["j"], here["stop"]
+        for arm, d in section_stubs(j, j.arm(stop["out"][0]), heading, [0.0]):
+            stubs.append((arm.name, p, add(p, unit(d), SEC_STUB), d))
+        junctions.append((here, p, "from"))
+
+    turn_dir = None
+    if there["kind"] == "junction":
+        street_end = q
+        j, stop = there["j"], there["stop"]
+        out_arm = j.arm(stop["out"][0]) if stop.get("out") else None
+        for arm, d in section_stubs(j, j.arm(stop["in"][0]), heading, [180.0]):
+            stubs.append((arm.name, q, add(q, unit(d), SEC_STUB), d))
+            if arm is out_arm:
+                turn_dir = d
+        junctions.append((there, q, "to"))
+    elif k + 1 < len(seq) and seq[k + 1]["kind"] == "junction":
+        # The destination sits just before a junction: show that corner too.
+        beyond = seq[k + 1]
+        b = add(q, unit(0.0), SEC_BEYOND)
+        street_end = b
+        j, stop = beyond["j"], beyond["stop"]
+        for arm, d in section_stubs(j, j.arm(stop["in"][0]), heading, [180.0]):
+            stubs.append((arm.name, b, add(b, unit(d), SEC_STUB), d))
+        junctions.append((beyond, b, "beyond"))
+    else:
+        street_end = add(q, unit(0.0), SEC_EXT)
+
+    features.append(feature("street_0", "corridor", line_geom([street_start, street_end]), there["street"]))
+    for n, (name, points) in enumerate(stub_lines(stubs)):
+        features.append(feature("cross_%d" % n, "corridor", line_geom(points), name))
+    for item, position, role in junctions:
+        features.append(intersection_feature(route, item["j"], item["stop"]["street_before"], position, role))
+
+    # Landmark boxes beside the start or destination dot.
+    for which, item_kind, anchor, ep in (("dep", here["kind"], p, route["departure"]),
+                                         ("dest", there["kind"], q, route["destination"])):
+        if item_kind not in ("dep", "dest") or not ep.get("tag"):
+            continue
+        normal = (1.0, 0.0) if ep["side"] == "right" else (-1.0, 0.0)
+        features.append(feature("landmark_%s" % which, "landmark", point_geom(anchor), ep["name"],
+                                side=ep["side"], custom={
+                                    "tag": ep["tag"],
+                                    "announcement": "%s on your %s" % (ep["name"], ep["side"]),
+                                    "offset_x": normal[0], "offset_y": normal[1]}))
+
+    route_points = [p, q]
+    waypoints = []
+    if turn_dir is not None:
+        route_points.append(add(q, unit(turn_dir), SEC_TURN))
+        waypoints.append("j_%s" % there["j"].key)
+    features.append(feature("route", "route", line_geom(route_points), route["title"], custom={
+        "departure": route["departure"]["spoken"], "destination": route["destination"]["spoken"],
+        "waypoints": ",".join(waypoints),
+        "start_kind": "departure" if here["kind"] == "dep" else "intersection",
+        "end_kind": "destination" if there["kind"] == "dest" else "continues",
+        "section": k, "sections": sec["count"]}))
+
+    return {
+        "type": "FeatureCollection",
+        "version": "1.0",
+        "metadata": {"name": "Route %d, section %d of %d" % (route["number"], k, sec["count"]),
+                     "scale": "1 unit = 1 mm on screen", "coordinate_unit": "arbitrary",
+                     "coordinate_origin": "top-left", "author": "tools/build_maps.py"},
+        "bounds": {"width": REF_W, "height": REF_H},
+        "features": features,
+    }
+
+
+# Sentence assembly. The app builds the same sentences from the same pieces
+# (Directions/DirectionsComposer.swift); this copy writes them into
+# docs/ROUTES.md with every detail switched on, so the team can proofread
+# exactly what participants hear.
+
+def distance_text(metres, units="feet"):
+    if units == "feet":
+        feet = metres * 3.28084
+        step = 10 if feet < 500 else 50
+        return "about %d feet" % max(step, int(math.floor(feet / step + 0.5)) * step)
+    step = 5 if metres < 200 else 10
+    return "about %d metres" % max(step, int(math.floor(metres / step + 0.5)) * step)
+
+
+def turn_sentence(sec, side, with_then):
+    turn, street = sec["turn"], sec["next_street"]
+    if turn == "straight":
+        text = "continue straight on %s" % street
+    elif turn.startswith("slight "):
+        text = "bear %s onto %s" % (turn[len("slight "):], street)
+    elif turn.startswith("sharp "):
+        text = "make a sharp %s onto %s" % (turn[len("sharp "):], street)
+    else:
+        text = "turn %s onto %s" % (turn, street)
+    if side and sec["next_side"]:
+        text += ", on the %s side" % sec["next_side"]
+    return ("Then " + text if with_then else text[0].upper() + text[1:]) + "."
+
+
+def walk_sentence(sec, doc):
+    text = "Start at %s. " % doc["start"] if sec["index"] == 1 else ""
+    text += "Walk along %s" % sec["street"]
+    if sec["side"]:
+        text += ", on the %s side" % sec["side"]
+    text += ", %s, to %s." % (distance_text(sec["distance_m"]), sec["to"])
+    if sec["to_kind"] == "destination" and doc["destination_side"]:
+        text += " It is on your %s." % doc["destination_side"]
+    return text
+
+
+def maneuver_sentences(sec):
+    if sec["to_kind"] == "destination":
+        return ""
+    parts = ["At %s." % sec["to"], sec["type_text"][0].upper() + sec["type_text"][1:] + "."]
+    if sec["control_text"]:
+        parts.append(sec["control_text"])
+    for n, c in enumerate(sec["crossings"]):
+        text = "Cross %s. %s." % (c["street"], c["detail"])
+        if c["two_stage"]:
+            text += " Two stages, with a %s." % c["island"]
+        if c["one_way"]:
+            text += " One-way street."
+        parts.append(text)
+        if n == 0 and sec["around"] and len(sec["crossings"]) > 1:
+            parts.append("Walk around the %s side of the roundabout." % sec["around"])
+    if sec["turn"]:
+        parts.append(turn_sentence(sec, True, bool(sec["crossings"])))
+    return " ".join(parts)
+
 # ================================================================ output
 
 def write_json(name, doc):
@@ -1045,12 +1448,24 @@ def build_all(preview=False):
         if preview:
             import preview as pv
             pv.render_level1(doc, os.path.join(PREVIEW_DIR, l1_name + ".png"))
+        directions, seq = build_directions(route)
+        directions_name = "%s_directions" % route["id"]
+        write_json(directions_name, directions)
+        section_names = []
+        for sec in directions["sections"]:
+            section_doc = build_section(route, seq, sec)
+            write_json(sec["map"], section_doc)
+            section_names.append(sec["map"])
+            if preview:
+                import preview as pv
+                pv.render_level1(section_doc, os.path.join(PREVIEW_DIR, sec["map"] + ".png"))
         manifest["routes"].append({
             "id": route["id"], "number": route["number"], "title": route["title"],
             "summary": route["summary"], "overview": l1_name, "details": details,
+            "sections": section_names, "directions": directions_name,
             "departure": route["departure"]["spoken"], "destination": route["destination"]["spoken"],
         })
-        sheets.append((route, summaries))
+        sheets.append((route, summaries, directions))
         print("%s: %d intersections, schematic scale %.3f mm per metre across, %.3f up" % (
             route["id"], len(route["stops"]), info["k_mm_per_m"][0], info["k_mm_per_m"][1]))
     with open(os.path.join(MAPS_DIR, "routes.json"), "w") as handle:
@@ -1067,7 +1482,7 @@ def write_route_sheet(sheets):
              "",
              "Crosswalks marked *assumed* are not in OpenStreetMap; they were added from the team's notes or",
              "because the junction has no crossing data at all. Please check them on site.", ""]
-    for route, summaries in sheets:
+    for route, summaries, directions in sheets:
         lines += ["## Route %d: %s" % (route["number"], route["title"]), "",
                   "From %s to %s. %s." % (route["departure"]["name"], route["destination"]["name"], route["summary"]),
                   "Drawn with %s at the top of the screen." % up_names.get(route["up"], "%d degrees" % route["up"]), "",
@@ -1091,6 +1506,18 @@ def write_route_sheet(sheets):
                 else:
                     lines.append("- %s leg, to the %s: no crosswalk in OSM" % (name, toward))
             lines.append("")
+        lines.append("</details>")
+        lines.append("")
+        lines.append("<details><summary>Turn-by-turn directions, as spoken with every detail on</summary>")
+        lines.append("")
+        lines.append("Distances in feet and sides as compass words. In the app, each setting that is off "
+                     "leaves its part out; nothing else changes.")
+        lines.append("")
+        for sec in directions["sections"]:
+            text = walk_sentence(sec, directions)
+            extra = maneuver_sentences(sec)
+            lines.append("%d. %s%s" % (sec["index"], text, (" " + extra) if extra else ""))
+        lines.append("")
         lines.append("</details>")
         lines.append("")
     with open(os.path.join(REPO, "docs", "ROUTES.md"), "w") as handle:

@@ -29,7 +29,9 @@
      "title": "Fore Street and Munjoy South",
      "kind": "junction",
      "legs": "4",
-     "spoken_title": "Fore Street, and Munjoy South"
+     "spoken_title": "Fore Street, and Munjoy South",
+     "type_text": "4-way intersection",
+     "control_text": ""
     }
    }
   },
@@ -159,7 +161,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the south side of Fore Street"
+    "name": "Sidewalk on the south side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -179,7 +184,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the northeast side of Access road to 58 Fore Street"
+    "name": "Sidewalk on the northeast side of Access road to 58 Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Access road to 58 Fore Street"
+    }
    }
   },
   {
@@ -199,7 +207,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the southwest side of Access road to 58 Fore Street"
+    "name": "Sidewalk on the southwest side of Access road to 58 Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Access road to 58 Fore Street"
+    }
    }
   },
   {
@@ -219,7 +230,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the south side of Fore Street"
+    "name": "Sidewalk on the south side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -239,7 +253,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the north side of Fore Street"
+    "name": "Sidewalk on the north side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -259,7 +276,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the west side of Munjoy South"
+    "name": "Sidewalk on the west side of Munjoy South",
+    "custom": {
+     "simple_name": "Sidewalk along Munjoy South"
+    }
    }
   },
   {
@@ -279,7 +299,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the east side of Munjoy South"
+    "name": "Sidewalk on the east side of Munjoy South",
+    "custom": {
+     "simple_name": "Sidewalk along Munjoy South"
+    }
    }
   },
   {
@@ -299,7 +322,10 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk on the north side of Fore Street"
+    "name": "Sidewalk on the north side of Fore Street",
+    "custom": {
+     "simple_name": "Sidewalk along Fore Street"
+    }
    }
   },
   {
@@ -321,7 +347,8 @@
    "properties": {
     "name": "Crosswalk across Fore Street",
     "custom": {
-     "endpoints": "both"
+     "endpoints": "both",
+     "simple_name": "Crosswalk across Fore Street"
     }
    }
   },
@@ -353,7 +380,7 @@
     "name": "Route",
     "custom": {
      "departure": "Your location at the intersection of Fore Street, and Munjoy South",
-     "destination": "End of route. Double tap to return to map overview."
+     "destination": "End of route. Double tap to return to the map."
     }
    }
   }
