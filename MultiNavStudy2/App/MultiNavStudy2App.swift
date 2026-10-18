@@ -15,7 +15,7 @@ struct MultiNavStudy2App: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            SetupView()
         }
         .onChange(of: scenePhase) { _, phase in
             switch phase {

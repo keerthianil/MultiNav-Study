@@ -1,6 +1,10 @@
 // MapScreens.swift
-// The two map screens. Level 1 shows a whole route; double tapping one of
-// its intersections pushes Level 2, the close-up of that intersection.
+// The two map screens. The route map shows the whole walk or one section of
+// it; double tapping an intersection pushes its close-up.
+//
+// The route map has no Back button: the researcher ends the session with
+// End (and a confirmation), so a participant cannot land on the setup screen
+// by accident. Participants leave with gestures only if the setup allows it.
 
 import SwiftUI
 import UIKit
@@ -32,15 +36,16 @@ struct TactileMapContainer: UIViewRepresentable {
 }
 
 /// Moves VoiceOver to the map so it reads the screen's name, or speaks the
-/// name when VoiceOver is off. Each screen has its own pending announcement,
-/// cancelled when that screen disappears, so a screen already left never
-/// speaks over the next one.
+/// name when VoiceOver is off, then speaks any follow-up (a route overview or
+/// a section's directions) after it. Each screen has its own pending
+/// announcement, cancelled when that screen disappears, so a screen already
+/// left never speaks over the next one.
 @MainActor
 enum ScreenAnnouncer {
     private static var pending: [String: UUID] = [:]
 
     static func announce(screen: String, canvas: @escaping () -> TactileCanvasView?, spoken: String,
-                         delay: TimeInterval = 0.6) {
+                         followUp: String = "", delay: TimeInterval = 0.6) {
         let token = UUID()
         pending[screen] = token
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -50,7 +55,10 @@ enum ScreenAnnouncer {
                 guard let canvas = canvas(), canvas.window != nil else { return }
                 UIAccessibility.post(notification: .screenChanged, argument: canvas)
             } else {
-                FeedbackManager.shared.speak(spoken)
+                FeedbackManager.shared.speak(spoken, essential: true)
+            }
+            if !followUp.isEmpty {
+                FeedbackManager.shared.speak(followUp, queued: true)
             }
         }
     }
@@ -60,31 +68,24 @@ enum ScreenAnnouncer {
     }
 }
 
-// MARK: - Level 1
+// MARK: - Route map
 
 struct RouteMapScreen: View {
-    let route: RouteInfo
+    let config: SessionConfig
     @Binding var path: [AppScreen]
-    @Environment(\.dismiss) private var dismiss
-    @State private var controller: OverviewController?
-    @State private var loadError: String?
+    @StateObject private var session: RouteSession
+    @State private var confirmEnd = false
 
-    init(route: RouteInfo, path: Binding<[AppScreen]>) {
-        self.route = route
+    init(config: SessionConfig, path: Binding<[AppScreen]>) {
+        self.config = config
         _path = path
-        do {
-            let map = try MapLoader.overview(named: route.overview)
-            _controller = State(initialValue: OverviewController(route: route, map: map))
-        } catch {
-            _loadError = State(initialValue: "The map for route \(route.number) could not be loaded.")
-            StudyLog.shared.error("Overview \(route.overview) failed to load: \(error.localizedDescription)")
-        }
+        _session = StateObject(wrappedValue: RouteSession(config: config))
     }
 
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
-            if let controller {
+            (config.options.showMap ? Color.white : Color.black).ignoresSafeArea()
+            if let controller = session.controller {
                 GeometryReader { proxy in
                     TactileMapContainer(controller: controller, label: controller.accessibilityLabel,
                                         hint: controller.accessibilityHint, insets: proxy.safeAreaInsets) { canvas in
@@ -92,52 +93,83 @@ struct RouteMapScreen: View {
                     }
                     .ignoresSafeArea()
                 }
-            } else if let loadError {
+            } else if let loadError = session.loadError {
                 MapLoadErrorView(message: loadError)
             }
         }
-        .navigationTitle("Route \(route.number)")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbarBackground(.visible, for: .navigationBar)
-        .onAppear(perform: appear)
-        .onDisappear {
-            ScreenAnnouncer.cancel(screen: "overview")
-            controller?.canvas?.reset()
-            FeedbackManager.shared.silence()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("End") { confirmEnd = true }
+                    .accessibilityHint("Ends the session after you confirm.")
+            }
+            ToolbarItem(placement: .principal) {
+                VStack(spacing: 0) {
+                    Text(session.title).font(.headline)
+                    if let remaining = session.remainingText {
+                        Text(remaining).font(.caption).monospacedDigit().foregroundStyle(.secondary)
+                    }
+                }
+                .accessibilityElement(children: .combine)
+            }
+            if session.isSectionMode {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button {
+                        session.moveSection(forward: false, gesture: "Previous section button")
+                    } label: {
+                        Image(systemName: "chevron.down")
+                    }
+                    .accessibilityLabel("Previous section")
+                    Button {
+                        session.moveSection(forward: true, gesture: "Next section button")
+                    } label: {
+                        Image(systemName: "chevron.up")
+                    }
+                    .accessibilityLabel("Next section")
+                }
+            }
         }
+        .alert("End this session?", isPresented: $confirmEnd) {
+            Button("End Session", role: .destructive) { session.end(reason: "Ended by the researcher") }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("The logs for this session are saved.")
+        }
+        .onAppear {
+            session.onOpenIntersection = { file in
+                path.append(.intersection(config, file: file, section: session.currentSection?.index))
+            }
+            session.onLeave = { path.removeAll() }
+            session.appear()
+        }
+        .onDisappear { session.disappear() }
         .disableInteractivePopGesture()
-    }
-
-    private func appear() {
-        StudyLog.shared.startSession(route: route)
-        guard let controller else { return }
-        StudyLog.shared.setCondition("Route \(route.number) - Map Overview")
-        UIApplication.shared.isIdleTimerDisabled = true
-        controller.screenDidAppear()
-        controller.onOpenIntersection = { intersection in
-            StudyLog.shared.event(.screen, "Open intersection", detail: intersection.name)
-            path.append(.intersection(routeID: route.id, file: intersection.detailFile))
-        }
-        controller.onBack = { dismiss() }
-        ScreenAnnouncer.announce(screen: "overview", canvas: { [weak controller] in controller?.canvas },
-                                 spoken: "Map overview")
     }
 }
 
-// MARK: - Level 2
+// MARK: - Intersection close-up
 
 struct IntersectionScreen: View {
-    let route: RouteInfo
+    let config: SessionConfig
     let file: String
+    /// The section the close-up was opened from, for the logs.
+    let sectionNumber: Int?
     @Environment(\.dismiss) private var dismiss
     @State private var controller: DetailController?
     @State private var loadError: String?
 
-    init(route: RouteInfo, file: String) {
-        self.route = route
+    init(config: SessionConfig, file: String, sectionNumber: Int?) {
+        self.config = config
         self.file = file
+        self.sectionNumber = sectionNumber
         do {
-            _controller = State(initialValue: DetailController(route: route, map: try MapLoader.detail(named: file)))
+            let map = try MapLoader.detail(named: file)
+            let directions = try? RouteDirections.load(named: config.route.directions)
+            let composer = directions.map { DirectionsComposer(directions: $0, config: config) }
+            let section = directions?.section(withDetail: file)
+            _controller = State(initialValue: DetailController(config: config, map: map, composer: composer, section: section))
         } catch {
             _loadError = State(initialValue: "This intersection could not be loaded.")
             StudyLog.shared.error("Intersection \(file) failed to load: \(error.localizedDescription)")
@@ -146,7 +178,7 @@ struct IntersectionScreen: View {
 
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
+            (config.options.showMap ? Color.white : Color.black).ignoresSafeArea()
             if let controller {
                 GeometryReader { proxy in
                     TactileMapContainer(controller: controller, label: controller.accessibilityLabel,
@@ -173,11 +205,13 @@ struct IntersectionScreen: View {
 
     private func appear() {
         guard let controller else { return }
-        StudyLog.shared.setCondition("Route \(route.number) - Intersection View (\(controller.map.title))")
+        StudyLog.shared.setView(.intersection, section: sectionNumber,
+                                condition: "Route \(config.route.number), \(config.stageDescription), "
+                                    + "intersection view (\(controller.map.title))")
         controller.screenDidAppear()
         controller.onBack = { dismiss() }
         ScreenAnnouncer.announce(screen: "intersection", canvas: { [weak controller] in controller?.canvas },
-                                 spoken: controller.map.intro)
+                                 spoken: controller.intro)
     }
 }
 

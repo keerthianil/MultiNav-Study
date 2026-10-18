@@ -1,5 +1,5 @@
 // DetailController.swift
-// Level 2: one intersection, drawn from OpenStreetMap at its true angles.
+// Intersection close-up: one intersection, drawn from OpenStreetMap at its true angles.
 //
 // Under the finger, in priority order:
 //   turn (orange dot)          repeating ding and tap, "Turn"
@@ -14,14 +14,18 @@
 //   sidewalk (grey)            softer steady buzz, sidewalk name
 //   roundabout road (blue)     heavy buzz, "Roundabout. Traffic moves counterclockwise"
 //   road (blue)                heavy buzz, street name
-// Double tap anywhere returns to the overview.
+// Double tap anywhere returns to the map. A two-finger double tap repeats the
+// intersection's summary and, with turn-by-turn directions on, what to do here.
 
 import UIKit
 
 @MainActor
 final class DetailController: MapScene, TactileCanvasDelegate {
-    let route: RouteInfo
+    let config: SessionConfig
     let map: DetailMap
+    /// The directions section that ends at this intersection, if any.
+    let section: RouteDirections.Section?
+    let composer: DirectionsComposer?
     weak var canvas: TactileCanvasView?
     var onBack: (() -> Void)?
 
@@ -51,18 +55,42 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         case road(Int)
     }
 
-    init(route: RouteInfo, map: DetailMap) {
-        self.route = route
+    init(config: SessionConfig, map: DetailMap, composer: DirectionsComposer?, section: RouteDirections.Section?) {
+        self.config = config
         self.map = map
+        self.composer = composer
+        self.section = section
     }
 
     var mapSize: CGSize { map.size }
     var isCentered: Bool { true }
+    private var options: StageSettings { config.options }
 
-    var accessibilityLabel: String { map.intro }
+    /// "Intersection view. Fore Street and Franklin Street. 4-way intersection.
+    /// Traffic signals.", without the type and control when those are off.
+    var intro: String {
+        guard !map.typeText.isEmpty else { return map.intro }
+        var text = (map.isRoundabout ? "Roundabout view. " : "Intersection view. ") + map.title + "."
+        if options.intersectionDetails {
+            text += " " + DirectionsComposer.capitalizedFirst(map.typeText) + "."
+            if !map.controlText.isEmpty { text += " " + map.controlText }
+        }
+        return text
+    }
+
+    var accessibilityLabel: String { intro }
 
     var accessibilityHint: String {
-        "Drag to follow the route. Double tap anywhere to return to the map overview."
+        "Drag to follow the route. Double tap anywhere to return to the map."
+    }
+
+    private func crosswalkName(_ i: Int) -> String {
+        options.crosswalkDetails ? map.crosswalks[i].name : map.crosswalks[i].simpleName
+    }
+
+    private func sidewalkName(_ i: Int) -> String {
+        let sidewalk = map.sidewalks[i]
+        return options.streetSide ? sidewalk.name : (sidewalk.simpleName ?? sidewalk.name)
     }
 
     func screenDidAppear() {
@@ -72,6 +100,10 @@ final class DetailController: MapScene, TactileCanvasDelegate {
     // MARK: Drawing
 
     func draw(in context: CGContext, transform t: MapTransform) {
+        guard options.showMap else {
+            MapDrawing.drawHiddenMap(in: context)
+            return
+        }
         let style = MapStyle.Detail.self
         context.setLineCap(.round)
         context.setLineJoin(.round)
@@ -239,13 +271,13 @@ final class DetailController: MapScene, TactileCanvasDelegate {
             // The crosswalk name says which street and, at the roundabout,
             // whether this half crosses the entry or the exit lane.
             feedback.set(.routeOverCrosswalk)
-            speak(map.crosswalks[i].name, for: hit)
+            speak(crosswalkName(i), for: hit)
         case .route:
             feedback.set(.route)
             speak("Route", for: hit)
         case .crosswalk(let i, let overRoad):
             feedback.set(.crosswalk(overRoad: overRoad))
-            speak(map.crosswalks[i].name, for: hit)
+            speak(crosswalkName(i), for: hit)
         case .island(let i):
             feedback.set(.island)
             speak(map.islands[i].name, for: hit)
@@ -254,7 +286,7 @@ final class DetailController: MapScene, TactileCanvasDelegate {
             speak(map.centralIsland?.name ?? "Center island", for: hit)
         case .sidewalk(let i):
             feedback.set(.sidewalk)
-            speak(map.sidewalks[i].name, for: hit)
+            speak(sidewalkName(i), for: hit)
         case .ring:
             feedback.set(.road)
             speak(map.ring?.name ?? "Roundabout", for: hit)
@@ -275,12 +307,12 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         case .turn: return "Turn"
         case .center: return "Center"
         case .endpoint(let i): return map.endpoints[i].announcement
-        case .routeOnCrosswalk(let i): return map.crosswalks[i].name
+        case .routeOnCrosswalk(let i): return crosswalkName(i)
         case .route: return "Route"
-        case .crosswalk(let i, _): return map.crosswalks[i].name
+        case .crosswalk(let i, _): return crosswalkName(i)
         case .island(let i): return map.islands[i].name
         case .centralIsland: return map.centralIsland?.name
-        case .sidewalk(let i): return map.sidewalks[i].name
+        case .sidewalk(let i): return sidewalkName(i)
         case .ring: return map.ring?.name
         case .road(let i): return map.roads[i].name
         }
@@ -340,19 +372,32 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         }
     }
 
+    /// What to do at this intersection, when turn-by-turn directions are on.
+    private var maneuver: String? {
+        guard options.turnByTurn, let composer, let section else { return nil }
+        let text = composer.maneuver(section)
+        return text.isEmpty ? nil : text
+    }
+
     func canvas(_ canvas: TactileCanvasView, singleTapAt mm: CGPoint, screen: CGPoint) {
         let found = rawHit(at: mm)
         log.event(.gesture, "Single tap", detail: logName(for: found))
         switch found {
         case .turn:
             feedback.turnDing()
+            if let maneuver { feedback.speak(maneuver) }
             return
         case .crosswalkEnd:
             return
+        case .route, .routeOnCrosswalk:
+            feedback.pulse()
+            if let maneuver {
+                feedback.speak(maneuver)
+                return
+            }
         default:
-            break
+            feedback.pulse()
         }
-        feedback.pulse()
         if !lastTouchSpoken.contains(found), let text = announcement(for: found) {
             feedback.speak(text)
         }
@@ -377,8 +422,14 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         onBack?()
     }
 
+    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String) -> Bool {
+        log.event(.gesture, forward ? "Next section" : "Previous section", detail: "\(gesture), in a close-up")
+        feedback.speak("Go back to the map to change sections.", essential: true)
+        return false
+    }
+
     func canvasMagicTap(_ canvas: TactileCanvasView) {
         log.event(.gesture, "Magic tap", detail: "Intersection summary")
-        feedback.speak(map.intro)
+        feedback.speak([intro, maneuver].compactMap { $0 }.joined(separator: " "), essential: true)
     }
 }

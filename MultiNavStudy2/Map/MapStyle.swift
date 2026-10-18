@@ -19,7 +19,7 @@ enum MapStyle {
     static let turnOrange = UIColor(red: 1.0, green: 0.55, blue: 0.0, alpha: 1.0)
     static let outlineWhite = UIColor.white
 
-    /// Level 1, the route overview.
+    /// Route maps: the full route and its sections.
     enum Overview {
         static let roadWidth: CGFloat = 4.0
         static let routeWidth: CGFloat = 3.5
@@ -36,7 +36,7 @@ enum MapStyle {
         static let landmarkGap: CGFloat = 2.0
     }
 
-    /// Level 2, the intersection close-up.
+    /// The intersection close-up.
     enum Detail {
         static let sidewalkWidth: CGFloat = 4.0
         static let routeWidth: CGFloat = 3.5

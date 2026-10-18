@@ -1,36 +1,47 @@
 // OverviewController.swift
-// Level 1: the whole route on one screen.
+// The route map: the whole walk on one screen (full route mode) or one
+// section of it (section by section mode). Both use the same elements.
 //
 // Under the finger, in priority order:
 //   route start / end (yellow)  fast pulse, "Your location ..." / "Destination ..."
 //   landmark (purple box)       fast pulse, "... on your right"
 //   intersection (red square)   slow pulse and a ding, "4-way intersection of ..."
 //   roundabout (red ring)       slow pulse and a ding, "Roundabout of ..."
-//   route (cyan)                rhythmic pulse, "Route to ..." on the first leg, then "Route"
+//   route (cyan)                rhythmic pulse, "Route along ..."
 //   street (blue)               steady heavy buzz, street name
-// Double tap an intersection on the route to open its close-up.
+// A single tap gives the turn-by-turn direction for an intersection or a
+// stretch of route. A double tap on an intersection opens its close-up.
+// On a section map the next intersection is at the top ("Next: ...") and
+// the section starts at the bottom; the route drawn past the top shows the
+// turn made there.
 
 import UIKit
 
 @MainActor
 final class OverviewController: MapScene, TactileCanvasDelegate {
-    let route: RouteInfo
-    let map: OverviewMap
+    let config: SessionConfig
+    let composer: DirectionsComposer
+    private(set) var map: OverviewMap
+    /// The section shown, or nil on the full route.
+    private(set) var section: RouteDirections.Section?
     weak var canvas: TactileCanvasView?
 
     var onOpenIntersection: ((OverviewIntersection) -> Void)?
-    var onBack: (() -> Void)?
+    /// A back gesture on the map itself; the session decides what it does.
+    var onBack: ((String) -> Void)?
+    /// Next (true) or previous section; returns false at either end.
+    var onSection: ((Bool, String) -> Bool)?
+    var onMagicTap: (() -> Void)?
 
     private let feedback = FeedbackManager.shared
     private let log = StudyLog.shared
-    private let legBoundaries: [CGFloat]
+    private var legBoundaries: [CGFloat]
 
     private var activeHit: Hit = .none
     private var lastAnnouncedLeg: Int?
     private var spokenThisTouch: Set<Hit> = []
     private var lastTouchSpoken: Set<Hit> = []
     private var lastMoveLog: TimeInterval = 0
-    private var isLeaving = false
 
     enum Hit: Hashable {
         case none
@@ -41,35 +52,56 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         case street(Int)
     }
 
-    init(route: RouteInfo, map: OverviewMap) {
-        self.route = route
+    init(config: SessionConfig, composer: DirectionsComposer, map: OverviewMap, section: RouteDirections.Section?) {
+        self.config = config
+        self.composer = composer
         self.map = map
+        self.section = section
         self.legBoundaries = map.legBoundaries
+    }
+
+    /// Shows another map, such as the next section.
+    func show(map newMap: OverviewMap, section newSection: RouteDirections.Section?) {
+        canvas?.reset()
+        feedback.set(.none)
+        map = newMap
+        section = newSection
+        legBoundaries = newMap.legBoundaries
+        activeHit = .none
+        lastAnnouncedLeg = nil
+        spokenThisTouch = []
+        lastTouchSpoken = []
+        canvas?.configureAccessibility(label: accessibilityLabel, hint: accessibilityHint)
+        canvas?.setNeedsLayout()
+        canvas?.setNeedsDisplay()
     }
 
     var mapSize: CGSize { map.size }
     var isCentered: Bool { false }
+    private var options: StageSettings { config.options }
 
     var accessibilityLabel: String {
-        "Map overview. Route \(route.number), \(route.title)"
+        if let section {
+            return "Route \(config.route.number), section \(section.index) of \(section.count). "
+                + "\(section.street) to \(section.to)"
+        }
+        return "Map overview. Route \(config.route.number), \(config.route.title)"
     }
 
     var accessibilityHint: String {
-        "Drag to explore. Double tap an intersection to open it. Three-finger swipe right to go back."
-    }
-
-    var magicTapSummary: String {
-        let count = map.intersections.count
-        return "Route \(route.number), from \(route.departure) to \(route.destination). \(count) intersections."
-    }
-
-    func screenDidAppear() {
-        isLeaving = false
+        var hint = "Drag to explore."
+        if options.intersectionCloseUps { hint += " Double tap an intersection to open it." }
+        if section != nil { hint += " Three-finger swipe up for the next section, down for the previous one." }
+        return hint
     }
 
     // MARK: Drawing
 
     func draw(in context: CGContext, transform t: MapTransform) {
+        guard options.showMap else {
+            MapDrawing.drawHiddenMap(in: context)
+            return
+        }
         let style = MapStyle.Overview.self
         context.setLineCap(.round)
         context.setLineJoin(.round)
@@ -105,18 +137,21 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
             }
         }
 
-        for landmark in map.landmarks {
-            let rect = CGRect(origin: t.point(landmark.boxRect.origin),
-                              size: CGSize(width: t.length(landmark.boxRect.width), height: t.length(landmark.boxRect.height)))
-            let path = UIBezierPath(roundedRect: rect, cornerRadius: t.length(style.landmarkCorner))
-            context.setFillColor(MapStyle.landmarkPurple.cgColor)
-            context.addPath(path.cgPath)
-            context.fillPath()
-            context.setStrokeColor(MapStyle.outlineWhite.cgColor)
-            context.setLineWidth(t.length(style.landmarkBorder))
-            context.addPath(path.cgPath)
-            context.strokePath()
-            MapDrawing.drawTag(landmark.tag, in: rect.insetBy(dx: t.length(0.6), dy: t.length(0.4)))
+        if options.landmarks {
+            for landmark in map.landmarks {
+                let rect = CGRect(origin: t.point(landmark.boxRect.origin),
+                                  size: CGSize(width: t.length(landmark.boxRect.width),
+                                               height: t.length(landmark.boxRect.height)))
+                let path = UIBezierPath(roundedRect: rect, cornerRadius: t.length(style.landmarkCorner))
+                context.setFillColor(MapStyle.landmarkPurple.cgColor)
+                context.addPath(path.cgPath)
+                context.fillPath()
+                context.setStrokeColor(MapStyle.outlineWhite.cgColor)
+                context.setLineWidth(t.length(style.landmarkBorder))
+                context.addPath(path.cgPath)
+                context.strokePath()
+                MapDrawing.drawTag(landmark.tag, in: rect.insetBy(dx: t.length(0.6), dy: t.length(0.4)))
+            }
         }
 
         for endpoint in map.endpoints {
@@ -144,10 +179,13 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         where MapGeometry.distance(p, endpoint.position) <= h.endpoint + slack {
             return .endpoint(i)
         }
-        for (i, landmark) in map.landmarks.enumerated() {
-            if MapGeometry.distance(p, landmark.anchor) <= h.landmarkAnchor + slack
-                || landmark.boxRect.insetBy(dx: -(h.landmarkBoxSlack + slack), dy: -(h.landmarkBoxSlack + slack)).contains(p) {
-                return .landmark(i)
+        if options.landmarks {
+            for (i, landmark) in map.landmarks.enumerated() {
+                if MapGeometry.distance(p, landmark.anchor) <= h.landmarkAnchor + slack
+                    || landmark.boxRect.insetBy(dx: -(h.landmarkBoxSlack + slack),
+                                                dy: -(h.landmarkBoxSlack + slack)).contains(p) {
+                    return .landmark(i)
+                }
             }
         }
         var bestIntersection: (index: Int, distance: CGFloat)?
@@ -196,7 +234,9 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         }
     }
 
-    /// Leg 0 runs from the start to the first intersection, leg 1 to the next, and so on.
+    /// Leg 0 runs from the start to the first intersection, leg 1 to the next,
+    /// and so on. On a section map, leg 1 is the route drawn past the next
+    /// intersection to show the turn.
     private func legIndex(at p: CGPoint) -> Int {
         let progress = MapGeometry.arcLength(of: p, along: map.route)
         var leg = 0
@@ -206,44 +246,73 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         return min(leg, legBoundaries.count)
     }
 
-    // MARK: Feedback
+    /// The directions section a stretch of route belongs to.
+    private func sectionForLeg(_ leg: Int) -> RouteDirections.Section? {
+        if let section { return section }
+        let sections = composer.directions.sections
+        guard !sections.isEmpty else { return nil }
+        return sections[min(leg, sections.count - 1)]
+    }
 
-    private func begin(_ hit: Hit) {
+    // MARK: Speech
+
+    private func announcement(for hit: Hit) -> String? {
         switch hit {
         case .none:
-            feedback.set(.none)
+            return nil
         case .endpoint(let i):
-            feedback.set(.landmark)
             let endpoint = map.endpoints[i]
             if endpoint.kind == .departure {
-                speak("\(endpoint.announcement). \(routeToDestination)", for: hit)
-            } else {
-                speak(endpoint.announcement, for: hit)
+                return "\(endpoint.announcement). Route to \(map.destinationName)"
             }
+            return endpoint.announcement
         case .landmark(let i):
-            feedback.set(.landmark)
-            speak(map.landmarks[i].announcement, for: hit)
+            return map.landmarks[i].announcement
         case .intersection(let i):
-            feedback.set(.intersection)
-            speak(map.intersections[i].announcement, for: hit)
-        case .route(let leg):
-            feedback.set(.route)
-            if leg != lastAnnouncedLeg {
-                lastAnnouncedLeg = leg
-                speak(routeAnnouncement(leg: leg), for: hit)
+            let intersection = map.intersections[i]
+            let name = composer.intersectionName(intersection)
+            switch intersection.role {
+            case .next: return "Next: \(name)"
+            case .sectionStart: return "Start of section: \(name)"
+            case .route, .beyond: return name
             }
+        case .route(let leg):
+            guard let s = sectionForLeg(leg) else { return "Route" }
+            if section != nil {
+                return leg == 0 ? composer.routeLeg(s, first: false) : composer.routeContinuation(s)
+            }
+            return composer.routeLeg(s, first: leg == 0)
         case .street(let i):
-            feedback.set(.road)
-            speak(map.streets[i].name, for: hit)
+            return map.streets[i].name
         }
     }
 
-    private var routeToDestination: String {
-        "Route to \(map.destinationName)"
-    }
-
-    private func routeAnnouncement(leg: Int) -> String {
-        leg == 0 ? routeToDestination : "Route"
+    /// What a single tap adds: the turn-by-turn direction where there is one.
+    private func tapDetail(for hit: Hit) -> String? {
+        guard options.turnByTurn else { return nil }
+        let directions = composer.directions
+        switch hit {
+        case .intersection(let i):
+            let intersection = map.intersections[i]
+            switch intersection.role {
+            case .next:
+                return section.map(composer.maneuver)
+            case .sectionStart:
+                // The turn made at the intersection this section starts from.
+                guard let section, section.index > 1 else { return nil }
+                return composer.maneuver(directions.sections[section.index - 2])
+            case .route:
+                return directions.section(endingAt: intersection.id).map(composer.maneuver)
+            case .beyond:
+                return nil
+            }
+        case .route(let leg):
+            guard let s = sectionForLeg(leg) else { return nil }
+            if section != nil, leg > 0 { return composer.routeContinuation(s) }
+            return composer.walk(s)
+        default:
+            return nil
+        }
     }
 
     private func speak(_ text: String, for hit: Hit) {
@@ -251,16 +320,25 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         feedback.speak(text)
     }
 
-    private func announcement(for hit: Hit) -> String? {
+    private func begin(_ hit: Hit) {
         switch hit {
-        case .none: return nil
-        case .endpoint(let i):
-            let endpoint = map.endpoints[i]
-            return endpoint.kind == .departure ? "\(endpoint.announcement). \(routeToDestination)" : endpoint.announcement
-        case .landmark(let i): return map.landmarks[i].announcement
-        case .intersection(let i): return map.intersections[i].announcement
-        case .route(let leg): return routeAnnouncement(leg: leg)
-        case .street(let i): return map.streets[i].name
+        case .none:
+            feedback.set(.none)
+        case .endpoint, .landmark:
+            feedback.set(.landmark)
+            if let text = announcement(for: hit) { speak(text, for: hit) }
+        case .intersection:
+            feedback.set(.intersection)
+            if let text = announcement(for: hit) { speak(text, for: hit) }
+        case .route(let leg):
+            feedback.set(.route)
+            if leg != lastAnnouncedLeg {
+                lastAnnouncedLeg = leg
+                if let text = announcement(for: hit) { speak(text, for: hit) }
+            }
+        case .street:
+            feedback.set(.road)
+            if let text = announcement(for: hit) { speak(text, for: hit) }
         }
     }
 
@@ -273,8 +351,17 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         case .landmark(let i): return "Landmark - \(map.landmarks[i].name)"
         case .intersection(let i):
             let x = map.intersections[i]
-            return (x.kind == .roundabout ? "Roundabout - " : "Intersection - ") + x.name
-        case .route(let leg): return "Route (leg \(leg + 1))"
+            var name = (x.kind == .roundabout ? "Roundabout - " : "Intersection - ") + x.name
+            switch x.role {
+            case .next: name += " (next)"
+            case .sectionStart: name += " (section start)"
+            case .beyond: name += " (beyond destination)"
+            case .route: break
+            }
+            return name
+        case .route(let leg):
+            if section != nil { return leg == 0 ? "Route" : "Route (turn)" }
+            return "Route (leg \(leg + 1))"
         case .street(let i): return map.streets[i].name
         }
     }
@@ -315,8 +402,10 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         let found = rawHit(at: mm)
         feedback.pulse()
         log.event(.gesture, "Single tap", detail: logName(for: found))
-        // The element was already named when the finger landed on it.
-        if !lastTouchSpoken.contains(found), let text = announcement(for: found) {
+        if let detail = tapDetail(for: found) {
+            feedback.speak(detail)
+        } else if !lastTouchSpoken.contains(found), let text = announcement(for: found) {
+            // The element was already named when the finger landed on it.
             feedback.speak(text)
         }
     }
@@ -331,9 +420,13 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
             log.event(.gesture, "Double tap", detail: "No intersection")
             return
         }
-        log.event(.gesture, "Double tap", detail: "\(tapped.name)")
-        guard map.waypointIDs.contains(tapped.id), !tapped.detailFile.isEmpty else {
-            feedback.speak("This intersection is not on your route.")
+        log.event(.gesture, "Double tap", detail: tapped.name)
+        guard options.intersectionCloseUps else {
+            feedback.speak("Intersection close-ups are turned off.", essential: true)
+            return
+        }
+        guard config.route.details.contains(tapped.detailFile) else {
+            feedback.speak("There is no close-up for this intersection.", essential: true)
             return
         }
         feedback.silence()
@@ -341,18 +434,20 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
     }
 
     func canvasRequestsBack(_ canvas: TactileCanvasView, gesture: String) {
-        guard !isLeaving else { return }
-        isLeaving = true
-        log.event(.gesture, "Back", detail: gesture)
-        canvas.reset()
-        feedback.silence()
-        feedback.backTap()
-        onBack?()
+        onBack?(gesture)
+    }
+
+    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String) -> Bool {
+        guard section != nil else {
+            log.event(.gesture, forward ? "Next section" : "Previous section", detail: "\(gesture), full route map")
+            feedback.speak("Sections are not used on this map.", essential: true)
+            return false
+        }
+        return onSection?(forward, gesture) ?? false
     }
 
     func canvasMagicTap(_ canvas: TactileCanvasView) {
-        log.event(.gesture, "Magic tap", detail: "Route summary")
-        feedback.speak(magicTapSummary)
+        onMagicTap?()
     }
 
     private func logTouch(_ type: StudyTouchType, hit: Hit, mm: CGPoint, screen: CGPoint) {

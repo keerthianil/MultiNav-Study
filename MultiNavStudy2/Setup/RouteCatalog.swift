@@ -11,6 +11,9 @@ struct RouteInfo: Codable, Hashable, Identifiable {
     let summary: String
     let overview: String
     let details: [String]
+    /// Section maps, in walking order, and the directions file for them.
+    let sections: [String]
+    let directions: String
     let departure: String
     let destination: String
 }

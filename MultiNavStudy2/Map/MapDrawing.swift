@@ -60,6 +60,19 @@ enum MapDrawing {
         context.setLineCap(.round)
     }
 
+    /// A dark screen for when the researcher hides the map. Touch still works.
+    static func drawHiddenMap(in context: CGContext) {
+        let bounds = context.boundingBoxOfClipPath
+        context.setFillColor(UIColor.black.cgColor)
+        context.fill(bounds)
+        let text = NSAttributedString(string: "Map hidden", attributes: [
+            .font: UIFont.systemFont(ofSize: 13, weight: .regular),
+            .foregroundColor: UIColor(white: 0.25, alpha: 1),
+        ])
+        let size = text.size()
+        text.draw(at: CGPoint(x: bounds.midX - size.width / 2, y: bounds.midY - size.height / 2))
+    }
+
     /// White label inside a landmark box, shrunk to fit.
     static func drawTag(_ tag: String, in rect: CGRect) {
         guard !tag.isEmpty else { return }

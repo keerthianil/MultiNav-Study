@@ -24,6 +24,8 @@ struct MapLine {
     let name: String
     let points: [CGPoint]
     let width: CGFloat
+    /// The name without compass words, for when sides are switched off.
+    var simpleName: String?
 }
 
 struct RouteEndpoint {
@@ -33,10 +35,12 @@ struct RouteEndpoint {
     let announcement: String
 }
 
-// MARK: - Level 1
+// MARK: - Route maps (full route and sections)
 
 struct OverviewIntersection {
     enum Kind { case junction, roundabout }
+    /// Where an intersection sits on a section map.
+    enum Role { case route, sectionStart, next, beyond }
     let id: String
     let name: String
     let announcement: String
@@ -44,6 +48,9 @@ struct OverviewIntersection {
     let legs: Int
     let detailFile: String
     let position: CGPoint
+    /// "Bedford Street, and Deering Avenue", for announcements without the type.
+    var namesText = ""
+    var role: Role = .route
 }
 
 struct OverviewLandmark {
@@ -81,6 +88,9 @@ struct OverviewMap {
     let destinationName: String
     let waypointIDs: [String]
     let endpoints: [RouteEndpoint]
+    /// On a section map: which section, out of how many.
+    var sectionIndex: Int?
+    var sectionCount: Int?
 
     /// Distance along the route at which each waypoint is reached.
     var legBoundaries: [CGFloat] {
@@ -89,12 +99,14 @@ struct OverviewMap {
     }
 }
 
-// MARK: - Level 2
+// MARK: - Intersection close-ups
 
 struct Crosswalk {
     enum Ends { case both, start, end }
     let id: String
     let name: String
+    /// The name without signal, marking or one-way details.
+    let simpleName: String
     let start: CGPoint
     let end: CGPoint
     let ends: Ends
@@ -119,6 +131,10 @@ struct DetailMap {
     let title: String
     let spokenTitle: String
     let intro: String
+    /// "4-way intersection" and "Traffic signals.", the parts of the intro
+    /// that can be switched off.
+    let typeText: String
+    let controlText: String
     let isRoundabout: Bool
     let size: CGSize
     let roads: [MapLine]
@@ -158,6 +174,10 @@ enum MapLoader {
         var departure = ""
         var destination = ""
         var waypoints: [String] = []
+        var startsAtDeparture = true
+        var endsAtDestination = true
+        var sectionIndex: Int?
+        var sectionCount: Int?
 
         for element in document.features {
             let custom = element.properties.custom
@@ -166,6 +186,13 @@ enum MapLoader {
                 streets.append(MapLine(id: element.id, name: element.properties.name,
                                        points: element.points, width: MapStyle.Overview.roadWidth))
             case .intersection:
+                let role: OverviewIntersection.Role
+                switch custom["role"] {
+                case "from": role = .sectionStart
+                case "to": role = .next
+                case "beyond": role = .beyond
+                default: role = .route
+                }
                 intersections.append(OverviewIntersection(
                     id: element.id,
                     name: element.properties.name,
@@ -173,7 +200,9 @@ enum MapLoader {
                     kind: custom["kind"] == "roundabout" ? .roundabout : .junction,
                     legs: Int(custom["legs"] ?? "") ?? 0,
                     detailFile: custom["detail"] ?? "",
-                    position: element.points.first ?? .zero))
+                    position: element.points.first ?? .zero,
+                    namesText: custom["names_text"] ?? "",
+                    role: role))
             case .landmark:
                 landmarks.append(OverviewLandmark(
                     id: element.id,
@@ -188,22 +217,33 @@ enum MapLoader {
                 departure = custom["departure"] ?? ""
                 destination = custom["destination"] ?? ""
                 waypoints = (custom["waypoints"] ?? "").split(separator: ",").map(String.init)
+                // Section maps start and end part-way along the walk.
+                startsAtDeparture = (custom["start_kind"] ?? "departure") == "departure"
+                endsAtDestination = (custom["end_kind"] ?? "destination") == "destination"
+                sectionIndex = custom["section"].flatMap { Int($0) }
+                sectionCount = custom["sections"].flatMap { Int($0) }
             default:
                 break
             }
         }
         guard route.count > 1 else { throw MapLoadError.missing(file, "route") }
 
-        let endpoints = [
-            RouteEndpoint(kind: .departure, position: route[0], announcement: "Your location, \(departure)"),
-            RouteEndpoint(kind: .destination, position: route[route.count - 1], announcement: "Destination, \(destination)"),
-        ]
+        var endpoints: [RouteEndpoint] = []
+        if startsAtDeparture {
+            endpoints.append(RouteEndpoint(kind: .departure, position: route[0],
+                                           announcement: "Your location, \(departure)"))
+        }
+        if endsAtDestination {
+            endpoints.append(RouteEndpoint(kind: .destination, position: route[route.count - 1],
+                                           announcement: "Destination, \(destination)"))
+        }
         return OverviewMap(
             title: document.metadata?.name ?? file,
             size: CGSize(width: document.bounds.width, height: document.bounds.height),
             streets: streets, intersections: intersections, landmarks: landmarks,
             route: route, departureName: departure, destinationName: destination,
-            waypointIDs: waypoints, endpoints: endpoints)
+            waypointIDs: waypoints, endpoints: endpoints,
+            sectionIndex: sectionIndex, sectionCount: sectionCount)
     }
 
     static func detail(named file: String, bundle: Bundle = .main) throws -> DetailMap {
@@ -211,6 +251,8 @@ enum MapLoader {
         var title = document.metadata?.name ?? file
         var spokenTitle = title
         var intro = title
+        var typeText = ""
+        var controlText = ""
         var isRoundabout = false
         var roads: [MapLine] = []
         var islands: [MapLine] = []
@@ -232,6 +274,8 @@ enum MapLoader {
                 intro = name
                 title = custom["title"] ?? title
                 spokenTitle = custom["spoken_title"] ?? title
+                typeText = custom["type_text"] ?? ""
+                controlText = custom["control_text"] ?? ""
                 isRoundabout = custom["kind"] == "roundabout"
             case .corridor:
                 roads.append(MapLine(id: element.id, name: name, points: element.points, width: width))
@@ -239,7 +283,7 @@ enum MapLoader {
                 islands.append(MapLine(id: element.id, name: name, points: element.points, width: width))
             case .sidewalk:
                 sidewalks.append(MapLine(id: element.id, name: name, points: element.points,
-                                         width: MapStyle.Detail.sidewalkWidth))
+                                         width: MapStyle.Detail.sidewalkWidth, simpleName: custom["simple_name"]))
             case .crosswalk:
                 let points = element.points
                 guard points.count >= 2 else { continue }
@@ -249,7 +293,8 @@ enum MapLoader {
                 case "end": ends = .end
                 default: ends = .both
                 }
-                crosswalks.append(Crosswalk(id: element.id, name: name, start: points[0],
+                crosswalks.append(Crosswalk(id: element.id, name: name, simpleName: custom["simple_name"] ?? name,
+                                            start: points[0],
                                             end: points[points.count - 1], ends: ends,
                                             assumed: custom["assumed"] == "yes",
                                             paintStart: points[0], paintEnd: points[points.count - 1]))
@@ -297,7 +342,8 @@ enum MapLoader {
         }
 
         return DetailMap(
-            title: title, spokenTitle: spokenTitle, intro: intro, isRoundabout: isRoundabout,
+            title: title, spokenTitle: spokenTitle, intro: intro, typeText: typeText, controlText: controlText,
+            isRoundabout: isRoundabout,
             size: CGSize(width: document.bounds.width, height: document.bounds.height),
             roads: roads, islands: islands, sidewalks: sidewalks,
             crosswalks: crosswalks, ring: ring, centralIsland: centralIsland, center: center,

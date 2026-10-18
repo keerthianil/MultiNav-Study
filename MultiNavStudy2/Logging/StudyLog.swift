@@ -2,13 +2,16 @@
 // Study logs, written to the app's Documents folder (visible in the Files
 // app under On My iPhone > MultiNav Study 2, and from Finder over USB).
 //
-// Each time a route is opened, one session writes two CSV files:
-//   Route1_20260930_153012_touches.csv  every touch down, move (10 per
-//       second) and up, with the element under the finger, in points and mm
-//   Route1_20260930_153012_events.csv   screens opened, taps, double
-//       taps, back gestures, everything spoken, VoiceOver changes, errors
-// Across all sessions, MultiNav_app_log.csv keeps app starts, background and
-// foreground changes, and every error.
+// Each session (one route, one stage) writes two CSV files:
+//   Route1_PreJourney_20261016_153012_touches.csv  every touch down, move
+//       (10 per second) and up, with the element under the finger, in
+//       points and mm, and the stage, view and section it happened in
+//   Route1_PreJourney_20261016_153012_events.csv   every setting used,
+//       screens and sections opened, taps, double taps, back gestures,
+//       everything spoken, time warnings, VoiceOver changes, errors
+// A practice run adds "_Practice" after the stage. Across all sessions,
+// MultiNav_app_log.csv keeps app starts, background and foreground changes,
+// sessions and every error.
 //
 // The touch file is written by a TouchLogger, the logging protocol from the
 // MultiNav package.
@@ -64,7 +67,7 @@ final class CSVWriter {
 @MainActor
 final class StudyTouchLogger: TouchLogger {
     static let header = ["Time Stamp", "Trial Time", "Touch Event", "Object Type", "Touch X", "Touch Y",
-                         "Touch X (mm)", "Touch Y (mm)", "Condition", "VoiceOver"]
+                         "Touch X (mm)", "Touch Y (mm)", "Stage", "View", "Section", "Condition", "VoiceOver"]
 
     private var writer: CSVWriter?
     private(set) var fileURL: URL?
@@ -101,6 +104,9 @@ final class StudyTouchLogger: TouchLogger {
             String(format: "%.1f", event.touchPoint.y),
             event.custom["x_mm"] ?? "",
             event.custom["y_mm"] ?? "",
+            event.custom["stage"] ?? "",
+            event.custom["view"] ?? "",
+            event.custom["section"] ?? "",
             event.custom["condition"] ?? "",
             event.custom["voiceover"] ?? "",
         ])
@@ -120,19 +126,35 @@ final class StudyLog {
 
     enum Category: String {
         case session = "Session"
+        case setting = "Setting"
         case screen = "Screen"
+        case section = "Section"
         case gesture = "Gesture"
         case speech = "Speech"
+        case timer = "Timer"
         case voiceOver = "VoiceOver"
         case app = "App"
         case error = "Error"
     }
 
+    /// Which map the participant is on, for the View column.
+    enum View: String {
+        case fullRoute = "Full route"
+        case section = "Section"
+        case intersection = "Intersection"
+    }
+
+    static let eventHeader = ["Time Stamp", "Trial Time", "Category", "Event", "Detail",
+                              "Stage", "View", "Section", "Condition"]
+
     private let touchLogger = StudyTouchLogger()
     private var eventWriter: CSVWriter?
     private var appLog: CSVWriter?
     private var sessionStart: Date?
-    private(set) var activeRouteID: String?
+    private(set) var activeSessionID: UUID?
+    private var stage = ""
+    private var view = ""
+    private var section = ""
     private var condition = ""
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "MultiNavStudy2", category: "study")
 
@@ -151,34 +173,44 @@ final class StudyLog {
 
     // MARK: Sessions
 
-    func startSession(route: RouteInfo) {
-        if activeRouteID == route.id, isSessionActive { return }
-        endSession(reason: "New route opened")
+    /// Log file name without the ending, e.g. Route1_PreJourney_20261016_153012.
+    static func fileStem(route: Int, stage: StudyStage, practice: Bool, date: Date) -> String {
+        "Route\(route)_\(stage.fileToken)" + (practice ? "_Practice" : "") + "_\(fileStamp(date))"
+    }
+
+    func startSession(config: SessionConfig) {
+        if activeSessionID == config.id, isSessionActive { return }
+        endSession(reason: "New session started")
 
         let now = Date()
         sessionStart = now
-        activeRouteID = route.id
-        condition = "Route \(route.number) - Map Overview"
+        activeSessionID = config.id
+        stage = config.stageDescription
+        view = ""
+        section = ""
+        condition = "Route \(config.route.number), \(config.stageDescription)"
 
-        let stamp = Self.fileStamp(now)
-        let base = "Route\(route.number)_\(stamp)"
+        let base = Self.fileStem(route: config.route.number, stage: config.stage, practice: config.practiceRun, date: now)
         let touchURL = Self.documents.appendingPathComponent(base + "_touches.csv")
         let eventURL = Self.documents.appendingPathComponent(base + "_events.csv")
 
         touchLogger.startSession(metadata: ["file": touchURL.path])
         do {
-            eventWriter = try CSVWriter(url: eventURL, header: ["Time Stamp", "Trial Time", "Category", "Event", "Detail", "Condition"])
+            eventWriter = try CSVWriter(url: eventURL, header: Self.eventHeader)
         } catch {
             self.error("Could not create event log \(eventURL.lastPathComponent): \(error.localizedDescription)")
         }
 
-        event(.session, "Session started", detail: "Route \(route.number): \(route.title)")
+        event(.session, "Session started", detail: "Route \(config.route.number): \(config.route.title)")
+        for (name, value) in config.logEntries {
+            event(.setting, name, detail: value)
+        }
         event(.session, "Device", detail: "\(UIDevice.current.model), \(AppInfo.versionDescription)")
         event(.voiceOver, UIAccessibility.isVoiceOverRunning ? "VoiceOver on" : "VoiceOver off")
         appEvent("Session started", detail: base)
     }
 
-    func endSession(reason: String = "Returned to the route list") {
+    func endSession(reason: String) {
         guard isSessionActive else { return }
         event(.session, "Session ended", detail: reason)
         appEvent("Session ended", detail: reason)
@@ -186,10 +218,14 @@ final class StudyLog {
         eventWriter?.close()
         eventWriter = nil
         sessionStart = nil
-        activeRouteID = nil
+        activeSessionID = nil
     }
 
-    func setCondition(_ text: String) {
+    /// Records the map now on screen. `section` is the section number in
+    /// section by section mode (kept while an intersection close-up is open).
+    func setView(_ newView: View, section newSection: Int?, condition text: String) {
+        view = newView.rawValue
+        section = newSection.map(String.init) ?? ""
         condition = text
         event(.screen, "Opened", detail: text)
     }
@@ -209,6 +245,9 @@ final class StudyLog {
             custom: [
                 "x_mm": String(format: "%.2f", mm.x),
                 "y_mm": String(format: "%.2f", mm.y),
+                "stage": stage,
+                "view": view,
+                "section": section,
                 "condition": condition,
                 "voiceover": UIAccessibility.isVoiceOverRunning ? "On" : "Off",
             ]))
@@ -218,7 +257,7 @@ final class StudyLog {
         guard let start = sessionStart, let eventWriter else { return }
         let now = Date()
         eventWriter.write([Self.timestamp(now), Self.trialTime(now.timeIntervalSince(start)),
-                           category.rawValue, name, detail, condition])
+                           category.rawValue, name, detail, stage, view, section, condition])
     }
 
     /// App-wide events, kept across sessions.

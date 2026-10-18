@@ -63,13 +63,43 @@ struct MapDataTests {
                 + overview.landmarks.map(\.announcement) + overview.endpoints.map(\.announcement)
             for file in route.details {
                 let detail = try MapLoader.detail(named: file)
-                texts += [detail.intro] + detail.crosswalks.map(\.name) + detail.sidewalks.map(\.name)
+                texts += [detail.intro, detail.typeText, detail.controlText]
+                    + detail.crosswalks.map(\.name) + detail.crosswalks.map(\.simpleName)
+                    + detail.sidewalks.map(\.name) + detail.sidewalks.compactMap(\.simpleName)
                     + detail.roads.map(\.name) + detail.islands.map(\.name) + detail.endpoints.map(\.announcement)
             }
         }
         for text in texts {
             #expect(!text.contains("\u{2014}") && !text.contains("\u{2013}"), "dash in: \(text)")
             #expect(!text.contains("\u{2192}"), "arrow in: \(text)")
+        }
+    }
+
+    /// Every route has a section map for each stretch, and each one starts
+    /// and ends where the walk does.
+    @Test(arguments: RouteCatalog.routes)
+    func sectionMapsFollowTheWalk(route: RouteInfo) throws {
+        let directions = try RouteDirections.load(named: route.directions)
+        #expect(directions.sections.map(\.map) == route.sections)
+        #expect(directions.sections.last?.endsAtDestination == true)
+        for (i, section) in directions.sections.enumerated() {
+            #expect(section.index == i + 1)
+            #expect(section.count == directions.sections.count)
+            let map = try MapLoader.overview(named: section.map)
+            #expect(map.route.count >= 2)
+            #expect(map.sectionIndex == section.index)
+            #expect(map.endpoints.contains { $0.kind == .departure } == (i == 0), "start dot in \(section.map)")
+            #expect(map.endpoints.contains { $0.kind == .destination } == section.endsAtDestination,
+                    "destination dot in \(section.map)")
+            let area = CGRect(origin: .zero, size: map.size)
+            for point in map.route + map.streets.flatMap(\.points) {
+                #expect(area.contains(point), "\(section.map) leaves its area")
+            }
+            if !section.endsAtDestination {
+                let next = try #require(map.intersections.first { $0.role == .next }, "no next intersection in \(section.map)")
+                #expect(next.id == section.junctionId)
+                #expect(route.details.contains(section.detail))
+            }
         }
     }
 
