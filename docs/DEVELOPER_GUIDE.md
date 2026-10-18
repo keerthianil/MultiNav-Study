@@ -10,15 +10,16 @@ MultiNavStudy2.xcodeproj      project; the app folder is a synchronized group
 Config/Info.plist             file sharing key, merged into the generated Info.plist
 MultiNavStudy2/
   App/                        app entry, lifecycle
-  Home/                       route list (HomeView) and routes.json reader (RouteCatalog)
-  Screens/                    the two map screens and the SwiftUI to UIKit bridge
+  Setup/                      study setup screen, settings, routes.json reader (RouteCatalog)
+  Directions/                 turn-by-turn directions and the sentences built from them
+  Screens/                    the map screens, the session that runs them, the SwiftUI to UIKit bridge
   Map/                        map model, drawing, touch surface, the two map controllers
   Feedback/                   haptics, sounds, speech, and the FeedbackManager that runs them
   Logging/                    study logs and the Data Files screen
   Support/                    swipe-back blocker
   Maps/                       generated map JSON, bundled as resources
   Assets.xcassets             app icon and accent colour
-MultiNavStudy2Tests/          map data tests (Swift Testing)
+MultiNavStudy2Tests/          map data and session tests (Swift Testing)
 tools/                        map generator, OSM extracts, the team's KML, icon script (make_app_icon.py)
 docs/                         this guide, ROUTES.md, map previews
 ```
@@ -28,12 +29,16 @@ docs/                         this guide, ROUTES.md, map previews
 | File | What it does |
 |---|---|
 | `App/MultiNavStudy2App.swift` | `@main`; starts the feedback engines, logs launch, background and foreground |
-| `Home/HomeView.swift` | route list, Data Files; ends the log session on returning to the list |
-| `Home/RouteCatalog.swift` | reads `Maps/routes.json` |
-| `Screens/MapScreens.swift` | Level 1 and Level 2 screens; loads a map when the screen is created, starts the log session, announces the screen |
-| `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps and double taps, VoiceOver direct touch, back gestures |
-| `Map/OverviewController.swift` | Level 1: drawing, hit-testing, feedback, double tap to open an intersection |
-| `Map/DetailController.swift` | Level 2: drawing, hit-testing, feedback, double tap to go back |
+| `Setup/SetupView.swift` | the first screen: route, stage, per-stage options, Start; ends the log session on returning to it |
+| `Setup/StudySettings.swift` | the settings (`StudySettings`, one `StageSettings` per stage), saved in UserDefaults by `SettingsStore`; `SessionConfig` is the frozen copy a session runs with |
+| `Setup/RouteCatalog.swift` | reads `Maps/routes.json` |
+| `Directions/RouteDirections.swift` | reads `Maps/routeN_directions.json`: one section per stretch of the walk |
+| `Directions/DirectionsComposer.swift` | builds every spoken direction from those pieces, leaving out what the settings switch off |
+| `Screens/RouteSession.swift` | one session: the map shown, moving between sections, the time limit, the lock, the log session |
+| `Screens/MapScreens.swift` | the route map and close-up screens, the top bar (End, section arrows, time left), screen announcements |
+| `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps and double taps, VoiceOver direct touch, back and section gestures |
+| `Map/OverviewController.swift` | route maps (full route or one section): drawing, hit-testing, feedback, taps, double tap to open an intersection |
+| `Map/DetailController.swift` | intersection close-up: drawing, hit-testing, feedback, double tap to go back |
 | `Map/MapModels.swift` | reads a map with the MultiNav `TactileMapDocument` loader into drawable elements; works out turn dots and crosswalk stripe spans |
 | `Map/MapTransform.swift` | millimetres to points with MultiNav `PhysicalDimensions` |
 | `Map/MapStyle.swift` | every colour, size and touch radius, in mm |
@@ -51,9 +56,9 @@ docs/                         this guide, ROUTES.md, map previews
 Everything on a map is in **millimetres on the glass**. `MapTransform` turns millimetres into points with
 `PhysicalDimensions.mmToPoints`, so a 4 mm road is 4 mm wide on every iPhone.
 
-* Level 1 maps have their origin at the top left, y down, inside a 60 by 116 mm reference area (a 6.1 inch
-  iPhone below the navigation bar).
-* Level 2 maps have their origin at the junction centre, y down, in the same reference area.
+* Full route and section maps have their origin at the top left, y down, inside a 60 by 116 mm reference
+  area (a 6.1 inch iPhone below the navigation bar).
+* Close-ups have their origin at the junction centre, y down, in the same reference area.
 
 The map is centred in the space between the navigation bar and the home indicator. If a phone has less room
 than the reference area, the whole map shrinks to fit; it never grows past true size.
@@ -67,7 +72,11 @@ than the reference area, the whole map shrinks to fit; it never grows past true 
 * `tools/route_spec.py`, the study choices: the intersections on each route, the side of the street the walk
   uses at each one, endpoint names, and traffic control the team confirmed.
 
-### Level 1
+It writes, per route: the full route map (`routeN_overview`), one close-up per intersection
+(`routeN_l2_<junction>`), one map per section (`routeN_section_K`) and the directions (`routeN_directions`),
+plus `routes.json`, `docs/ROUTES.md` and, with `--preview`, a true-size PNG of every map.
+
+### Full route map
 
 For each route the generator lists the stops in order (start, each intersection, destination) and gives
 each street run one direction, the true bearing turned so the route goes up the screen and squared to 90
@@ -79,7 +88,25 @@ stretched by up to 2.6 times to use the rest of the screen.
 Orientation: Routes 1 and 2 have northeast at the top, Route 3 southwest, Route 4 southeast. Portland's
 downtown grid runs northeast and northwest, so a turn of 45 degrees squares its streets to the screen.
 
-### Level 2
+### Sections and directions
+
+A route has one section per stretch: from the start to the first intersection, from each intersection to the
+next, and from the last one to the destination. `build_directions` writes, for each section, the street and
+side walked (as a compass word and as left or right), the distance, and what to do at the intersection it ends
+at: the crossings in walking order (with signal, marking, island and one-way details), the side walked round a
+roundabout, and the turn, worked out from the bearings of the arm walked in on and the arm walked out on
+(straight within 25 degrees, slight to 60, a turn to 150, sharp beyond).
+
+`build_section` draws each section heading-up: the street walked runs straight up the middle, from where the
+traveller is (88 mm down) to the next intersection (32 mm down), with every other arm of both intersections as
+a 16 mm stub at its squared angle, and the route drawn 14 mm past the top intersection along the street it
+turns onto. "Up" follows the street's own direction, not the straight line between the two points, so a
+street that is walked straight is drawn straight.
+
+The app joins the pieces into sentences (`DirectionsComposer`); `build_maps.py` joins them the same way, with
+every detail on, for the directions in `docs/ROUTES.md`, and a test checks one section word for word.
+
+### Close-ups
 
 Each arm keeps its true bearing, turned the same way as the overview. Roads are 12 mm wide (7 mm at the
 roundabout). Sidewalks run 13.1 mm from each road's centre line and meet at the corners; crosswalks run
@@ -104,7 +131,11 @@ a second finger stops exploring so multi-finger gestures do not buzz.
 * A tap is a touch shorter than 0.45 s that moves less than 28 points. A second tap within 0.45 s and 48
   points is a double tap; a single tap is reported once the double-tap window has passed.
 * Back: three-finger swipe right (a gesture recogniser, plus a raw-touch check), VoiceOver escape,
-  VoiceOver three-finger scroll right. Each controller ignores a second back request.
+  VoiceOver three-finger scroll right. On a route map the session decides: leave only if the setup allows it.
+* Sections: three-finger swipe up and down, the same two ways, and VoiceOver three-finger scroll up and down.
+  The session reports a new section to VoiceOver as a page change; at either end it returns false so
+  VoiceOver plays its boundary sound.
+* A three-finger gesture is acted on once even if the recogniser and the raw check both see it.
 
 Each controller hit-tests in millimetres in a fixed priority order (see the tables in the README). Once the
 finger is on an element it keeps it within an extra 0.8 mm, so a finger resting on an edge does not flicker
@@ -116,6 +147,11 @@ times a second; feedback reacts to every move.
 `FeedbackManager.set(_:)` takes one mode. A new mode stops the old one's haptic loop and timers first, so
 nothing is left running. Speech is separate and is never stopped by a mode change; a new phrase cuts off the
 old one, and the same phrase asked for twice within half a second is spoken once.
+
+A session switches vibration, sounds and map speech on or off with `configure(_:)`, and sets the system
+voice speed. Prompts about the session (section numbers, time warnings, the lock message) are spoken with
+`essential: true`, so they are heard even with map speech off. A route overview or a section's directions
+after a new screen are spoken queued, so they follow VoiceOver reading the screen instead of cutting it off.
 
 | Mode | Haptic | Sound |
 |---|---|---|
@@ -140,6 +176,9 @@ is playback mixed with others, so both are heard with the ringer switch off and 
 | Colours, line widths, dot sizes, touch radii | `Map/MapStyle.swift` (keep `tools/build_maps.py` and `tools/preview.py` in step for the generator) |
 | Haptic strengths and timings | `Feedback/HapticService.swift`, `Feedback/FeedbackManager.swift` |
 | Spoken wording of crosswalks, sidewalks, intro lines | `tools/build_maps.py` (`crosswalk_name`, `control_sentence`, `build_level2`) |
+| Turn-by-turn pieces (turn words, crossing details) | `tools/build_maps.py` (`maneuver`, `turn_word`, `crossing_detail`) |
+| How directions are joined into sentences | `Directions/DirectionsComposer.swift`, and its copy in `tools/build_maps.py` (`walk_sentence`, `maneuver_sentences`) |
+| Setup options and their defaults | `Setup/StudySettings.swift`, `Setup/SetupView.swift` |
 | Which side of a street a route walks, endpoint names, control | `tools/route_spec.py` |
 | Minimum spacing on the overview | `MIN_GAP_JUNCTIONS`, `STUB` in `tools/build_maps.py` |
 | Log columns | `Logging/StudyLog.swift` |
