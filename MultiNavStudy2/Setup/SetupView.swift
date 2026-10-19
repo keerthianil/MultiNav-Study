@@ -239,8 +239,8 @@ struct SetupView: View {
         } header: {
             Text("Every stage")
         } footer: {
-            Text("When participants cannot leave, back gestures on the map only close intersection close-ups, "
-                 + "and you end the session with End. "
+            Text("When participants can leave, a three-finger swipe right or the VoiceOver escape gesture on the map "
+                 + "ends the session, as before. Turn it off to keep them on the map; then only End ends the session. "
                  + "Sides: \"on the northwest side\" or \"on the right-hand side\". "
                  + "The system voice is used when VoiceOver is off; VoiceOver uses its own voice and speed.")
         }

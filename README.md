@@ -52,8 +52,8 @@ The options below the Start button belong to the stage being set up:
 | Feedback | Vibration, Sounds, Speech | switch each off for a condition; prompts such as section numbers and time warnings are still spoken |
 | Time limit | Learning time | pre-journey only: no limit, or 2 to 30 minutes, with "One minute left" and "Learning time is over" |
 
-The last group applies to every stage: whether the participant can leave the map with gestures (off by
-default), distances in feet or metres, sides as compass words or left and right, and the speed of the system
+The last group applies to every stage: whether the participant can leave the map with the back gestures
+(on by default, as before; turn it off to lock them on the map), distances in feet or metres, sides as compass words or left and right, and the speed of the system
 voice (used when VoiceOver is off). *Reset All Settings* restores the defaults. Settings are kept between
 launches.
 
@@ -63,9 +63,9 @@ option is on except the spoken overview and the time limit.
 ### The map screen
 
 The top bar shows the route (and the section, in section by section mode) and the learning time left. There
-is no Back button: **End** ends the session after a confirmation, so a participant cannot land on the setup
-screen by accident. With *Participant can leave the map* off, a back gesture on the map says "The map is
-locked. Ask the researcher to end the session."
+is no Back button: **End** ends the session after a confirmation, so a stray tap at the top of the screen
+cannot end it. The back gestures still leave the map as before; with *Participant can leave the map* off, they
+say "The map is locked. Ask the researcher to end the session." instead.
 
 ### Full route map
 
@@ -140,7 +140,7 @@ with the roads, sidewalks, crosswalks and islands it really has, and the walking
 | Double tap | close-up | back to the map |
 | Three-finger swipe up / down | section by section | next / previous section |
 | Three-finger swipe right | close-up | back to the map |
-| Three-finger swipe right | route maps | leave the map, only if the setup allows it |
+| Three-finger swipe right | route maps | leave the map and end the session (unless the setup locks the map) |
 | Two-finger scrub (VoiceOver escape) | as three-finger swipe right | |
 | Two-finger double tap (VoiceOver magic tap) | every map | repeat the section's directions, the route overview or summary, or the intersection summary |
 

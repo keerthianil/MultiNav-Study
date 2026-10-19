@@ -159,7 +159,8 @@ struct StudySettings: Codable, Hashable {
     var practiceRun = false
     var preJourney = StageSettings.defaults(for: .preJourney)
     var onRoute = StageSettings.defaults(for: .onRoute)
-    var participantCanLeave = false
+    /// On by default, so the back gestures leave the map as they always have.
+    var participantCanLeave = true
     var units: DistanceUnits = .feet
     var sideWords: SideWords = .compass
     var voiceSpeed: VoiceSpeed = .normal

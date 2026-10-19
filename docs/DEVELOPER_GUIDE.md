@@ -131,7 +131,8 @@ a second finger stops exploring so multi-finger gestures do not buzz.
 * A tap is a touch shorter than 0.45 s that moves less than 28 points. A second tap within 0.45 s and 48
   points is a double tap; a single tap is reported once the double-tap window has passed.
 * Back: three-finger swipe right (a gesture recogniser, plus a raw-touch check), VoiceOver escape,
-  VoiceOver three-finger scroll right. On a route map the session decides: leave only if the setup allows it.
+  VoiceOver three-finger scroll right. On a route map the session decides: it ends the session and leaves,
+  unless the setup locks the map (then it says so).
 * Sections: three-finger swipe up and down, the same two ways, and VoiceOver three-finger scroll up and down.
   The session reports a new section to VoiceOver as a page change; at either end it returns false so
   VoiceOver plays its boundary sound.
