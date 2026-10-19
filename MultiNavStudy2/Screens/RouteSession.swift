@@ -156,8 +156,10 @@ final class RouteSession: ObservableObject {
     // MARK: Sections
 
     /// Moves to the next or previous section. Returns false at either end.
+    /// After a VoiceOver scroll the new section is reported as a page change,
+    /// as VoiceOver expects; otherwise it is spoken.
     @discardableResult
-    func moveSection(forward: Bool, gesture: String) -> Bool {
+    func moveSection(forward: Bool, gesture: String, voiceOverScroll: Bool = false) -> Bool {
         guard isSectionMode, let directions, let composer, let controller else { return false }
         let target = sectionIndex + (forward ? 1 : -1)
         let name = forward ? "Next section" : "Previous section"
@@ -182,7 +184,12 @@ final class RouteSession: ObservableObject {
         log.event(.section, name, detail: "Section \(section.index) of \(section.count), \(gesture)")
         recordView()
         let withDirections = config.options.turnByTurn && config.options.directionsWhenSectionOpens
-        feedback.speakPageStatus(composer.sectionIntro(section, withDirections: withDirections))
+        let intro = composer.sectionIntro(section, withDirections: withDirections)
+        if voiceOverScroll {
+            feedback.speakPageStatus(intro)
+        } else {
+            feedback.speak(intro, essential: true)
+        }
         return true
     }
 
@@ -267,8 +274,8 @@ final class RouteSession: ObservableObject {
             self.onOpenIntersection?(intersection.detailFile)
         }
         controller.onBack = { [weak self] gesture in self?.requestLeave(gesture: gesture) }
-        controller.onSection = { [weak self] forward, gesture in
-            self?.moveSection(forward: forward, gesture: gesture) ?? false
+        controller.onSection = { [weak self] forward, gesture, voiceOverScroll in
+            self?.moveSection(forward: forward, gesture: gesture, voiceOverScroll: voiceOverScroll) ?? false
         }
         controller.onMagicTap = { [weak self] in self?.magicTap() }
     }

@@ -34,7 +34,9 @@ protocol TactileCanvasDelegate: AnyObject {
     func canvasRequestsBack(_ canvas: TactileCanvasView, gesture: String)
     /// Next (forward) or previous section. Returns false when there is no
     /// section that way, so VoiceOver can play its boundary sound.
-    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String) -> Bool
+    /// `voiceOverScroll` is true when VoiceOver sent the gesture as a scroll.
+    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
+                               voiceOverScroll: Bool) -> Bool
     func canvasMagicTap(_ canvas: TactileCanvasView)
 }
 
@@ -152,9 +154,9 @@ final class TactileCanvasView: UIView {
         case .right:
             return threeFingerAction(.back, gesture: "VoiceOver three-finger swipe right")
         case .up:
-            return threeFingerAction(.next, gesture: "VoiceOver three-finger swipe up")
+            return threeFingerAction(.next, gesture: "VoiceOver three-finger swipe up", voiceOverScroll: true)
         case .down:
-            return threeFingerAction(.previous, gesture: "VoiceOver three-finger swipe down")
+            return threeFingerAction(.previous, gesture: "VoiceOver three-finger swipe down", voiceOverScroll: true)
         default:
             return false
         }
@@ -179,7 +181,7 @@ final class TactileCanvasView: UIView {
     /// Runs a three-finger gesture once. The swipe recogniser and the raw
     /// touch check can both see the same swipe; the second is ignored.
     @discardableResult
-    private func threeFingerAction(_ action: ThreeFingerAction, gesture: String) -> Bool {
+    private func threeFingerAction(_ action: ThreeFingerAction, gesture: String, voiceOverScroll: Bool = false) -> Bool {
         let now = CACurrentMediaTime()
         guard now - lastThreeFingerAction > 0.5 else { return true }
         lastThreeFingerAction = now
@@ -188,9 +190,11 @@ final class TactileCanvasView: UIView {
             delegate?.canvasRequestsBack(self, gesture: gesture)
             return true
         case .next:
-            return delegate?.canvasRequestsSection(self, forward: true, gesture: gesture) ?? false
+            return delegate?.canvasRequestsSection(self, forward: true, gesture: gesture,
+                                                   voiceOverScroll: voiceOverScroll) ?? false
         case .previous:
-            return delegate?.canvasRequestsSection(self, forward: false, gesture: gesture) ?? false
+            return delegate?.canvasRequestsSection(self, forward: false, gesture: gesture,
+                                                   voiceOverScroll: voiceOverScroll) ?? false
         }
     }
 

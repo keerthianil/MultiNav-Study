@@ -54,11 +54,18 @@ enum ScreenAnnouncer {
             if UIAccessibility.isVoiceOverRunning {
                 guard let canvas = canvas(), canvas.window != nil else { return }
                 UIAccessibility.post(notification: .screenChanged, argument: canvas)
+                guard !followUp.isEmpty else { return }
+                // Queue the follow-up once VoiceOver has begun reading the map's
+                // name, so it waits for the name instead of racing it.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    guard pending[screen] == nil, canvas.window != nil else { return }
+                    FeedbackManager.shared.speak(followUp, queued: true)
+                }
             } else {
                 FeedbackManager.shared.speak(spoken, essential: true)
-            }
-            if !followUp.isEmpty {
-                FeedbackManager.shared.speak(followUp, queued: true)
+                if !followUp.isEmpty {
+                    FeedbackManager.shared.speak(followUp, queued: true)
+                }
             }
         }
     }

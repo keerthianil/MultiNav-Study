@@ -29,8 +29,9 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
     var onOpenIntersection: ((OverviewIntersection) -> Void)?
     /// A back gesture on the map itself; the session decides what it does.
     var onBack: ((String) -> Void)?
-    /// Next (true) or previous section; returns false at either end.
-    var onSection: ((Bool, String) -> Bool)?
+    /// Next (true) or previous section, the gesture, and whether VoiceOver
+    /// sent it as a scroll; returns false at either end.
+    var onSection: ((Bool, String, Bool) -> Bool)?
     var onMagicTap: (() -> Void)?
 
     private let feedback = FeedbackManager.shared
@@ -437,13 +438,14 @@ final class OverviewController: MapScene, TactileCanvasDelegate {
         onBack?(gesture)
     }
 
-    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String) -> Bool {
+    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
+                               voiceOverScroll: Bool) -> Bool {
         guard section != nil else {
             log.event(.gesture, forward ? "Next section" : "Previous section", detail: "\(gesture), full route map")
             feedback.speak("Sections are not used on this map.", essential: true)
             return false
         }
-        return onSection?(forward, gesture) ?? false
+        return onSection?(forward, gesture, voiceOverScroll) ?? false
     }
 
     func canvasMagicTap(_ canvas: TactileCanvasView) {

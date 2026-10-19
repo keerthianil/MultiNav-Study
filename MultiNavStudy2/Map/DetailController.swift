@@ -422,7 +422,8 @@ final class DetailController: MapScene, TactileCanvasDelegate {
         onBack?()
     }
 
-    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String) -> Bool {
+    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
+                               voiceOverScroll: Bool) -> Bool {
         log.event(.gesture, forward ? "Next section" : "Previous section", detail: "\(gesture), in a close-up")
         feedback.speak("Go back to the map to change sections.", essential: true)
         return false
