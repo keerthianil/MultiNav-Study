@@ -1,0 +1,470 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Union Street and Commercial Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.93,
+      -23.05
+     ],
+     [
+      41.79,
+      -29.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Commercial Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.93,
+      -23.05
+     ],
+     [
+      6.93,
+      70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.93,
+      -23.05
+     ],
+     [
+      -41.89,
+      -16.27
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Commercial Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.93,
+      -23.05
+     ],
+     [
+      6.23,
+      -70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Wharf",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     6.93,
+     -23.05
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "5.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      -13.67
+     ],
+     [
+      20.03,
+      -12.18
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Commercial Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      20.03,
+      -12.18
+     ],
+     [
+      20.03,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Union Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.17,
+      56.0
+     ],
+     [
+      -6.17,
+      -8.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Union Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.17,
+      -8.0
+     ],
+     [
+      -28.0,
+      -4.97
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Commercial Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -31.42
+     ],
+     [
+      -6.34,
+      -34.43
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Commercial Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.34,
+      -34.43
+     ],
+     [
+      -6.66,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Union Wharf"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.54,
+      -56.0
+     ],
+     [
+      19.8,
+      -38.79
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Union Wharf"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.8,
+      -38.79
+     ],
+     [
+      28.0,
+      -40.33
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Commercial Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.8,
+      -38.79
+     ],
+     [
+      20.03,
+      -12.18
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Commercial Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      20.03,
+      -8.0
+     ],
+     [
+      -6.17,
+      -8.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Union Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.17,
+      -8.0
+     ],
+     [
+      -6.34,
+      -34.43
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Commercial Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.34,
+      -34.43
+     ],
+     [
+      19.8,
+      -38.79
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Union Wharf",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      20.03,
+      8.0
+     ],
+     [
+      20.03,
+      -8.0
+     ],
+     [
+      -6.17,
+      -8.0
+     ],
+     [
+      -20.04,
+      -6.08
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "start_text": "You are here",
+     "end_text": "End of intersection route"
+    }
+   }
+  },
+  {
+   "id": "turn_0",
+   "type": "turn",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     20.03,
+     -8.0
+    ]
+   },
+   "properties": {
+    "name": "Turn"
+   }
+  },
+  {
+   "id": "crosswalk_end_0",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     19.8,
+     -38.79
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_1",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.17,
+     -8.0
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_2",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.34,
+     -34.43
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  }
+ ]
+}

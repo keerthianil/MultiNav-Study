@@ -1,0 +1,352 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Union Street and Fore Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      18.0,
+      -4.08
+     ],
+     [
+      24.52,
+      -69.94
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      18.0,
+      -4.08
+     ],
+     [
+      41.89,
+      -0.81
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      18.0,
+      -4.08
+     ],
+     [
+      18.0,
+      70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      18.0,
+      -4.08
+     ],
+     [
+      -41.84,
+      -13.97
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     18.0,
+     -4.08
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "5.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      4.9,
+      56.0
+     ],
+     [
+      4.9,
+      7.03
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Union Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      4.9,
+      7.03
+     ],
+     [
+      -28.0,
+      1.59
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -24.96
+     ],
+     [
+      6.34,
+      -19.28
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.34,
+      -19.28
+     ],
+     [
+      9.97,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Union Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.34,
+      -19.28
+     ],
+     [
+      32.28,
+      -15.35
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Union Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      31.1,
+      10.94
+     ],
+     [
+      4.9,
+      7.03
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Union Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      4.9,
+      7.03
+     ],
+     [
+      -2.54,
+      -20.75
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      4.9,
+      23.03
+     ],
+     [
+      4.9,
+      7.03
+     ],
+     [
+      -2.54,
+      -20.75
+     ],
+     [
+      -16.35,
+      -23.04
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "start_text": "You are here",
+     "end_text": "End of intersection route"
+    }
+   }
+  },
+  {
+   "id": "turn_0",
+   "type": "turn",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -2.54,
+     -20.75
+    ]
+   },
+   "properties": {
+    "name": "Turn"
+   }
+  },
+  {
+   "id": "crosswalk_end_0",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     6.34,
+     -19.28
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_1",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     4.9,
+     7.03
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  }
+ ]
+}

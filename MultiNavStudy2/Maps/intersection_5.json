@@ -1,0 +1,589 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street, Center Street and York Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      10.93,
+      -5.24
+     ],
+     [
+      13.49,
+      -69.99
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pleasant Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      10.93,
+      -5.24
+     ],
+     [
+      41.96,
+      -7.64
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      10.93,
+      -5.24
+     ],
+     [
+      10.93,
+      70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      10.93,
+      -5.24
+     ],
+     [
+      -41.97,
+      -1.55
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      10.93,
+      -5.24
+     ],
+     [
+      -38.29,
+      -56.8
+     ]
+    ]
+   },
+   "properties": {
+    "name": "York Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     10.93,
+     -5.24
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "5.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.04,
+      -56.0
+     ],
+     [
+      24.6,
+      -19.44
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Pleasant Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      24.6,
+      -19.44
+     ],
+     [
+      28.0,
+      -19.7
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      6.58
+     ],
+     [
+      24.03,
+      6.89
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      24.03,
+      6.89
+     ],
+     [
+      24.03,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -2.17,
+      56.0
+     ],
+     [
+      -2.17,
+      8.81
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -2.17,
+      8.81
+     ],
+     [
+      -28.0,
+      10.61
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -15.66
+     ],
+     [
+      -17.8,
+      -16.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Center Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -17.8,
+      -16.37
+     ],
+     [
+      -28.0,
+      -27.05
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along York Street"
+   }
+  },
+  {
+   "id": "sidewalk_8",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -19.42,
+      -56.0
+     ],
+     [
+      -0.94,
+      -36.65
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along York Street"
+   }
+  },
+  {
+   "id": "sidewalk_9",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -0.94,
+      -36.65
+     ],
+     [
+      -0.18,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Pleasant Street"
+   }
+  },
+  {
+   "id": "crosswalk_0",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -0.94,
+      -36.65
+     ],
+     [
+      25.24,
+      -35.61
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Pleasant Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      24.6,
+      -19.44
+     ],
+     [
+      24.03,
+      6.89
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Center Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      24.03,
+      6.89
+     ],
+     [
+      -2.17,
+      8.81
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -2.17,
+      8.81
+     ],
+     [
+      -17.8,
+      -16.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Center Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_4",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -19.89,
+      -18.55
+     ],
+     [
+      -0.94,
+      -36.65
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across York Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      24.03,
+      22.89
+     ],
+     [
+      24.03,
+      6.89
+     ],
+     [
+      -2.17,
+      8.81
+     ],
+     [
+      -17.8,
+      -16.37
+     ],
+     [
+      -24.03,
+      -22.89
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "start_text": "You are here",
+     "end_text": "End of intersection route"
+    }
+   }
+  },
+  {
+   "id": "turn_0",
+   "type": "turn",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     24.03,
+     6.89
+    ]
+   },
+   "properties": {
+    "name": "Turn"
+   }
+  },
+  {
+   "id": "turn_1",
+   "type": "turn",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -2.17,
+     8.81
+    ]
+   },
+   "properties": {
+    "name": "Turn"
+   }
+  },
+  {
+   "id": "crosswalk_end_0",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -0.94,
+     -36.65
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_1",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     25.24,
+     -35.61
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_2",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     24.6,
+     -19.44
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_3",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.8,
+     -16.37
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  }
+ ]
+}

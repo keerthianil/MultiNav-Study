@@ -1,0 +1,421 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Training route overview",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      16.0,
+      104.0
+     ],
+     [
+      16.0,
+      76.0
+     ],
+     [
+      16.0,
+      40.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pear Street"
+   }
+  },
+  {
+   "id": "street_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      16.0,
+      40.0
+     ],
+     [
+      46.0,
+      40.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Orange Road"
+   }
+  },
+  {
+   "id": "street_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      46.0,
+      40.0
+     ],
+     [
+      46.0,
+      10.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Banana Lane"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      76.0
+     ],
+     [
+      16.0,
+      76.0
+     ],
+     [
+      4.0,
+      76.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Apple Street"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      16.0,
+      40.0
+     ],
+     [
+      16.0,
+      28.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pear Street"
+   }
+  },
+  {
+   "id": "cross_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      46.0,
+      40.0
+     ],
+     [
+      56.0,
+      40.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Orange Road"
+   }
+  },
+  {
+   "id": "cross_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      46.0,
+      40.0
+     ],
+     [
+      46.0,
+      52.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Banana Lane"
+   }
+  },
+  {
+   "id": "node_1",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.0,
+     76.0
+    ]
+   },
+   "properties": {
+    "name": "Intersection 1",
+    "custom": {
+     "cue": "Intersection 1: 4-way intersection of Pear Street and Apple Street.",
+     "number": "1"
+    }
+   }
+  },
+  {
+   "id": "node_2",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.0,
+     40.0
+    ]
+   },
+   "properties": {
+    "name": "Intersection 2",
+    "custom": {
+     "cue": "Intersection 2: 3-way intersection of Pear Street and Orange Road.",
+     "number": "2"
+    }
+   }
+  },
+  {
+   "id": "node_3",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     46.0,
+     40.0
+    ]
+   },
+   "properties": {
+    "name": "Intersection 3",
+    "custom": {
+     "cue": "Intersection 3: 4-way intersection of Orange Road and Banana Lane.",
+     "number": "3"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      16.0,
+      104.0
+     ],
+     [
+      16.0,
+      76.0
+     ],
+     [
+      16.0,
+      40.0
+     ],
+     [
+      46.0,
+      40.0
+     ],
+     [
+      46.0,
+      10.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Training route overview",
+    "custom": {
+     "start_text": "Start of route: You are here, at Home.",
+     "end_text": "End of route: Your destination, Nick's Bakery."
+    }
+   }
+  },
+  {
+   "id": "label_1",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.0,
+     71.0
+    ]
+   },
+   "properties": {
+    "name": "1",
+    "custom": {
+     "size_mm": "3.6",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_2",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.0,
+     35.0
+    ]
+   },
+   "properties": {
+    "name": "2",
+    "custom": {
+     "size_mm": "3.6",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_3",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     51.0,
+     35.0
+    ]
+   },
+   "properties": {
+    "name": "3",
+    "custom": {
+     "size_mm": "3.6",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_start",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     33.8,
+     104.0
+    ]
+   },
+   "properties": {
+    "name": "Start of Route",
+    "custom": {
+     "size_mm": "3.2",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_end",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.1,
+     10.0
+    ]
+   },
+   "properties": {
+    "name": "End of Route",
+    "custom": {
+     "size_mm": "3.2",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_street_0",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.0,
+     58.0
+    ]
+   },
+   "properties": {
+    "name": "Pear St.",
+    "custom": {
+     "size_mm": "2.6",
+     "weight": "bold",
+     "angle": "-90"
+    }
+   }
+  },
+  {
+   "id": "label_street_1",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     31.0,
+     40.0
+    ]
+   },
+   "properties": {
+    "name": "Orange Rd.",
+    "custom": {
+     "size_mm": "2.6",
+     "weight": "bold",
+     "angle": "0"
+    }
+   }
+  },
+  {
+   "id": "label_street_2",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     46.0,
+     25.0
+    ]
+   },
+   "properties": {
+    "name": "Banana Ln.",
+    "custom": {
+     "size_mm": "2.6",
+     "weight": "bold",
+     "angle": "-90"
+    }
+   }
+  },
+  {
+   "id": "label_street_3",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     40.0,
+     76.0
+    ]
+   },
+   "properties": {
+    "name": "Apple St.",
+    "custom": {
+     "size_mm": "2.6",
+     "weight": "bold",
+     "angle": "0"
+    }
+   }
+  }
+ ]
+}

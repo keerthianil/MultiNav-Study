@@ -1,0 +1,462 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street, Moulton Street and Exchange Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "road_main",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.82,
+      -70.0
+     ],
+     [
+      6.82,
+      70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_near",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.82,
+      -17.82
+     ],
+     [
+      42.0,
+      -28.1
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Exchange Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_far",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      6.82,
+      15.18
+     ],
+     [
+      -42.0,
+      26.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Moulton Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     6.82,
+     -1.32
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "5.0",
+     "mark": "no"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.92,
+      56.0
+     ],
+     [
+      19.92,
+      -8.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.92,
+      -8.0
+     ],
+     [
+      28.0,
+      -10.36
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Exchange Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      -37.66
+     ],
+     [
+      19.92,
+      -35.3
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Exchange Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.92,
+      -35.3
+     ],
+     [
+      19.92,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.28,
+      -56.0
+     ],
+     [
+      -6.28,
+      4.74
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.28,
+      4.74
+     ],
+     [
+      -28.0,
+      9.72
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Moulton Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      36.6
+     ],
+     [
+      -6.28,
+      31.62
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Moulton Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.28,
+      31.62
+     ],
+     [
+      -6.28,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "crosswalk_diagonal",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.92,
+      -8.0
+     ],
+     [
+      -6.28,
+      4.74
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_near_arm",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.92,
+      -8.0
+     ],
+     [
+      19.92,
+      -35.3
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Exchange Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_near_main",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.92,
+      -35.3
+     ],
+     [
+      -6.28,
+      -35.3
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "marking": "zebra",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_far_arm",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -6.28,
+      4.74
+     ],
+     [
+      -6.28,
+      31.62
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Moulton Street",
+    "custom": {
+     "marking": "unmarked",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      19.92,
+      8.0
+     ],
+     [
+      19.92,
+      -8.0
+     ],
+     [
+      -6.28,
+      4.74
+     ],
+     [
+      -19.93,
+      7.87
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "start_text": "You are here",
+     "end_text": "End of intersection route"
+    }
+   }
+  },
+  {
+   "id": "turn_0",
+   "type": "turn",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     19.92,
+     -8.0
+    ]
+   },
+   "properties": {
+    "name": "Turn"
+   }
+  },
+  {
+   "id": "crosswalk_end_0",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.28,
+     4.74
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_1",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     19.92,
+     -35.3
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_2",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.28,
+     -35.3
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_3",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.28,
+     31.62
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  }
+ ]
+}

@@ -1,0 +1,572 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Fore Street and Silver Street",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "center",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "road_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      18.93,
+      -69.58
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      42.0,
+      0.42
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Silver Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "road_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      -42.0,
+      -1.1
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Silver Street",
+    "custom": {
+     "width_mm": "12.0"
+    }
+   }
+  },
+  {
+   "id": "center",
+   "type": "center",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0.0,
+     0.0
+    ]
+   },
+   "properties": {
+    "name": "Center",
+    "custom": {
+     "radius_mm": "5.0"
+    }
+   }
+  },
+  {
+   "id": "median_0",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      3.05,
+      -11.22
+     ],
+     [
+      18.93,
+      -69.58
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median",
+    "custom": {
+     "width_mm": "3.0"
+    }
+   }
+  },
+  {
+   "id": "median_2",
+   "type": "median",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      0.0,
+      11.0
+     ],
+     [
+      0.0,
+      70.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Median",
+    "custom": {
+     "width_mm": "3.0"
+    }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      -53.03
+     ],
+     [
+      17.09,
+      -12.93
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.09,
+      -12.93
+     ],
+     [
+      28.0,
+      -12.82
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Silver Street"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      13.38
+     ],
+     [
+      13.1,
+      13.23
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Silver Street"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.1,
+      13.23
+     ],
+     [
+      13.1,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_4",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.1,
+      56.0
+     ],
+     [
+      -13.1,
+      12.76
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "sidewalk_5",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.1,
+      12.76
+     ],
+     [
+      -28.0,
+      12.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Silver Street"
+   }
+  },
+  {
+   "id": "sidewalk_6",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -28.0,
+      -13.84
+     ],
+     [
+      -9.94,
+      -13.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Silver Street"
+   }
+  },
+  {
+   "id": "sidewalk_7",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.94,
+      -13.37
+     ],
+     [
+      1.66,
+      -56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sidewalk along Fore Street"
+   }
+  },
+  {
+   "id": "crosswalk_0_a",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9.94,
+      -13.37
+     ],
+     [
+      1.84,
+      -13.62
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "marking": "unmarked",
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_0_b",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      5.31,
+      -12.67
+     ],
+     [
+      17.09,
+      -12.93
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "marking": "unmarked",
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.09,
+      -12.93
+     ],
+     [
+      16.83,
+      13.27
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Silver Street",
+    "custom": {
+     "marking": "unmarked",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2_a",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      13.1,
+      13.23
+     ],
+     [
+      1.8,
+      13.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "marking": "unmarked",
+     "endpoints": "start"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_2_b",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -1.8,
+      13.0
+     ],
+     [
+      -13.1,
+      12.76
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Fore Street",
+    "custom": {
+     "marking": "unmarked",
+     "endpoints": "end"
+    }
+   }
+  },
+  {
+   "id": "crosswalk_3",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.1,
+      12.76
+     ],
+     [
+      -9.94,
+      -13.37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk across Silver Street",
+    "custom": {
+     "marking": "unmarked",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -13.1,
+      28.76
+     ],
+     [
+      -13.1,
+      12.76
+     ],
+     [
+      13.1,
+      13.23
+     ],
+     [
+      16.83,
+      13.27
+     ],
+     [
+      17.09,
+      -12.93
+     ],
+     [
+      20.77,
+      -26.44
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route",
+    "custom": {
+     "start_text": "You are here",
+     "end_text": "End of intersection route"
+    }
+   }
+  },
+  {
+   "id": "turn_0",
+   "type": "turn",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -13.1,
+     12.76
+    ]
+   },
+   "properties": {
+    "name": "Turn"
+   }
+  },
+  {
+   "id": "turn_1",
+   "type": "turn",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.83,
+     13.27
+    ]
+   },
+   "properties": {
+    "name": "Turn"
+   }
+  },
+  {
+   "id": "crosswalk_end_0",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -9.94,
+     -13.37
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_1",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.09,
+     -12.93
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  }
+ ]
+}

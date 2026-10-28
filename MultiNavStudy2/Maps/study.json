@@ -1,0 +1,502 @@
+{
+ "categories": [
+  {
+   "key": "geometry",
+   "title": "Intersection geometry"
+  },
+  {
+   "key": "direction",
+   "title": "Traffic direction"
+  },
+  {
+   "key": "control",
+   "title": "Traffic control"
+  },
+  {
+   "key": "signals",
+   "title": "Pedestrian signals"
+  },
+  {
+   "key": "crosswalks",
+   "title": "Crosswalks"
+  },
+  {
+   "key": "domes",
+   "title": "Truncated domes and curb cuts"
+  }
+ ],
+ "phases": [
+  {
+   "key": "training",
+   "title": "Training"
+  },
+  {
+   "key": "practice",
+   "title": "Practice"
+  },
+  {
+   "key": "trial1",
+   "title": "Trial 1"
+  },
+  {
+   "key": "trial2",
+   "title": "Trial 2"
+  }
+ ],
+ "maps": [
+  {
+   "id": "training_overview",
+   "kind": "overview",
+   "phase": "training",
+   "log_id": "Training route overview",
+   "title": "Training route overview",
+   "subtitle": "Home to Nick's Bakery",
+   "file": "training_overview",
+   "announcement": "Your route to Nick's Bakery is approximately 0.5 miles away, primarily travelling Northeast. There are 3 intersections along the route, with 2 turns and 4 total street crossings.",
+   "items": []
+  },
+  {
+   "id": "training_intersection",
+   "kind": "intersection",
+   "phase": "training",
+   "log_id": "Training intersection",
+   "title": "Training intersection",
+   "subtitle": "Pear Street and Apple Street",
+   "file": "training_intersection",
+   "announcement": "You are at the 4-way intersection of Pear Street and Apple Street. Your route crosses Apple Street, then continues along Pear Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Both Pear Street and Apple Street have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by stop signs in all directions."
+    },
+    {
+     "category": "signals",
+     "text": "There are no pedestrian signals at this intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your route crossing uses a straight zebra crosswalk."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated domes are not aligned with the direction of the crosswalk when crossing Apple Street."
+    }
+   ]
+  },
+  {
+   "id": "route_overview",
+   "kind": "overview",
+   "phase": "training",
+   "log_id": "Route overview",
+   "title": "Route overview",
+   "subtitle": "Dock Fore to Gorham's Corner",
+   "file": "route_overview",
+   "announcement": "Your route to Gorham's Corner is approximately 0.5 miles away, primarily travelling Southwest. There are 5 intersections along the route, with 7 turns and 6 total street crossings.",
+   "items": []
+  },
+  {
+   "id": "intersection_0",
+   "kind": "intersection",
+   "phase": "practice",
+   "log_id": "Intersection 0",
+   "title": "Intersection 0, practice",
+   "subtitle": "Fore Street and Pearl Street",
+   "file": "intersection_0",
+   "announcement": "You are at the 4-way intersection of Fore Street and Pearl Street. Your route crosses Pearl Street, then continues along Fore Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Both Fore Street and Pearl Street have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by a traffic signal. Right turns are permitted during the walking cycle."
+    },
+    {
+     "category": "signals",
+     "text": "The pedestrian signal operates automatically on a timed cycle without a push button."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your route crossing uses a straight zebra crosswalk."
+    },
+    {
+     "category": "domes",
+     "text": "There are no curb cuts or truncated domes when crossing Pearl Street."
+    }
+   ]
+  },
+  {
+   "id": "intersection_1",
+   "kind": "intersection",
+   "phase": "trial1",
+   "log_id": "Intersection 1",
+   "title": "Intersection 1",
+   "subtitle": "Fore Street and Silver Street",
+   "file": "intersection_1",
+   "announcement": "You are at the 4-way intersection of Fore Street and Silver Street. Your route first crosses Fore Street and then turns left to cross Silver Street, then continues along the other side of Fore Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection with a median."
+    },
+    {
+     "category": "direction",
+     "text": "Fore Street has two-way traffic, while Silver Street has one-way traffic moving through the intersection."
+    },
+    {
+     "category": "control",
+     "text": "Silver Street traffic is controlled by a stop sign."
+    },
+    {
+     "category": "signals",
+     "text": "There are no pedestrian signals at this intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "The Fore Street crossing is unmarked and divided into two stages by a median. The Silver Street crossing is unmarked."
+    },
+    {
+     "category": "domes",
+     "text": "There are curb cuts with no truncated domes when crossing either street."
+    }
+   ]
+  },
+  {
+   "id": "intersection_2",
+   "kind": "intersection",
+   "phase": "trial1",
+   "log_id": "Intersection 2",
+   "title": "Intersection 2",
+   "subtitle": "Fore Street, Moulton Street and Exchange Street",
+   "file": "intersection_2",
+   "announcement": "You are at the 4-way intersection of Fore Street, Moulton Street, and Exchange Street. Your route crosses Fore Street, then continues left along Moulton Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a 4-way, offset intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Fore Street has two-way traffic. Moulton Street has one-way traffic moving away from the intersection. Exchange Street has one-way traffic moving toward the intersection."
+    },
+    {
+     "category": "control",
+     "text": "Exchange Street traffic is controlled by a stop sign."
+    },
+    {
+     "category": "signals",
+     "text": "There are no pedestrian signals at this intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your crossing uses a zebra crosswalk that angles slightly to the left."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated domes are not aligned with the direction of the crosswalk when crossing Fore Street."
+    }
+   ]
+  },
+  {
+   "id": "intersection_3",
+   "kind": "intersection",
+   "phase": "trial1",
+   "log_id": "Intersection 3",
+   "title": "Intersection 3",
+   "subtitle": "Commercial Street and Union Street",
+   "file": "intersection_3",
+   "announcement": "You are at the 4-way intersection of Commercial Street and Union Street. Your route crosses Union Street, then continues right along Union Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Both Commercial Street and Union Street have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by a traffic signal."
+    },
+    {
+     "category": "signals",
+     "text": "The intersection has APS, located on a pole about 6 feet back from the intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your crossing uses a straight zebra crosswalk."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated domes are aligned with the direction of the crosswalk when crossing Union Street."
+    }
+   ]
+  },
+  {
+   "id": "intersection_4",
+   "kind": "intersection",
+   "phase": "trial1",
+   "log_id": "Intersection 4",
+   "title": "Intersection 4",
+   "subtitle": "Union Street and Fore Street",
+   "file": "intersection_4",
+   "announcement": "You are at the 4-way intersection of Union Street and Fore Street. Your route crosses Fore Street, then continues left along the other side of Fore Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Both Union Street and Fore Street have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by a traffic signal. It has an exclusive pedestrian crossing phase where all vehicle traffic is stopped."
+    },
+    {
+     "category": "signals",
+     "text": "The pedestrian signal is activated by a push button, located on a pole at the corner of the intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your crossing uses a zebra crosswalk that angles slightly to the left."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated dome is aligned with the crosswalk when approaching the Fore Street crossing. The truncated dome at the end of the crossing is misaligned."
+    }
+   ]
+  },
+  {
+   "id": "intersection_5",
+   "kind": "intersection",
+   "phase": "trial1",
+   "log_id": "Intersection 5",
+   "title": "Intersection 5",
+   "subtitle": "Fore Street, Center Street and York Street",
+   "file": "intersection_5",
+   "announcement": "You are at the 5-way intersection of Fore Street, Center Street, and York Street. Your route first crosses Fore Street, then turns right to cross Center Street, and continues along York Street to your destination.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This intersection has 5 legs, with York Street intersecting Fore Street and Center Street at a 45-degree angle."
+    },
+    {
+     "category": "direction",
+     "text": "All streets have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by a traffic signal."
+    },
+    {
+     "category": "signals",
+     "text": "The pedestrian signals are activated by push buttons, located on poles directly at each street corner."
+    },
+    {
+     "category": "crosswalks",
+     "text": "The Fore Street crossing uses a straight zebra crosswalk. The Center Street crossing uses a zebra crosswalk that angles slightly to the left."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated domes at both route crossings are not aligned with the direction of the crosswalks."
+    }
+   ]
+  },
+  {
+   "id": "return_5",
+   "kind": "intersection",
+   "phase": "trial2",
+   "log_id": "Reversed intersection 5",
+   "title": "Reversed intersection 5",
+   "subtitle": "Center Street, Fore Street and York Street",
+   "file": "return_5",
+   "announcement": "You are at the 5-way intersection of Center Street, Fore Street, and York Street. Your route first crosses Center Street, then turns left to cross Fore Street, and continues along Fore Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This intersection has 5 legs, with York Street intersecting Center Street and Fore Street at a 45-degree angle."
+    },
+    {
+     "category": "direction",
+     "text": "All streets have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by a traffic signal."
+    },
+    {
+     "category": "signals",
+     "text": "The pedestrian signals are activated by push buttons, located on poles directly at each street corner."
+    },
+    {
+     "category": "crosswalks",
+     "text": "The Center Street crossing uses a zebra crosswalk that angles slightly to the left. The Fore Street crossing uses a straight zebra crosswalk."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated domes at both route crossings are not aligned with the direction of the crosswalks."
+    }
+   ]
+  },
+  {
+   "id": "return_4",
+   "kind": "intersection",
+   "phase": "trial2",
+   "log_id": "Reversed intersection 4",
+   "title": "Reversed intersection 4",
+   "subtitle": "Fore Street and Union Street",
+   "file": "return_4",
+   "announcement": "You are at the 4-way intersection of Fore Street and Union Street. Your route crosses Fore Street, then continues along Union Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Both Fore Street and Union Street have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by a traffic signal. It has an exclusive pedestrian crossing phase where all vehicle traffic is stopped."
+    },
+    {
+     "category": "signals",
+     "text": "The pedestrian signal is activated by a push button, located on a pole at the corner of the intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your crossing uses a zebra crosswalk that angles slightly to the left."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated dome is misaligned with the crosswalk when approaching the Fore Street crossing. The truncated dome at the end of the crossing is aligned."
+    }
+   ]
+  },
+  {
+   "id": "return_3",
+   "kind": "intersection",
+   "phase": "trial2",
+   "log_id": "Reversed intersection 3",
+   "title": "Reversed intersection 3",
+   "subtitle": "Union Street and Commercial Street",
+   "file": "return_3",
+   "announcement": "You are at the 4-way intersection of Union Street and Commercial Street. Your route crosses Union Street, then continues along Commercial Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Both Union Street and Commercial Street have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by a traffic signal."
+    },
+    {
+     "category": "signals",
+     "text": "The intersection has APS, located on a pole about 6 feet back from the intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your crossing uses a straight zebra crosswalk."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated domes are aligned with the direction of the crosswalk when crossing Union Street."
+    }
+   ]
+  },
+  {
+   "id": "return_2",
+   "kind": "intersection",
+   "phase": "trial2",
+   "log_id": "Reversed intersection 2",
+   "title": "Reversed intersection 2",
+   "subtitle": "Moulton Street, Fore Street and Exchange Street",
+   "file": "return_2",
+   "announcement": "You are at the 4-way intersection of Moulton Street, Fore Street, and Exchange Street. Your route crosses Fore Street, then continues right along Fore Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a 4-way, offset intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Fore Street has two-way traffic. Moulton Street has one-way traffic moving away from the intersection. Exchange Street has one-way traffic moving toward the intersection."
+    },
+    {
+     "category": "control",
+     "text": "Exchange Street traffic is controlled by a stop sign."
+    },
+    {
+     "category": "signals",
+     "text": "There are no pedestrian signals at this intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your crossing uses a zebra crosswalk that angles slightly to the left."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated domes are not aligned with the direction of the crosswalk when crossing Fore Street."
+    }
+   ]
+  },
+  {
+   "id": "return_1",
+   "kind": "intersection",
+   "phase": "trial2",
+   "log_id": "Reversed intersection 1",
+   "title": "Reversed intersection 1",
+   "subtitle": "Fore Street and Silver Street",
+   "file": "return_1",
+   "announcement": "You are at the 4-way intersection of Fore Street and Silver Street. Your route first crosses Silver Street and then turns right to cross Fore Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection with a median."
+    },
+    {
+     "category": "direction",
+     "text": "Fore Street has two-way traffic, while Silver Street has one-way traffic moving through the intersection."
+    },
+    {
+     "category": "control",
+     "text": "Silver Street traffic is controlled by a stop sign."
+    },
+    {
+     "category": "signals",
+     "text": "There are no pedestrian signals at this intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "The Silver Street crossing is unmarked. The Fore Street crossing is unmarked and divided into two stages by a median."
+    },
+    {
+     "category": "domes",
+     "text": "There are curb cuts with no truncated domes when crossing either street."
+    }
+   ]
+  }
+ ]
+}

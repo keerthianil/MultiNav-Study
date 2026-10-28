@@ -1,27 +1,25 @@
-"""Builds the bundled map JSON for MultiNav Study 2 from OpenStreetMap.
+"""Builds the bundled maps for MultiNav Study 2.
 
-    python3 tools/build_maps.py            # writes MultiNavStudy2/Maps/*.json
+    python3 tools/build_maps.py            # writes MultiNavStudy2/Maps/*.json and docs/STUDY.md
     python3 tools/build_maps.py --preview  # also writes docs/map_previews/*.png
 
-Three kinds of map come out, all in the MultiNav TactileMapDocument format
+Two kinds of map come out, both in the MultiNav TactileMapDocument format
 with coordinates in millimetres on screen:
 
-* Level 1, the full route map, one per route: a schematic of the walk.
-  Street order, turn direction and the side each cross street joins come
-  from OSM; the streets are squared to the screen and spaced so every
-  intersection is finger-sized. Origin top-left, y down.
-* Section maps, one per stretch of a route: from where the traveller is to
-  the next intersection, turned so walking is up. Origin top-left, y down.
-* Level 2, the intersection close-up, one per intersection on a route: the
-  junction at its true angles with roads, sidewalks, crosswalks, islands and
-  the walking path. Origin at the junction centre, y down.
+* Route overviews, the training route and the study route: schematic maps
+  laid out like the research team's mockups, not to scale. Origin top-left,
+  y down.
+* Intersection maps: one junction at its true angles from OpenStreetMap,
+  turned so the way the participant is walking is up, with roads,
+  sidewalks, crosswalks, the median and the walking path through it.
+  Origin at the centre of the intersection, y down.
 
-Each route also gets its turn-by-turn directions (routeN_directions.json),
-written as pieces the app joins into sentences.
+Maps/study.json lists every map in study order with the words spoken on it,
+all taken from tools/study_spec.py.
 
-Physical sizes are fixed in millimetres so the maps feel the same on
-every phone; the app only scales down if a screen is smaller than the
-reference area below.
+Physical sizes are fixed in millimetres so the maps feel the same on every
+phone; the app only scales down if a screen is smaller than the reference
+area below.
 """
 
 import json
@@ -33,7 +31,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 import osm_model as om  # noqa: E402
-import route_spec as spec  # noqa: E402
+import study_spec as spec  # noqa: E402
 
 REPO = os.path.dirname(HERE)
 MAPS_DIR = os.path.join(REPO, "MultiNavStudy2", "Maps")
@@ -44,34 +42,22 @@ REF_W = 60.0
 REF_H = 116.0
 MARGIN = 1.0
 
-# Level 1 sizes, mm. Must match the app's style constants.
-L1_ROAD_HALF = 2.0
-L1_SQUARE_HALF = 3.0
-L1_DOT_R = 3.0
-L1_RING_R = 4.0
-L1_BOX_W, L1_BOX_H = 9.0, 6.0
-L1_BOX_GAP = 2.0
-MIN_GAP_JUNCTIONS = 10.0
-MIN_GAP_ENDPOINT = 8.0
-STUB = 8.0
-EXTENSION = 4.0
-MAX_STRETCH = 2.6           # most one axis may be stretched against the other
+# Overview sizes, mm. Must match the app's style constants.
+OV_ROAD_HALF = 2.0
+OV_SQUARE_HALF = 3.0
+OV_DOT_R = 3.0
 
-# Level 2 sizes, mm.
-L2_ROAD_HALF = 6.0
-L2_SIDEWALK_OFFSET = 13.1    # road half 6 + crosswalk 2.8 + kerb gap 1 + sidewalk half 2 + 1.3
-L2_CENTER_R = 6.0
-L2_MIN_CROSS_T = 7.0       # nearer than this a crosswalk would lie on the other road
-L2_ISLAND_HALF_LEN = 2.2
-L2_ISLAND_W = 3.0
-# Roundabout close-up, mm.
-RB_RING_R = 10.0
-RB_ROAD_HALF = 3.5
-RB_SIDEWALK_OFFSET = 6.7     # leg road half 3.5 + gap 1.2 + sidewalk half 2
-RB_SIDEWALK_R = 16.7         # ring outer edge 13.5 + gap 1.2 + sidewalk half 2
-RB_CROSSWALK_T = 19.5        # set back from the ring, as a real crossing is
-RB_SPLITTER_FROM, RB_SPLITTER_TO = 13.5, 23.0
-RB_SPLITTER_W = 2.0
+# Intersection map sizes, mm.
+ROAD_HALF = 6.0
+SIDEWALK_OFFSET = 13.1     # road half 6 + crosswalk 2.8 + kerb gap 1 + sidewalk half 2 + 1.3
+CENTER_R = 5.0
+MIN_CROSS_T = 7.0          # nearer than this a crosswalk would lie on the other road
+MEDIAN_W = 3.0
+MEDIAN_NOSE = 2.0          # how far the median reaches in past the crosswalk's centre
+SQUARE_UP_MIN = 2.0        # a crosswalk straighter than this (mm) is left as it is
+START_GAP = 16.0           # route drawn before the first crosswalk
+END_GAP = 14.0             # and after the last one
+ROUTE_INSET = 5.5          # route ends kept this far inside the screen edge
 
 ONE_DECIMAL = 2  # coordinates are written with this many decimals
 
@@ -93,21 +79,20 @@ def add(a, b, s=1.0):
     return (a[0] + b[0] * s, a[1] + b[1] * s)
 
 
+def sub(a, b):
+    return (a[0] - b[0], a[1] - b[1])
+
+
 def scale(v, s):
     return (v[0] * s, v[1] * s)
 
 
+def dot(a, b):
+    return a[0] * b[0] + a[1] * b[1]
+
+
 def rnd(p):
     return [round(p[0], ONE_DECIMAL), round(p[1], ONE_DECIMAL)]
-
-
-def snap(angle):
-    """Squares a screen angle: 90 degree steps when close, else 45."""
-    a = angle % 360.0
-    m90 = round(a / 90.0) * 90.0
-    if abs(om.angle_diff(a, m90)) <= 30.0:
-        return m90 % 360.0
-    return (round(a / 45.0) * 45.0) % 360.0
 
 
 def screen_angle(true_bearing, up):
@@ -122,262 +107,6 @@ def join_names(names):
         return "%s and %s" % (names[0], names[1])
     return ", ".join(names[:-1]) + " and " + names[-1]
 
-
-def spoken_list(names):
-    """"A, and B" or "A, B, and C": the comma gives the voice a pause."""
-    names = list(names)
-    if len(names) == 1:
-        return names[0]
-    return ", ".join(names[:-1]) + ", and " + names[-1]
-
-
-def ordinal_legs(count):
-    return "%d-way" % count
-
-
-# ================================================================ junction models
-
-AREAS = {key: om.Area(value["osm"], value["origin"]) for key, value in spec.AREAS.items()}
-
-
-class Arm:
-    def __init__(self, name, bearing, divided=False, oneway=False, crossing=None):
-        self.name = name
-        self.bearing = bearing % 360.0
-        self.divided = divided
-        self.oneway = oneway
-        self.crossing = crossing
-
-    def __repr__(self):
-        return "%s@%.0f" % (self.name, self.bearing)
-
-
-class Junction:
-    def __init__(self, key):
-        self.key = key
-        conf = spec.JUNCTIONS[key]
-        self.conf = conf
-        self.area = AREAS[conf["area"]]
-        self.control = conf.get("control")
-        self.is_roundabout = "roundabout_way" in conf
-        if self.is_roundabout:
-            self._build_roundabout(conf["roundabout_way"])
-        else:
-            self.center = om.junction_center(self.area, conf["nodes"])
-            self._build_arms()
-
-    # ---- standard junction
-    def _build_arms(self):
-        conf = self.conf
-        if "arms" in conf:
-            arms = [Arm(a["name"], a["bearing"], a.get("divided", False)) for a in conf["arms"]]
-        else:
-            arms = []
-            for group in om.merged_arms(self.area, conf["nodes"]):
-                oneway = all(p["oneway"] in ("yes", "-1") for p in group["parts"]) and not group["divided"]
-                arms.append(Arm(group["name"], group["bearing"], group["divided"], oneway))
-        for extra in conf.get("extra_arms", []):
-            arms.append(Arm(extra["name"], extra["bearing"]))
-        self.arms = sorted(arms, key=lambda a: a.bearing)
-        crossings = assigned_crossings(self)
-        for arm in self.arms:
-            arm.crossing = om.crossing_for_arm(self.area, self.center, arm.bearing, crossings)
-            arm.island = crossing_island(self, arm)
-        for ref in conf.get("no_crossing", []):
-            self.arm(ref).crossing = None
-        for ref in conf.get("assume_crossing", []):
-            arm = self.arm(ref)
-            if arm.crossing is None:
-                arm.crossing = {"signal": bool(conf.get("assume_signal")), "marked": False, "unmarked": False,
-                                "button": False, "no_sound": False, "raised": False, "assumed": True}
-
-    # ---- roundabout
-    def _build_roundabout(self, way_id):
-        area = self.area
-        ring = area.ways[way_id]
-        points = [area.node_xy(n) for n in ring["nodes"]]
-        self.center = (sum(p[0] for p in points) / len(points), sum(p[1] for p in points) / len(points))
-        ring_nodes = set(ring["nodes"])
-        legs = {}
-        for way in area.ways.values():
-            if way["id"] == way_id or not ring_nodes.intersection(way["nodes"]):
-                continue
-            name = way["tags"].get("name")
-            if not name:
-                continue
-            pts = area.way_xy(way)
-            far = max(pts, key=lambda p: om.dist(p, self.center))
-            b = om.bearing(self.center, far)
-            for key, leg in legs.items():
-                if leg["name"] == name and abs(om.angle_diff(leg["bearing"], b)) < 40:
-                    leg["bearings"].append(b)
-                    leg["bearing"] = om.mean_bearing(leg["bearings"])
-                    break
-            else:
-                legs[len(legs)] = {"name": name, "bearing": b, "bearings": [b]}
-        self.arms = sorted([Arm(l["name"], l["bearing"], divided=True) for l in legs.values()],
-                           key=lambda a: a.bearing)
-        # Crossings and splitter islands, per leg.
-        crossings = []
-        islands = []
-        for way in area.ways.values():
-            tags = way["tags"]
-            if tags.get("footway") not in ("crossing", "traffic_island"):
-                continue
-            pts = area.way_xy(way)
-            mid = (sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts))
-            if om.dist(mid, self.center) > 45:
-                continue
-            (islands if tags.get("footway") == "traffic_island" else crossings).append((mid, tags))
-        for arm in self.arms:
-            arm.crossing = om.crossing_for_arm(area, self.center, arm.bearing, crossings, half_angle=35)
-            arm.island = any(abs(om.angle_diff(om.bearing(self.center, p), arm.bearing)) < 20 for p, _ in islands)
-
-    def arm(self, ref):
-        name, _, b = ref.partition("@")
-        candidates = [a for a in self.arms if a.name == name]
-        if not candidates:
-            raise KeyError("%s has no arm named %s (arms: %s)" % (self.key, name, self.arms))
-        if not b:
-            return candidates[0]
-        return min(candidates, key=lambda a: abs(om.angle_diff(a.bearing, float(b))))
-
-    def title(self, first=None):
-        names = []
-        if first:
-            names.append(first)
-        for arm in self.arms:
-            if arm.name not in names and not arm.name.startswith("Access road"):
-                names.append(arm.name)
-        return names
-
-
-def assigned_crossings(junction):
-    """Crossings nearer this junction than any other junction on a route."""
-    area = junction.area
-    others = [om.junction_center(area, c["nodes"]) for k, c in spec.JUNCTIONS.items()
-              if c["area"] == junction.conf["area"] and "nodes" in c and k != junction.key]
-    result = []
-    for point, tags in om.crossing_points(area, junction.center, radius=21.0):
-        mine = om.dist(point, junction.center)
-        if all(mine <= om.dist(point, o) for o in others):
-            result.append((point, tags))
-    return result
-
-
-def crossing_island(junction, arm):
-    """True if OSM records a refuge island on this arm's crossing."""
-    area = junction.area
-    for way in area.ways.values():
-        if way["tags"].get("footway") != "traffic_island":
-            continue
-        pts = area.way_xy(way)
-        mid = (sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts))
-        d = om.dist(mid, junction.center)
-        if 4 < d < 26 and abs(om.angle_diff(om.bearing(junction.center, mid), arm.bearing)) < 25:
-            return True
-    return False
-
-
-JUNCTION_CACHE = {}
-
-
-def junction(key):
-    if key not in JUNCTION_CACHE:
-        JUNCTION_CACHE[key] = Junction(key)
-    return JUNCTION_CACHE[key]
-
-
-# ================================================================ spoken text
-
-def control_sentence(j):
-    c = j.control
-    if c == "signals":
-        return "Traffic signals."
-    if c == "all_way_stop":
-        return "All-way stop."
-    if c == "side_stop":
-        others = [n for n in j.title() if n != j.conf["stop_street"]]
-        return "Stop sign for %s only. %s traffic does not stop." % (j.conf["stop_street"], others[0])
-    if c == "none":
-        return "No traffic signals or stop signs."
-    if c == "roundabout":
-        return "Traffic moves counterclockwise and yields when entering. No signals."
-    return ""
-
-
-def crosswalk_name(arm, half=None, roundabout=False):
-    x = arm.crossing or {}
-    street = arm.name
-    if roundabout and x.get("raised"):
-        text = "Raised crosswalk across %s" % street
-    elif x.get("signal"):
-        text = "Crosswalk with signal across %s" % street
-        if x.get("button"):
-            text += ", push button"
-        if x.get("no_sound"):
-            text += ", no audible signal"
-    elif x.get("marked"):
-        text = "Marked crosswalk across %s" % street
-    elif x.get("unmarked"):
-        text = "Unmarked crossing across %s" % street
-    else:
-        text = "Crosswalk across %s" % street
-    if arm.oneway:
-        text += ", one-way street"
-    if half == "outbound":
-        text += ", exit lane" if roundabout else ", lanes leaving the intersection"
-    elif half == "inbound":
-        text += ", entry lane" if roundabout else ", lanes entering the intersection"
-    return text
-
-
-def crosswalk_simple_name(arm, half=None, roundabout=False):
-    """The crosswalk name without signal, marking or one-way details."""
-    text = "Crosswalk across %s" % arm.name
-    if half == "outbound":
-        text += ", exit lane" if roundabout else ", lanes leaving the intersection"
-    elif half == "inbound":
-        text += ", entry lane" if roundabout else ", lanes entering the intersection"
-    return text
-
-
-def side_name(arm, side):
-    """Compass side of the street for an arm and a 'cw'/'ccw' side."""
-    b = arm.bearing + (90 if side == "cw" else -90)
-    return om.compass8(b)
-
-
-def resolve_side(arm, compass_word):
-    target = {name: i * 45.0 for i, name in enumerate(om.COMPASS)}[compass_word]
-    d = om.angle_diff(target, arm.bearing)
-    if abs(abs(d) - 90) > 50:
-        raise ValueError("%s side %s is not beside the street" % (arm, compass_word))
-    return "cw" if d > 0 else "ccw"
-
-
-def type_text(j):
-    """What kind of junction this is, as spoken ("3-way intersection")."""
-    if j.is_roundabout:
-        return "%d streets meet at a one-lane roundabout" % len(j.arms)
-    return "%s intersection" % ordinal_legs(len(j.arms))
-
-
-def intersection_announcement(j, street):
-    names = j.title(first=street)
-    if j.is_roundabout:
-        return "Roundabout of %s" % spoken_list(names)
-    return "%s intersection of %s" % (ordinal_legs(len(j.arms)), spoken_list(names))
-
-
-def spoken_street(name):
-    """A street name as it reads inside a sentence."""
-    if name.startswith("Access road"):
-        return "the " + name[0].lower() + name[1:]
-    return name
-
-
-# ================================================================ Level 1
 
 def feature(fid, ftype, geometry, name, **extra):
     props = {"name": name}
@@ -396,364 +125,292 @@ def line_geom(points):
     return {"type": "LineString", "coordinates": [rnd(p) for p in points]}
 
 
-def level2_file(route, key):
-    return "%s_l2_%s" % (route["id"], key)
-
-
-def intersection_feature(route, j, street, position, role=None):
-    """An intersection square or roundabout ring on a route map."""
-    names = j.title(first=street)
-    return feature("j_%s" % j.key, "intersection", point_geom(position), join_names(names), custom={
-        "kind": "roundabout" if j.is_roundabout else "junction", "legs": len(j.arms),
-        "detail": level2_file(route, j.key), "announcement": intersection_announcement(j, street),
-        "type_text": "Roundabout" if j.is_roundabout else type_text(j), "names_text": spoken_list(names),
-        "role": role})
-
-
-def route_sequence(route):
-    """Departure, each junction and the destination, in walking order.
-
-    The destination may sit just before the last junction, as on the Center
-    Street walk. Each item after the first carries the street that leads to it.
-    """
-    area = AREAS[route["area"]]
-    dest = route["destination"]
-    stops = route["stops"]
-    seq = [{"kind": "dep", "xy": area.xy(*route["departure"]["latlon"])}]
-    for s in stops:
-        j = junction(s["junction"])
-        if s.get("destination_before_junction"):
-            seq.append({"kind": "dest", "xy": area.xy(*dest["latlon"]), "street": s["street_before"]})
-        seq.append({"kind": "junction", "xy": j.center, "stop": s, "j": j, "street": s["street_before"]})
-    if not stops[-1].get("destination_before_junction"):
-        seq.append({"kind": "dest", "xy": area.xy(*dest["latlon"]), "street": route["street_after"]})
-    for i in range(1, len(seq)):
-        seq[i]["street"] = seq[i].get("street") or seq[i - 1].get("street")
-    return seq
-
-
-def build_level1(route):
-    up = route["up"]
-    dep = route["departure"]
-    dest = route["destination"]
-    seq = route_sequence(route)
-
-    # Street runs get one squared direction each.
-    runs = []
-    for i in range(1, len(seq)):
-        street = seq[i]["street"]
-        if runs and runs[-1]["street"] == street:
-            runs[-1]["end"] = i
-        else:
-            runs.append({"street": street, "start": i - 1, "end": i})
-    for run in runs:
-        b = om.bearing(seq[run["start"]]["xy"], seq[run["end"]]["xy"])
-        run["dir"] = snap(screen_angle(b, up))
-    seg_dir = {}
-    for run in runs:
-        for i in range(run["start"], run["end"]):
-            seg_dir[i] = run["dir"]
-
-    def choose_stubs(i):
-        """Squared direction for every arm the walk does not use."""
-        j, s = seq[i]["j"], seq[i]["stop"]
-        taken = set()
-        if i > 0:
-            taken.add((seg_dir[i - 1] + 180) % 360)
-        if i < len(seq) - 1:
-            taken.add(seg_dir[i])
-        used_arms = set()
-        if s.get("in"):
-            used_arms.add(id(j.arm(s["in"][0])))
-        if s.get("out"):
-            used_arms.add(id(j.arm(s["out"][0])))
-        stubs = []
-        for arm in j.arms:
-            if id(arm) in used_arms:
-                continue
-            want = snap(screen_angle(arm.bearing, up))
-            options = sorted({(want + d) % 360 for d in (0, 45, -45, 90, -90, 135, -135)},
-                             key=lambda o: abs(om.angle_diff(o, screen_angle(arm.bearing, up))))
-            chosen = next(o for o in options if all(abs(om.angle_diff(o, t)) >= 44 for t in taken))
-            taken.add(chosen)
-            stubs.append((arm, chosen))
-        return stubs
-
-    stub_dirs = {i: choose_stubs(i) for i, item in enumerate(seq) if item["kind"] == "junction"}
-
-    def box_normal(which):
-        ep = dep if which == "dep" else dest
-        if not ep.get("tag"):
-            return None
-        i = 0 if which == "dep" else next(k for k, it in enumerate(seq) if it["kind"] == "dest")
-        travel = seg_dir[0] if which == "dep" else seg_dir[i - 1]
-        return travel + (90 if ep["side"] == "right" else -90)
-
-    def room_for_box(i, n):
-        """Gap an endpoint i needs from junction n so its landmark box clears n's stubs."""
-        which = seq[i]["kind"]
-        if which not in ("dep", "dest") or seq[n]["kind"] != "junction":
-            return 0.0
-        normal = box_normal(which)
-        if normal is None or not any(abs(om.angle_diff(d, normal)) < 50 for _, d in stub_dirs[n]):
-            return 0.0
-        along = unit(normal + 90)
-        extent = abs(along[0]) * L1_BOX_W / 2 + abs(along[1]) * L1_BOX_H / 2
-        return extent + L1_ROAD_HALF + 3.0
-
-    def layout(kx, ky=None):
-        ky = kx if ky is None else ky
-        pos = [(0.0, 0.0)]
-        for i in range(len(seq) - 1):
-            u = unit(seg_dir[i])
-            k = abs(u[0]) * kx + abs(u[1]) * ky
-            real = om.dist(seq[i]["xy"], seq[i + 1]["xy"])
-            kinds = {seq[i]["kind"], seq[i + 1]["kind"]}
-            if kinds == {"junction"}:
-                minimum = MIN_GAP_JUNCTIONS
-            else:
-                minimum = max(MIN_GAP_ENDPOINT, room_for_box(i, i + 1), room_for_box(i + 1, i))
-            gap = max(real * k, minimum)
-            pos.append(add(pos[-1], unit(seg_dir[i]), gap))
-        return pos
-
-    def geometry(pos):
-        g = {"lines": [], "squares": [], "rings": [], "dots": [], "boxes": [], "stubs": []}
-        route_index = [i for i in range(len(seq))
-                       if not (i == len(seq) - 1 and seq[i]["kind"] == "junction")]
-        g["route"] = [pos[i] for i in route_index]
-        # Street runs, with extensions past the endpoints.
-        for run in runs:
-            pts = [pos[i] for i in range(run["start"], run["end"] + 1)]
-            if run["start"] == 0:
-                pts.insert(0, add(pts[0], unit(run["dir"]), -EXTENSION))
-            if run["end"] == len(seq) - 1 and seq[-1]["kind"] == "dest":
-                pts.append(add(pts[-1], unit(run["dir"]), EXTENSION))
-            g["lines"].append((run["street"], pts))
-        # Junction stubs for every arm the walk does not use.
-        for i, item in enumerate(seq):
-            if item["kind"] != "junction":
-                continue
-            j, s = item["j"], item["stop"]
-            stubs = stub_dirs[i]
-            for arm, d in stubs:
-                g["stubs"].append((arm.name, pos[i], add(pos[i], unit(d), STUB), d, i))
-            if j.is_roundabout:
-                g["rings"].append(pos[i])
-            else:
-                g["squares"].append(pos[i])
-        # Endpoint dots and landmark boxes.
-        for idx in (0, len(g["route"]) - 1):
-            g["dots"].append(g["route"][idx])
-        for which, ep, ref in (("dep", dep, 0), ("dest", dest, None)):
-            if not ep.get("tag"):
-                continue
-            i = 0 if which == "dep" else next(k for k, it in enumerate(seq) if it["kind"] == "dest")
-            travel = seg_dir[0] if which == "dep" else seg_dir[i - 1]
-            normal = cw_normal(travel) if ep["side"] == "right" else scale(cw_normal(travel), -1)
-            extent = abs(normal[0]) * L1_BOX_W / 2 + abs(normal[1]) * L1_BOX_H / 2
-            center = add(pos[i], normal, L1_ROAD_HALF + L1_BOX_GAP + extent)
-            g["boxes"].append((which, ep, pos[i], normal, center))
-        return g
-
-    def bbox(g):
-        xs, ys = [], []
-
-        def take(p, r):
-            xs.extend([p[0] - r, p[0] + r])
-            ys.extend([p[1] - r, p[1] + r])
-        for _, pts in g["lines"]:
-            for p in pts:
-                take(p, L1_ROAD_HALF)
-        for _, a, b, _, _ in g["stubs"]:
-            take(a, L1_ROAD_HALF)
-            take(b, L1_ROAD_HALF)
-        for p in g["squares"]:
-            take(p, L1_SQUARE_HALF)
-        for p in g["rings"]:
-            take(p, L1_RING_R + 0.5)
-        for p in g["dots"]:
-            take(p, L1_DOT_R)
-        for _, _, _, _, c in g["boxes"]:
-            xs.extend([c[0] - L1_BOX_W / 2, c[0] + L1_BOX_W / 2])
-            ys.extend([c[1] - L1_BOX_H / 2, c[1] + L1_BOX_H / 2])
-        return min(xs), min(ys), max(xs), max(ys)
-
-    def fits(kx, ky):
-        x0, y0, x1, y1 = bbox(geometry(layout(kx, ky)))
-        return x1 - x0 <= REF_W - 2 * MARGIN and y1 - y0 <= REF_H - 2 * MARGIN
-
-    def largest(test, lo, hi):
-        for _ in range(60):
-            mid = (lo + hi) / 2
-            lo, hi = (mid, hi) if test(mid) else (lo, mid)
-        return lo
-
-    # Largest even scale (mm per metre) that fits the reference area, then
-    # stretch whichever axis still has room, by up to MAX_STRETCH, as the
-    # earlier schematic maps stretched their height to fill a tall screen.
-    # Each step backs off a hair so the next search does not start on the edge.
-    k = largest(lambda v: fits(v, v), 0.0, 1.0) * 0.999
-    ky = largest(lambda v: fits(k, v), k, k * MAX_STRETCH) * 0.999
-    kx = largest(lambda v: fits(v, ky), k, min(k * MAX_STRETCH, ky * MAX_STRETCH)) * 0.999
-    pos = layout(kx, ky)
-    g = geometry(pos)
-    x0, y0, x1, y1 = bbox(g)
-    if x1 - x0 > REF_W - 2 * MARGIN + 0.01 or y1 - y0 > REF_H - 2 * MARGIN + 0.01:
-        raise SystemExit("%s does not fit the reference area even at minimum spacing" % route["id"])
-    shift = ((REF_W - (x1 - x0)) / 2 - x0, (REF_H - (y1 - y0)) / 2 - y0)
-
-    def T(p):
-        return add(p, shift)
-
-    features = []
-    for n, (street, pts) in enumerate(g["lines"]):
-        features.append(feature("street_%d" % n, "corridor", line_geom([T(p) for p in pts]), street))
-    # Opposite stubs of one street through a junction become one line.
-    by_junction = {}
-    for name, a, b, d, i in g["stubs"]:
-        by_junction.setdefault(i, []).append((name, a, b, d))
-    n = 0
-    for i, stubs in sorted(by_junction.items()):
-        used = set()
-        for x, (name, a, b, d) in enumerate(stubs):
-            if x in used:
-                continue
-            partner = next((y for y, s in enumerate(stubs) if y != x and y not in used and s[0] == name
-                            and abs(om.angle_diff(s[3], d + 180)) < 1), None)
-            if partner is not None:
-                used.update({x, partner})
-                pts = [stubs[partner][2], a, b]
-            else:
-                used.add(x)
-                pts = [a, b]
-            features.append(feature("cross_%d" % n, "corridor", line_geom([T(p) for p in pts]), name))
-            n += 1
-
-    waypoint_ids = []
-    for i, item in enumerate(seq):
-        if item["kind"] != "junction":
-            continue
-        j, s = item["j"], item["stop"]
-        fid = "j_%s" % j.key
-        waypoint_ids.append(fid)
-        features.append(intersection_feature(route, j, s["street_before"], T(pos[i])))
-
-    for which, ep, anchor, normal, center in g["boxes"]:
-        direction = ep["side"]
-        features.append(feature("landmark_%s" % which, "landmark", point_geom(T(anchor)), ep["name"],
-                                side=direction, custom={
-                                    "tag": ep["tag"],
-                                    "announcement": "%s on your %s" % (ep["name"], direction),
-                                    "offset_x": round(normal[0], 3), "offset_y": round(normal[1], 3)}))
-
-    features.append(feature("route", "route", line_geom([T(p) for p in g["route"]]), route["title"], custom={
-        "departure": dep["spoken"], "destination": dest["spoken"],
-        "waypoints": ",".join(waypoint_ids)}))
-
-    doc = {
+def document(name, features, origin):
+    return {
         "type": "FeatureCollection",
         "version": "1.0",
-        "metadata": {"name": "Route %d: %s" % (route["number"], route["title"]),
-                     "scale": "1 unit = 1 mm on screen", "coordinate_unit": "arbitrary",
-                     "coordinate_origin": "top-left", "author": "tools/build_maps.py"},
+        "metadata": {"name": name, "scale": "1 unit = 1 mm on screen", "coordinate_unit": "arbitrary",
+                     "coordinate_origin": origin, "author": "tools/build_maps.py"},
         "bounds": {"width": REF_W, "height": REF_H},
         "features": features,
     }
-    return doc, {"k_mm_per_m": (kx, ky), "seq": seq}
 
 
-# ================================================================ Level 2
+def check_spoken(text, where):
+    """No dashes or arrows in anything the app speaks: VoiceOver reads them out."""
+    for bad in ("—", "–", "→", "←"):
+        if bad in text:
+            raise SystemExit("%s: dash or arrow in spoken text: %s" % (where, text))
+    return text
+
+
+# ================================================================ overviews
+
+def label_spot(anchor, lines, avoid=4.2, reach=5.0):
+    """A clear spot beside `anchor` for a number label, away from every line."""
+    for dx, dy in ((1, -1), (-1, -1), (1, 1), (-1, 1), (0, -1.3), (1.3, 0), (-1.3, 0)):
+        p = (anchor[0] + dx * reach, anchor[1] + dy * reach)
+        if all(om_dist_to_polyline(p, pts) >= avoid for pts in lines) and \
+                MARGIN + 2 < p[0] < REF_W - MARGIN - 2 and MARGIN + 2 < p[1] < REF_H - MARGIN - 2:
+            return p
+    return (anchor[0] + reach, anchor[1] - reach)
+
+
+def seg_distance(p, a, b):
+    d = sub(b, a)
+    ls = dot(d, d)
+    t = 0.0 if ls == 0 else max(0.0, min(1.0, dot(sub(p, a), d) / ls))
+    return om.dist(p, add(a, d, t))
+
+
+def om_dist_to_polyline(p, pts):
+    best = float("inf")
+    for a, b in zip(pts, pts[1:]):
+        d = sub(b, a)
+        ls = dot(d, d)
+        t = 0.0 if ls == 0 else max(0.0, min(1.0, dot(sub(p, a), d) / ls))
+        best = min(best, om.dist(p, add(a, d, t)))
+    return best
+
+
+def build_overview(ov):
+    """A schematic route map from the legs in study_spec."""
+    pos = ov["start"]["at"]
+    route = [pos]
+    runs = []          # (street, points) for the streets under the route
+    stubs = []         # (name, centre, end, direction)
+    nodes = []         # (number, position, text)
+    for leg in ov["legs"]:
+        nxt = add(pos, unit(leg["dir"]), leg["len"])
+        if runs and runs[-1][0] == leg["street"] and abs(om.angle_diff(runs[-1][2], leg["dir"])) < 1:
+            runs[-1][1].append(nxt)
+        else:
+            runs.append([leg["street"], [pos, nxt], leg["dir"]])
+        pos = nxt
+        route.append(pos)
+        node = leg["node"]
+        if node["kind"] == "intersection":
+            for d, length, name in node["stubs"]:
+                stubs.append((name, pos, add(pos, unit(d), length), d))
+            nodes.append((node["number"], pos, check_spoken(node["text"], ov["id"])))
+
+    features = []
+    for n, (street, pts, _) in enumerate(runs):
+        features.append(feature("street_%d" % n, "corridor", line_geom(pts), street))
+    # Opposite stubs of one street through a node become one line.
+    used = set()
+    n = 0
+    for i, (name, centre, end, d) in enumerate(stubs):
+        if i in used:
+            continue
+        partner = next((k for k, s in enumerate(stubs) if k != i and k not in used and s[0] == name
+                        and s[1] == centre and abs(om.angle_diff(s[3], d + 180)) < 1), None)
+        if partner is not None:
+            used.update({i, partner})
+            pts = [stubs[partner][2], centre, end]
+        else:
+            used.add(i)
+            pts = [centre, end]
+        features.append(feature("cross_%d" % n, "corridor", line_geom(pts), name))
+        n += 1
+    for number, p, text in nodes:
+        features.append(feature("node_%d" % number, "intersection", point_geom(p), "Intersection %d" % number,
+                                custom={"cue": text, "number": number}))
+    features.append(feature("route", "route", line_geom(route), ov["title"], custom={
+        "start_text": check_spoken(ov["start"]["text"], ov["id"]),
+        "end_text": check_spoken(ov["end"]["text"], ov["id"])}))
+
+    # Labels printed on the map for the researcher and sighted viewers, as in
+    # the mockups: intersection numbers, the two ends, street names.
+    lines = [pts for _, pts, _ in runs] + [[s[1], s[2]] for s in stubs]
+    for number, p, _ in nodes:
+        features.append(feature("label_%d" % number, "label", point_geom(label_spot(p, lines)), str(number),
+                                custom={"size_mm": 3.6, "weight": "bold"}))
+    for which, p in (("start", route[0]), ("end", route[-1])):
+        text, side = ov[which]["label"], ov[which]["label_side"]
+        width = 1.9 * len(text)
+        offset = {"right": (4.5 + width / 2, 0.0), "left": (-4.5 - width / 2, 0.0),
+                  "above": (0.0, -5.5), "below": (0.0, 5.5)}[side]
+        features.append(feature("label_%s" % which, "label", point_geom(add(p, offset)), text,
+                                custom={"size_mm": 3.2, "weight": "bold"}))
+    # Street names, written along the route as in the mockup, or beside a street.
+    for k, (text, x, y, angle) in enumerate(ov["labels"]):
+        features.append(feature("label_street_%d" % k, "label", point_geom((x, y)), text,
+                                custom={"size_mm": 2.6, "weight": "bold", "angle": angle}))
+
+    xs = [p[0] for _, pts, _ in runs for p in pts] + [s[2][0] for s in stubs]
+    ys = [p[1] for _, pts, _ in runs for p in pts] + [s[2][1] for s in stubs]
+    if min(xs) - OV_DOT_R < MARGIN or max(xs) + OV_DOT_R > REF_W - MARGIN \
+            or min(ys) - OV_DOT_R < MARGIN or max(ys) + OV_DOT_R > REF_H - MARGIN:
+        raise SystemExit("%s does not fit the reference area" % ov["id"])
+    return document(ov["title"], features, "top-left")
+
+
+# ================================================================ junctions
+
+AREA = om.Area(spec.AREA["osm"], spec.AREA["origin"])
+
+
+class Arm:
+    def __init__(self, name, bearing):
+        self.name = name
+        self.bearing = bearing % 360.0
+        self.crossing = None   # "zebra", "unmarked" or None
+        self.median = False
+
+    def __repr__(self):
+        return "%s@%.0f" % (self.name, self.bearing)
+
+
+class Junction:
+    """One intersection: its arms and what the team describes at each."""
+
+    def __init__(self, key):
+        self.key = key
+        if key == "training":
+            conf = spec.TRAINING_JUNCTION
+            arms = [Arm(name, b) for name, b in conf["arms"]]
+        else:
+            conf = spec.JUNCTIONS[key]
+            arms = [Arm(g["name"], g["bearing"]) for g in om.merged_arms(AREA, conf["nodes"])]
+        self.conf = conf
+        self.arms = sorted(arms, key=lambda a: a.bearing)
+        for ref, name in conf.get("rename", {}).items():
+            self.arm(ref).name = name
+        for ref, kind in conf.get("crosswalks", {}).items():
+            self.arm(ref).crossing = kind
+        for ref in conf.get("median", []):
+            self.arm(ref).median = True
+        self.straight = [self.arm(ref) for ref in conf.get("straight", [])]
+        self.skew = [(self.arm(ref), side, mm) for ref, side, mm in conf.get("skew", [])]
+
+    def arm(self, ref):
+        name, _, b = ref.partition("@")
+        candidates = [a for a in self.arms if a.name == name]
+        if not candidates:
+            raise KeyError("%s has no arm named %s (arms: %s)" % (self.key, name, self.arms))
+        if not b:
+            return candidates[0]
+        found = min(candidates, key=lambda a: abs(om.angle_diff(a.bearing, float(b))))
+        if abs(om.angle_diff(found.bearing, float(b))) > 25:
+            raise KeyError("%s: %s is %.0f degrees, not near %s" % (self.key, name, found.bearing, b))
+        return found
+
+
+def resolve_side(arm, compass_word):
+    """'cw' or 'ccw' for the side of an arm named by a compass word."""
+    target = {name: i * 45.0 for i, name in enumerate(om.COMPASS)}[compass_word]
+    d = om.angle_diff(target, arm.bearing)
+    if abs(abs(d) - 90) > 50:
+        raise ValueError("%s side %s is not beside the street" % (arm, compass_word))
+    return "cw" if d > 0 else "ccw"
+
+
+# Centre of the visible area in the map's own coordinates. A map is first laid
+# out round the junction centre; when the walk would run off the screen the
+# visible area moves to centre on the walk instead (see frame_for).
+FRAME = [0.0, 0.0]
+
 
 def arm_limit(theta, inset):
-    """Distance along an arm before it leaves the reference area."""
-    s, c = unit(theta)
-    hw, hh = REF_W / 2 - inset, REF_H / 2 - inset
-    limits = []
-    if abs(s) > 1e-6:
-        limits.append(hw / abs(s))
-    if abs(c) > 1e-6:
-        limits.append(hh / abs(c))
-    return min(limits)
+    """Distance along an arm before it leaves the visible area."""
+    return line_limit((0.0, 0.0), theta, inset)
 
 
-def side_limit(theta, side, offset, inset):
-    """Distance along an arm's sidewalk line before it leaves the reference area."""
+def line_limit(origin, theta, inset):
+    """Distance from `origin` along `theta` before leaving the visible area."""
     u = unit(theta)
-    n = cw_normal(theta) if side == "cw" else scale(cw_normal(theta), -1)
-    hw, hh = REF_W / 2 - inset, REF_H / 2 - inset
     limits = []
-    for axis, half in ((0, hw), (1, hh)):
+    for axis, half in ((0, REF_W / 2 - inset), (1, REF_H / 2 - inset)):
         if abs(u[axis]) < 1e-6:
             continue
-        bound = half if u[axis] > 0 else -half
-        limits.append((bound - offset * n[axis]) / u[axis])
-    return min(limits)
+        bound = FRAME[axis] + (half if u[axis] > 0 else -half)
+        limits.append((bound - origin[axis]) / u[axis])
+    return max(0.0, min(limits))
 
 
-class Level2Geometry:
-    """Corners, crosswalk ends and sidewalk lines for one junction.
+def frame_for(route_points):
+    """Where to centre the visible area so the whole walk fits on screen.
+
+    The junction stays the centre when the walk fits round it; otherwise the
+    walk is centred, keeping the junction well inside the screen."""
+    hw, hh = REF_W / 2 - ROUTE_INSET, REF_H / 2 - ROUTE_INSET
+    if all(abs(p[0]) <= hw and abs(p[1]) <= hh for p in route_points):
+        return [0.0, 0.0]
+    xs = [p[0] for p in route_points]
+    ys = [p[1] for p in route_points]
+    cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+    lim_x, lim_y = REF_W / 2 - 12.0, REF_H / 2 - 16.0
+    return [max(-lim_x, min(lim_x, cx)), max(-lim_y, min(lim_y, cy))]
+
+
+def shift_features(features, offset):
+    """Moves every coordinate so the visible area's centre becomes (0, 0)."""
+    def move(c):
+        if isinstance(c[0], (int, float)):
+            return [round(c[0] - offset[0], ONE_DECIMAL), round(c[1] - offset[1], ONE_DECIMAL)]
+        return [move(x) for x in c]
+    for f in features:
+        f["geometry"]["coordinates"] = move(f["geometry"]["coordinates"])
+    return features
+
+
+def corner(theta_a, theta_b, d):
+    """The sidewalk corner between two arms, clockwise from a to b.
+
+    A corner under 180 degrees is one point where the two sidewalks meet,
+    t along each arm from the centre. A flat or reflex side has no corner:
+    the sidewalk runs straight past, bending round the back when wider.
+    """
+    alpha = (theta_b - theta_a) % 360.0
+    if alpha < 179.0:
+        r = d / math.sin(math.radians(alpha / 2))
+        t = d / math.tan(math.radians(alpha / 2))
+        return {"kind": "point", "points": [scale(unit(theta_a + alpha / 2), r)], "t": t}
+    start = theta_a + 90
+    sweep = alpha - 180
+    if sweep < 1:
+        return {"kind": "flat", "points": [scale(unit(start), d)], "t": 0.0}
+    steps = max(1, int(sweep / 10))
+    return {"kind": "flat", "points": [scale(unit(start + sweep * i / steps), d) for i in range(steps + 1)],
+            "t": 0.0}
+
+
+class Geometry:
+    """Corners, crosswalk ends and sidewalk lines for one junction, turned so
+    `up` is at the top of the screen.
 
     Crosswalks run corner to corner, so a walk along a sidewalk meets the
-    crosswalk end exactly where the sidewalk turns the corner, and a
-    straight walk past a square junction has no bends at all.
+    crosswalk end exactly where the sidewalk turns the corner. A crosswalk the
+    team describes as straight has both ends equally far out; one described
+    as angled has one end moved further out along its arm.
     """
 
     def __init__(self, j, up):
         self.j = j
         self.up = up
-        self.rb = j.is_roundabout
         self.arms = sorted(j.arms, key=lambda a: screen_angle(a.bearing, up))
         self.theta = {id(a): screen_angle(a.bearing, up) for a in self.arms}
-        self.d = RB_SIDEWALK_OFFSET if self.rb else L2_SIDEWALK_OFFSET
+        self.d = SIDEWALK_OFFSET
         n = len(self.arms)
-        self.corners = []  # corner k lies between arm k and arm k+1 (clockwise)
-        for k in range(n):
-            a, b = self.arms[k], self.arms[(k + 1) % n]
-            alpha = (self.theta[id(b)] - self.theta[id(a)]) % 360.0
-            if n == 1:
-                alpha = 360.0
-            self.corners.append(self._corner(a, b, alpha))
+        # Corner k lies between arm k and arm k+1, clockwise.
+        self.corners = [corner(self.theta[id(self.arms[k])], self.theta[id(self.arms[(k + 1) % n])], self.d)
+                        for k in range(n)]
         self.end_t = {}
         for k, arm in enumerate(self.arms):
-            if self.rb:
-                self.end_t[(id(arm), "ccw")] = RB_CROSSWALK_T
-                self.end_t[(id(arm), "cw")] = RB_CROSSWALK_T
-                continue
             before, after = self.corners[(k - 1) % n], self.corners[k]
-            t_ccw = before["t_b"] if before["kind"] == "point" and before["t_b"] >= L2_MIN_CROSS_T else None
-            t_cw = after["t_a"] if after["kind"] == "point" and after["t_a"] >= L2_MIN_CROSS_T else None
+            t_ccw = before["t"] if before["kind"] == "point" and before["t"] >= MIN_CROSS_T else None
+            t_cw = after["t"] if after["kind"] == "point" and after["t"] >= MIN_CROSS_T else None
             if t_ccw is None and t_cw is None:
-                t_ccw = t_cw = L2_MIN_CROSS_T
+                t_ccw = t_cw = MIN_CROSS_T
             self.end_t[(id(arm), "ccw")] = t_ccw if t_ccw is not None else t_cw
             self.end_t[(id(arm), "cw")] = t_cw if t_cw is not None else t_ccw
-
-    def _corner(self, a, b, alpha):
-        ta = self.theta[id(a)]
-        d = self.d
-        if self.rb:
-            half = math.degrees(math.asin(d / RB_SIDEWALK_R))
-            if alpha > 2 * half + 1:
-                start = ta + half
-                sweep = alpha - 2 * half
-                steps = max(2, int(sweep / 8))
-                arc = [scale(unit(start + sweep * i / steps), RB_SIDEWALK_R) for i in range(steps + 1)]
-                t_edge = math.sqrt(RB_SIDEWALK_R ** 2 - d ** 2)
-                return {"kind": "arc", "points": arc, "t_a": t_edge, "t_b": t_edge}
-        if alpha < 179.0:
-            r = d / math.sin(math.radians(alpha / 2))
-            p = scale(unit(ta + alpha / 2), r)
-            t = d / math.tan(math.radians(alpha / 2))
-            return {"kind": "point", "points": [p], "t_a": t, "t_b": t}
-        # Flat or reflex side: the sidewalk runs straight past the junction,
-        # bending round the back of it when the side is wider than 180 degrees.
-        start = ta + 90
-        sweep = alpha - 180
-        if sweep < 1:
-            return {"kind": "flat", "points": [scale(unit(start), d)], "t_a": 0.0, "t_b": 0.0}
-        steps = max(1, int(sweep / 10))
-        arc = [scale(unit(start + sweep * i / steps), d) for i in range(steps + 1)]
-        return {"kind": "flat", "points": arc, "t_a": 0.0, "t_b": 0.0}
+        for arm in j.straight:
+            a, b = self.end_t[(id(arm), "ccw")], self.end_t[(id(arm), "cw")]
+            if abs(a - b) >= SQUARE_UP_MIN:
+                self.end_t[(id(arm), "ccw")] = self.end_t[(id(arm), "cw")] = max(a, b)
+        for arm, side, mm in j.skew:
+            self.end_t[(id(arm), side)] += mm
 
     def index(self, arm):
         return next(i for i, a in enumerate(self.arms) if a is arm)
@@ -769,282 +426,184 @@ class Level2Geometry:
     def cross_end(self, arm, side):
         return self.side_point(arm, side, self.cross_t(arm, side))
 
-    def axis_crossing(self, arm):
-        """Where the crosswalk meets the arm's centre line."""
+    def axis_t(self, arm):
+        """How far out the crosswalk meets the arm's centre line."""
         a, b = self.cross_end(arm, "ccw"), self.cross_end(arm, "cw")
         u = unit(self.theta[id(arm)])
         ca = a[0] * u[1] - a[1] * u[0]
         cb = b[0] * u[1] - b[1] * u[0]
         s = ca / (ca - cb) if abs(ca - cb) > 1e-9 else 0.5
-        return (a[0] + (b[0] - a[0]) * s, a[1] + (b[1] - a[1]) * s)
+        p = (a[0] + (b[0] - a[0]) * s, a[1] + (b[1] - a[1]) * s)
+        return dot(p, u)
 
     def far(self, arm, inset, side=None):
         if side is None:
             return arm_limit(self.theta[id(arm)], inset)
-        return side_limit(self.theta[id(arm)], side, self.d, inset)
+        th = self.theta[id(arm)]
+        n = cw_normal(th) if side == "cw" else scale(cw_normal(th), -1)
+        return line_limit(scale(n, self.d), th, inset)
 
 
-def sidewalk_feature(index, points, arm, side):
-    return feature("sidewalk_%d" % index, "sidewalk", line_geom(points),
-                   "Sidewalk on the %s side of %s" % (side_name(arm, side), arm.name),
-                   custom={"simple_name": "Sidewalk along %s" % arm.name})
+def sidewalk_feature(index, points, street):
+    return feature("sidewalk_%d" % index, "sidewalk", line_geom(points), "Sidewalk along %s" % street)
 
 
-def build_level2(route, stop, previous_stop, next_stop):
-    j = junction(stop["junction"])
-    up = route["up"]
-    geo = Level2Geometry(j, up)
+def crosswalk_features(fid, a, b, arm_name, marking, uses_median, mid=None, normal=None):
+    """One crosswalk, or two halves either side of a median."""
+    name = "Crosswalk across %s" % arm_name
+    common = {"marking": marking}
+    if not uses_median:
+        return [feature(fid, "crosswalk", line_geom([a, b]), name, custom=dict(common, endpoints="both"))]
+    gap = MEDIAN_W / 2 + 0.3
+    return [
+        feature(fid + "_a", "crosswalk", line_geom([a, add(mid, normal, -gap)]), name,
+                custom=dict(common, endpoints="start")),
+        feature(fid + "_b", "crosswalk", line_geom([add(mid, normal, gap), b]), name,
+                custom=dict(common, endpoints="end")),
+    ]
+
+
+def stop_heading(stop, j):
+    """Compass direction drawn at the top: the way the participant walks in,
+    or for a walk that starts at the corner, the way they first cross."""
+    if stop.get("heading") != "first_crossing":
+        return (j.arm(stop["in"][0]).bearing + 180.0) % 360.0
+    # Any orientation lists the arms in the same circular order, so the
+    # walk can be worked out before the map is turned.
+    _, crossed, via = walking_path(Geometry(j, 0.0), stop, with_via=True)
+    first = crossed[0]
+    return (first.bearing + (90.0 if via == "cw" else -90.0)) % 360.0
+
+
+def build_intersection(stop):
+    j = Junction(stop["junction"])
+    up = stop_heading(stop, j)
+    geo = Geometry(j, up)
+    FRAME[:] = [0.0, 0.0]
+    FRAME[:] = frame_for(walking_path(geo, stop, capped=False)[0])
     features = []
-    route_street = stop["street_before"]
-    names = j.title(first=route_street)
-    title = j.conf.get("name") or join_names(names)
 
-    # Intro line spoken when the view opens.
-    if j.is_roundabout:
-        intro = "Roundabout view. %s. %d streets meet at a one-lane roundabout. %s" % (
-            title, len(j.arms), control_sentence(j))
-    else:
-        intro = "Intersection view. %s. %s intersection. %s" % (
-            title, ordinal_legs(len(j.arms)), control_sentence(j))
-    features.append(feature("info", "info", point_geom((0, 0)), intro.strip(), custom={
-        "title": title, "kind": "roundabout" if j.is_roundabout else "junction",
-        "legs": len(j.arms), "spoken_title": spoken_list(names),
-        "type_text": type_text(j), "control_text": control_sentence(j)}))
-
-    road_half = RB_ROAD_HALF if j.is_roundabout else L2_ROAD_HALF
-    # Roads.
+    # Roads, running off the edge of the screen.
     for k, arm in enumerate(geo.arms):
         th = geo.theta[id(arm)]
-        start = scale(unit(th), RB_RING_R) if j.is_roundabout else (0.0, 0.0)
-        end = scale(unit(th), geo.far(arm, 0) + 12)
-        name = arm.name + (", one way" if arm.oneway else "")
-        features.append(feature("road_%d" % k, "corridor", line_geom([start, end]), name,
-                                custom={"width_mm": road_half * 2, "divided": "yes" if arm.divided else None}))
-    if j.is_roundabout:
-        features.append(feature("ring", "roundabout", point_geom((0, 0)),
-                                "Roundabout. Traffic moves counterclockwise",
-                                custom={"radius_mm": RB_RING_R, "width_mm": RB_ROAD_HALF * 2}))
-        features.append(feature("central_island", "central_island", point_geom((0, 0)),
-                                "Center island. Not a walkway",
-                                custom={"radius_mm": RB_RING_R - RB_ROAD_HALF}))
-        for k, arm in enumerate(geo.arms):
-            if not arm.island:
-                continue
-            th = geo.theta[id(arm)]
-            features.append(feature("splitter_%d" % k, "island",
-                                    line_geom([scale(unit(th), RB_SPLITTER_FROM), scale(unit(th), RB_SPLITTER_TO)]),
-                                    "Splitter island on %s. Pedestrian refuge between the entry and exit lanes" % arm.name,
-                                    custom={"width_mm": RB_SPLITTER_W}))
-    else:
-        features.append(feature("center", "center", point_geom((0, 0)), "Center",
-                                custom={"radius_mm": L2_CENTER_R}))
+        features.append(feature("road_%d" % k, "corridor", line_geom([(0.0, 0.0), scale(unit(th), geo.far(arm, 0) + 12)]),
+                                arm.name, custom={"width_mm": ROAD_HALF * 2}))
+    features.append(feature("center", "center", point_geom((0, 0)), "Center", custom={"radius_mm": CENTER_R}))
+
+    # Medians along divided arms, from just inside the crosswalk outwards.
+    for k, arm in enumerate(geo.arms):
+        if not arm.median:
+            continue
+        th = geo.theta[id(arm)]
+        t0 = (geo.axis_t(arm) if arm.crossing else geo.cross_t(arm, "cw")) - MEDIAN_NOSE
+        features.append(feature("median_%d" % k, "median",
+                                line_geom([scale(unit(th), t0), scale(unit(th), geo.far(arm, 0) + 12)]),
+                                "Median", custom={"width_mm": MEDIAN_W}))
 
     # Sidewalks: each corner split into the two streets it runs along.
     sw = 0
-    for k, corner in enumerate(geo.corners):
-        a = geo.arms[k]
-        b = geo.arms[(k + 1) % len(geo.arms)]
+    n = len(geo.arms)
+    for k, c in enumerate(geo.corners):
+        a, b = geo.arms[k], geo.arms[(k + 1) % n]
         far_a = geo.side_point(a, "cw", geo.far(a, 2.0, "cw"))
         far_b = geo.side_point(b, "ccw", geo.far(b, 2.0, "ccw"))
-        pts = corner["points"]
-        if j.is_roundabout and corner["kind"] == "arc":
-            edge_a = geo.side_point(a, "cw", corner["t_a"])
-            edge_b = geo.side_point(b, "ccw", corner["t_b"])
-            features.append(sidewalk_feature(sw, [far_a, edge_a], a, "cw"))
-            features.append(feature("sidewalk_%d" % (sw + 1), "sidewalk", line_geom(pts),
-                                    "Sidewalk around the roundabout",
-                                    custom={"simple_name": "Sidewalk around the roundabout"}))
-            features.append(sidewalk_feature(sw + 2, [edge_b, far_b], b, "ccw"))
-            sw += 3
-            continue
-        if corner["kind"] == "point":
+        pts = c["points"]
+        if c["kind"] == "point":
             first, second = [far_a, pts[0]], [pts[0], far_b]
         else:
             mid = len(pts) // 2
             first, second = [far_a] + pts[:mid + 1], pts[mid:] + [far_b]
-        features.append(sidewalk_feature(sw, first, a, "cw"))
-        features.append(sidewalk_feature(sw + 1, second, b, "ccw"))
+        features.append(sidewalk_feature(sw, first, a.name))
+        features.append(sidewalk_feature(sw + 1, second, b.name))
         sw += 2
 
-    # Crosswalks and refuge islands.
+    # Crosswalks.
     for k, arm in enumerate(geo.arms):
         if not arm.crossing:
             continue
-        ccw_end = geo.cross_end(arm, "ccw")
-        cw_end = geo.cross_end(arm, "cw")
+        a, b = geo.cross_end(arm, "ccw"), geo.cross_end(arm, "cw")
         th = geo.theta[id(arm)]
-        mid = geo.axis_crossing(arm)
-        split = arm.island
-        common = {"assumed": "yes" if arm.crossing.get("assumed") else None}
-        if split:
-            gap = (RB_SPLITTER_W / 2 + 0.6) if j.is_roundabout else L2_ISLAND_W / 2 + 0.3
-            n = cw_normal(th)
-            features.append(feature("crosswalk_%d_in" % k, "crosswalk", line_geom([ccw_end, add(mid, n, -gap)]),
-                                    crosswalk_name(arm, "inbound", j.is_roundabout),
-                                    custom=dict(common, endpoints="start",
-                                                simple_name=crosswalk_simple_name(arm, "inbound", j.is_roundabout))))
-            features.append(feature("crosswalk_%d_out" % k, "crosswalk", line_geom([add(mid, n, gap), cw_end]),
-                                    crosswalk_name(arm, "outbound", j.is_roundabout),
-                                    custom=dict(common, endpoints="end",
-                                                simple_name=crosswalk_simple_name(arm, "outbound", j.is_roundabout))))
-            if not j.is_roundabout:
-                u = unit(th)
-                features.append(feature("refuge_%d" % k, "island",
-                                        line_geom([add(mid, u, -L2_ISLAND_HALF_LEN), add(mid, u, L2_ISLAND_HALF_LEN)]),
-                                        "Pedestrian refuge island in the middle of %s" % arm.name,
-                                        custom={"width_mm": L2_ISLAND_W}))
-        else:
-            features.append(feature("crosswalk_%d" % k, "crosswalk", line_geom([ccw_end, cw_end]),
-                                    crosswalk_name(arm, None, j.is_roundabout),
-                                    custom=dict(common, endpoints="both",
-                                                simple_name=crosswalk_simple_name(arm, None, j.is_roundabout))))
+        mid = scale(unit(th), geo.axis_t(arm))
+        features += crosswalk_features("crosswalk_%d" % k, a, b, arm.name, arm.crossing, arm.median,
+                                       mid, cw_normal(th))
 
-    # Walking path through the junction.
-    path, crossed, _ = walking_path(geo, stop)
-    first_is_route_start = bool(stop.get("starts_here"))
-    last_is_route_end = bool(stop.get("ends_here"))
-    pair = spoken_list(names)
-    departure = ("Your location, %s" % route["departure"]["spoken"]) if first_is_route_start \
-        else "Your location at the intersection of %s" % pair
-    if last_is_route_end:
-        destination = "Destination, %s. Double tap to return to the map." % route["destination"]["spoken"]
-    else:
-        destination = "End of route. Double tap to return to the map."
+    path, crossed = walking_path(geo, stop)
+    for arm in crossed:
+        if not arm.crossing:
+            raise SystemExit("%s crosses %s, which has no crosswalk in the spec" % (stop["id"], arm))
     features.append(feature("route", "route", line_geom(path), "Route", custom={
-        "departure": departure, "destination": destination}))
-
-    doc = {
-        "type": "FeatureCollection",
-        "version": "1.0",
-        "metadata": {"name": title, "scale": "1 unit = 1 mm on screen", "coordinate_unit": "arbitrary",
-                     "coordinate_origin": "center", "author": "tools/build_maps.py"},
-        "bounds": {"width": REF_W, "height": REF_H},
-        "features": features,
+        "start_text": spec.START_TEXT, "end_text": spec.END_TEXT}))
+    shift_features(features, FRAME)
+    tidy(features)
+    place_dots(features, stop["id"])
+    doc = document(stop["subtitle"], features, "center")
+    FRAME[:] = [0.0, 0.0]
+    facts = {
+        "heading": up,
+        "arms": [(arm.name, om.compass8(arm.bearing), arm.crossing, arm.median) for arm in j.arms],
+        "crossed": [arm.name for arm in crossed],
     }
-    summary = {
-        "title": title,
-        "legs": len(j.arms),
-        "roundabout": j.is_roundabout,
-        "control": control_sentence(j) or "Not recorded",
-        "control_source": control_source(j),
-        "arms": [(arm.name, om.compass8(arm.bearing), crosswalk_name(arm, None, j.is_roundabout) if arm.crossing else None,
-                  bool(arm.crossing and arm.crossing.get("assumed")), bool(arm.island)) for arm in j.arms],
-        "crossed": [crosswalk_name(arm, None, j.is_roundabout) if arm.crossing else "%s (no crosswalk in OSM)" % arm.name
-                    for arm in crossed],
-    }
-    return doc, summary
+    return doc, facts
 
 
-def control_source(j):
-    if j.is_roundabout:
-        return "OSM"
-    conf = j.conf
-    if conf.get("control") is None:
-        return ""
-    return conf.get("control_source", "OSM")
-
-
-def walking_path(geo, stop):
+def walking_path(geo, stop, with_via=False, capped=True):
+    """The walk through the junction: corner to corner across each arm."""
     j = geo.j
     n = len(geo.arms)
     in_arm = j.arm(stop["in"][0])
     in_side = resolve_side(in_arm, stop["in"][1])
-    corner = geo.index(in_arm) if in_side == "cw" else (geo.index(in_arm) - 1) % n
+    start_corner = geo.index(in_arm) if in_side == "cw" else (geo.index(in_arm) - 1) % n
+    out_arm = j.arm(stop["out"][0])
+    out_side = resolve_side(out_arm, stop["out"][1])
+    target = geo.index(out_arm) if out_side == "cw" else (geo.index(out_arm) - 1) % n
 
-    if stop.get("out"):
-        out_arm = j.arm(stop["out"][0])
-        out_side = resolve_side(out_arm, stop["out"][1])
-        target = geo.index(out_arm) if out_side == "cw" else (geo.index(out_arm) - 1) % n
-    else:
-        out_arm, out_side = None, None
-        target = corner
-
-    cw_steps = (target - corner) % n
-    ccw_steps = (corner - target) % n
+    cw_steps = (target - start_corner) % n
+    ccw_steps = (start_corner - target) % n
     via = stop.get("via") or ("cw" if cw_steps <= ccw_steps else "ccw")
-    if cw_steps == 0 and ccw_steps == 0:
-        via = None
 
-    inset_route = 2.5
-    if stop.get("starts_here"):
-        start_t = geo.cross_t(in_arm, in_side) + 7.0
-    else:
-        start_t = geo.far(in_arm, inset_route, in_side)
+    start_gap = stop.get("start_gap", START_GAP)
+    start_t = geo.cross_t(in_arm, in_side) + start_gap
+    if capped:
+        start_t = max(geo.cross_t(in_arm, in_side), min(start_t, geo.far(in_arm, ROUTE_INSET, in_side)))
     points = [geo.side_point(in_arm, in_side, start_t), geo.cross_end(in_arm, in_side)]
-
-    current_arm, current_side = in_arm, in_side
+    current = in_arm
     crossed = []
-    c = corner
-    if via == "cw":
-        for _ in range(cw_steps):
-            nxt = geo.arms[(c + 1) % n]
-            crossed.append(nxt)
-            if current_arm is not nxt:
-                points += ordered_corner(geo, c, current_arm)
-                points.append(geo.cross_end(nxt, "ccw"))
-            points.append(geo.cross_end(nxt, "cw"))
-            current_arm, current_side = nxt, "cw"
-            c = (c + 1) % n
-    elif via == "ccw":
-        for _ in range(ccw_steps):
-            here = geo.arms[c]
-            crossed.append(here)
-            if current_arm is not here:
-                points += ordered_corner(geo, c, current_arm)
-                points.append(geo.cross_end(here, "cw"))
-            points.append(geo.cross_end(here, "ccw"))
-            current_arm, current_side = here, "ccw"
-            c = (c - 1) % n
-
-    if out_arm is not None:
-        if current_arm is not out_arm:
-            points += ordered_corner(geo, c, current_arm)
-            points.append(geo.cross_end(out_arm, out_side))
-        end_t = geo.cross_t(out_arm, out_side) + 7.0 if stop.get("ends_here") else geo.far(out_arm, inset_route, out_side)
-        points.append(geo.side_point(out_arm, out_side, end_t))
-    else:
-        # The walk ends at this corner.
-        pts = geo.corners[c]["points"]
-        points.append(pts[0] if len(pts) == 1 else pts[len(pts) // 2])
-    points = dedupe(points)
-    if geo.rb:
-        crossing_ends = [geo.cross_end(a, s) for a in geo.arms for s in ("cw", "ccw")]
-        points = round_bends(points, crossing_ends)
-    return points, crossed, via
-
-
-def round_bends(points, keep, radius=2.5, threshold=40.0):
-    """Rounds sharp bends that are not crosswalk ends, as a curved kerb would."""
-    out = [points[0]]
-    for i in range(1, len(points) - 1):
-        a, b, c = points[i - 1], points[i], points[i + 1]
-        h1 = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
-        h2 = math.degrees(math.atan2(c[1] - b[1], c[0] - b[0]))
-        turn = abs(om.angle_diff(h2, h1))
-        if turn <= threshold or any(om.dist(b, k) < 0.3 for k in keep):
-            out.append(b)
-            continue
-        r = min(radius, om.dist(a, b) / 2, om.dist(b, c) / 2)
-        p0 = add(b, scale((a[0] - b[0], a[1] - b[1]), r / om.dist(a, b)))
-        p2 = add(b, scale((c[0] - b[0], c[1] - b[1]), r / om.dist(b, c)))
-        for s in (0.0, 0.25, 0.5, 0.75, 1.0):
-            q = (1 - s) ** 2
-            out.append((q * p0[0] + 2 * (1 - s) * s * b[0] + s * s * p2[0],
-                        q * p0[1] + 2 * (1 - s) * s * b[1] + s * s * p2[1]))
-    out.append(points[-1])
-    return out
+    c = start_corner
+    for _ in range(cw_steps if via == "cw" else ccw_steps):
+        nxt = geo.arms[(c + 1) % n] if via == "cw" else geo.arms[c]
+        crossed.append(nxt)
+        near, far_side = ("ccw", "cw") if via == "cw" else ("cw", "ccw")
+        if current is not nxt:
+            points += ordered_corner(geo, c, current)
+            points.append(geo.cross_end(nxt, near))
+        points.append(geo.cross_end(nxt, far_side))
+        current = nxt
+        c = (c + 1) % n if via == "cw" else (c - 1) % n
+    if current is not out_arm:
+        points += ordered_corner(geo, c, current)
+        points.append(geo.cross_end(out_arm, out_side))
+    end_t = geo.cross_t(out_arm, out_side) + stop.get("end_gap", END_GAP)
+    if capped:
+        end_t = max(geo.cross_t(out_arm, out_side), min(end_t, geo.far(out_arm, ROUTE_INSET, out_side)))
+    points.append(geo.side_point(out_arm, out_side, end_t))
+    if with_via:
+        return dedupe(points), crossed, via
+    return dedupe(points), crossed
 
 
 def ordered_corner(geo, c, coming_from):
     """Corner points ordered from the side of `coming_from`."""
     pts = list(geo.corners[c]["points"])
-    a = geo.arms[c]
-    return pts if coming_from is a else pts[::-1]
+    return pts if coming_from is geo.arms[c] else pts[::-1]
 
 
 def dedupe(points):
     out = []
     for p in points:
+        if out and om.dist(out[-1], p) < 1.5 and len(out) > 1:
+            # A step shorter than 1.5 mm is a jog, not a turn: keep the later point.
+            out[-1] = p
+            continue
         if out and om.dist(out[-1], p) < 0.05:
             continue
         out.append(p)
@@ -1059,357 +618,235 @@ def dedupe(points):
     return cleaned
 
 
-# ================================================================ directions and sections
-#
-# Turn-by-turn directions are written as structured pieces so the app can
-# leave out what the researcher has switched off (distances, sides, details)
-# without rewording anything. Section maps show one stretch of a route, from
-# where the traveller is (bottom) to the next intersection (top), turned so
-# the walking direction is up, with the route bending at the top to show the
-# turn made there.
+# ================================================================ dots
 
-SEC_P = (REF_W / 2, 88.0)    # where the section starts
-SEC_Q = (REF_W / 2, 32.0)    # the next intersection or the destination
-SEC_STUB = 16.0              # cross streets at each end
-SEC_TURN = 14.0              # route drawn past the next intersection to show the turn
-SEC_EXT = 6.0                # street shown past a start or destination dot
-SEC_BEYOND = 14.0            # a junction just past the destination
+# Dot sizes, mm, as the app draws them.
+TURN_R = 3.0
+END_R = 3.0
+PINK_R = 2.5
+DOT_CLEARANCE = 1.0        # free space kept between any two dots
+TURN_THRESHOLD = 40.0      # path bends sharper than this get an orange turn dot
 
 
-def turn_word(heading_in, heading_out):
-    """'straight', 'left', 'slight right', ... for a change of walking direction."""
-    d = om.angle_diff(heading_out, heading_in)
-    side = "right" if d > 0 else "left"
-    a = abs(d)
-    if a < 25:
-        return "straight"
-    if a < 60:
-        return "slight " + side
-    if a <= 150:
-        return side
-    return "sharp " + side
+def route_bends(points):
+    out = []
+    for i in range(1, len(points) - 1):
+        a, b, c = points[i - 1], points[i], points[i + 1]
+        h1 = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
+        h2 = math.degrees(math.atan2(c[1] - b[1], c[0] - b[0]))
+        if abs(om.angle_diff(h2, h1)) > TURN_THRESHOLD:
+            out.append(b)
+    return out
 
 
-def relative_side(arm, compass_word, leaving):
-    """'left' or 'right' for a traveller on that side of an arm.
-
-    Leaving the junction along the arm, its clockwise side is on the right;
-    walking towards the junction, it is on the left.
-    """
-    cw = resolve_side(arm, compass_word) == "cw"
-    if leaving:
-        return "right" if cw else "left"
-    return "left" if cw else "right"
+def line_length(pts):
+    return sum(om.dist(a, b) for a, b in zip(pts, pts[1:]))
 
 
-def crossing_detail(arm, roundabout):
-    x = arm.crossing
-    if not x:
-        return "No crosswalk"
-    if roundabout and x.get("raised"):
-        return "Raised crosswalk"
-    if x.get("signal"):
-        text = "Traffic signal"
-        if x.get("button"):
-            text += ", push button"
-        if x.get("no_sound"):
-            text += ", no audible signal"
-        return text
-    if x.get("marked"):
-        return "Marked crosswalk"
-    if x.get("unmarked"):
-        return "Unmarked crossing"
-    return "Crosswalk"
+def visible(p, margin=0.0):
+    return abs(p[0]) <= REF_W / 2 + margin and abs(p[1]) <= REF_H / 2 + margin
 
 
-def around_side(a, b, via):
-    """Compass side of a roundabout walked between crossing arm a and arm b."""
-    if via == "cw":
-        diff = (b.bearing - a.bearing) % 360.0
+def tidy(features):
+    """Drops sidewalks, crosswalks and medians too short to feel or wholly
+    off screen, which happen where a corner falls past the edge."""
+    kept = []
+    for f in features:
+        if f["type"] in ("sidewalk", "crosswalk", "median"):
+            pts = f["geometry"]["coordinates"]
+            if line_length(pts) < 1.5:
+                continue
+            steps = max(2, int(line_length(pts) / 0.5))
+            inside = [p for a, b in zip(pts, pts[1:]) for p in
+                      ((a[0] + (b[0] - a[0]) * i / steps, a[1] + (b[1] - a[1]) * i / steps) for i in range(steps + 1))
+                      if visible(p, -1.0)]
+            if len(inside) < 4:
+                continue
+        kept.append(f)
+    features[:] = kept
+    return features
+
+
+def place_dots(features, where):
+    """Turn dots and crosswalk end dots, placed so no two dots touch.
+
+    The route's ends win over turns, and turns over crosswalk ends, as on
+    the earlier maps where a turn and a crosswalk end at one corner show the
+    turn. Crosswalk ends that would touch become one dot."""
+    route = next(f for f in features if f["type"] == "route")["geometry"]["coordinates"]
+    ends = [(route[0], END_R), (route[-1], END_R)]
+    placed = list(ends)
+
+    def clear(p, r):
+        return all(om.dist(p, q) >= r + qr + DOT_CLEARANCE for q, qr in placed)
+
+    def on_screen(p, r):
+        return abs(p[0]) <= REF_W / 2 - r - 0.5 and abs(p[1]) <= REF_H / 2 - r - 0.5
+
+    for p, r in ends:
+        if not on_screen(p, r):
+            raise SystemExit("%s: route end at %s is cut by the screen edge" % (where, rnd(p)))
+
+    turns = []
+    for p in route_bends(route):
+        if clear(p, TURN_R) and on_screen(p, TURN_R):
+            turns.append(p)
+            placed.append((p, TURN_R))
+    pinks = []
+    for f in features:
+        if f["type"] != "crosswalk":
+            continue
+        pts = f["geometry"]["coordinates"]
+        which = f["properties"]["custom"].get("endpoints", "both")
+        for p, keep in ((pts[0], which in ("both", "start")), (pts[-1], which in ("both", "end"))):
+            if not keep:
+                continue
+            # A crosswalk end at a turn or a route end is shown by that dot, and
+            # one at the screen edge, away from the walk, is left out.
+            if any(om.dist(p, q) < qr + PINK_R + DOT_CLEARANCE for q, qr in placed) or not on_screen(p, PINK_R):
+                continue
+            pinks.append(p)
+            placed.append((p, PINK_R))
+    # The small ring marking the centre is left off where a crosswalk runs over it.
+    for f in features:
+        if f["type"] == "center":
+            c = f["geometry"]["coordinates"]
+            crosswalks = [g["geometry"]["coordinates"] for g in features if g["type"] == "crosswalk"]
+            if any(seg_distance(c, cw[0], cw[-1]) < 3.0 for cw in crosswalks):
+                f["properties"].setdefault("custom", {})["mark"] = "no"
+    for k, p in enumerate(turns):
+        features.append(feature("turn_%d" % k, "turn", point_geom(p), "Turn"))
+    for k, p in enumerate(pinks):
+        features.append(feature("crosswalk_end_%d" % k, "crosswalk_end", point_geom(p), "Crosswalk end"))
+    for i, (p, r) in enumerate(placed):
+        for q, qr in placed[i + 1:]:
+            if om.dist(p, q) < r + qr + DOT_CLEARANCE - 0.01:
+                raise SystemExit("%s: dots at %s and %s overlap" % (where, rnd(p), rnd(q)))
+    return features
+
+
+# ================================================================ the offset intersection
+
+def build_offset(stop):
+    """Exchange Street and Moulton Street meet Fore Street a little apart, on
+    opposite sides. Fore Street is drawn straight through both junctions, the
+    `near` arm leaves it on one side and the `far` arm further along on the
+    other, so the crosswalk between the two corners runs at an angle."""
+    conf = spec.OFFSET_JUNCTIONS[stop["junction"]]
+    pa = AREA.node_xy(conf["near"]["node"])
+    pb = AREA.node_xy(conf["far"]["node"])
+    main_b = om.bearing(pa, pb)
+    near_arm = next(g for g in om.merged_arms(AREA, [conf["near"]["node"]]) if g["name"] == conf["near"]["arm"])
+    far_arm = next(g for g in om.merged_arms(AREA, [conf["far"]["node"]]) if g["name"] == conf["far"]["arm"])
+    if stop["path"] == "near_to_far":
+        up = (main_b + 180.0) % 360.0
     else:
-        diff = -((a.bearing - b.bearing) % 360.0)
-    return om.compass8(a.bearing + diff / 2.0)
+        up = (far_arm["bearing"] + 180.0) % 360.0
+    d = SIDEWALK_OFFSET
+    s = conf["offset_mm"]
+    th_fwd = screen_angle(main_b, up)                 # from the near junction toward the far one
+    th_back = (th_fwd + 180.0) % 360.0
+    th_near = screen_angle(near_arm["bearing"], up)
+    th_far = screen_angle(far_arm["bearing"], up)
+    u = unit(th_fwd)
+    A, B = scale(u, -s / 2), scale(u, s / 2)
+    n = cw_normal(th_fwd)
+    near_sign = 1.0 if dot(n, unit(th_near)) > 0 else -1.0
+    n_near = scale(n, near_sign)                       # towards the near arm's side of the main street
+    n_far = scale(n_near, -1)
+    if dot(n_far, unit(th_far)) <= 0:
+        raise SystemExit("%s: the two side streets are on the same side" % stop["id"])
 
+    def corner_at(centre, theta_a, theta_b):
+        c = corner(theta_a, theta_b, d)
+        return add(centre, c["points"][0]), c["t"]
 
-def to_phrase(j, street):
-    """How the next intersection is named in "walk ... to ..."."""
-    if j.is_roundabout:
-        return "the roundabout"
-    others = [n for n in j.title(first=street) if n != street]
-    return join_names(others or j.title(first=street))
+    # Corners, clockwise. Which of each pair is clockwise depends on the side.
+    if near_sign > 0:      # near arm clockwise of forward
+        a_fwd, t_a_fwd = corner_at(A, th_fwd, th_near)
+        a_back, t_a_back = corner_at(A, th_near, th_back)
+        b_back, t_b_back = corner_at(B, th_back, th_far)
+        b_fwd, t_b_fwd = corner_at(B, th_far, th_fwd + 360)
+    else:
+        a_fwd, t_a_fwd = corner_at(A, th_near, th_fwd + 360)
+        a_back, t_a_back = corner_at(A, th_back, th_near)
+        b_back, t_b_back = corner_at(B, th_far, th_back)
+        b_fwd, t_b_fwd = corner_at(B, th_fwd, th_far)
 
+    # The walk: along the main street to the near corner, across on the
+    # diagonal, and on along the far side street (or the reverse).
+    def walk(capped):
+        def reach(origin, theta, gap):
+            return add(origin, unit(theta), min(gap, line_limit(origin, theta, ROUTE_INSET)) if capped else gap)
+        if stop["path"] == "near_to_far":
+            return [reach(a_fwd, th_fwd, stop.get("start_gap", START_GAP)), a_fwd, b_back,
+                    reach(b_back, th_far, stop.get("end_gap", END_GAP))]
+        return [reach(b_back, th_far, stop.get("start_gap", START_GAP)), b_back, a_fwd,
+                reach(a_fwd, th_fwd, stop.get("end_gap", END_GAP))]
 
-def junction_title(j, street):
-    return j.conf.get("name") or join_names(j.title(first=street))
+    FRAME[:] = [0.0, 0.0]
+    FRAME[:] = frame_for(walk(capped=False))
 
+    def along(origin, theta, inset):
+        return add(origin, unit(theta), line_limit(origin, theta, inset))
 
-def maneuver(route, stop, j):
-    """What the traveller does at one junction: crossings, then the turn."""
-    geo = Level2Geometry(j, route["up"])
-    _, crossed, via = walking_path(geo, stop)
-    crossings = []
-    for arm in crossed:
-        two_stage = bool(arm.island and arm.crossing)
-        crossings.append({
-            "street": spoken_street(arm.name),
-            "detail": crossing_detail(arm, j.is_roundabout),
-            "two_stage": two_stage,
-            "island": ("splitter island" if j.is_roundabout else "refuge island") if two_stage else "",
-            "one_way": bool(arm.oneway),
-        })
-    around = around_side(crossed[0], crossed[1], via) if j.is_roundabout and len(crossed) >= 2 else ""
-    result = {"crossings": crossings, "around": around, "turn": "", "next_street": "",
-              "next_side": "", "next_side_relative": ""}
-    if stop.get("out"):
-        in_arm = j.arm(stop["in"][0])
-        out_arm = j.arm(stop["out"][0])
-        result.update({
-            "turn": turn_word((in_arm.bearing + 180.0) % 360.0, out_arm.bearing),
-            "next_street": spoken_street(out_arm.name),
-            "next_side": stop["out"][1],
-            "next_side_relative": relative_side(out_arm, stop["out"][1], leaving=True),
-        })
-    return result
-
-
-def build_directions(route):
-    """Turn-by-turn directions, one entry per section of the walk."""
-    seq = route_sequence(route)
-    dest_index = next(i for i, item in enumerate(seq) if item["kind"] == "dest")
-    sections = []
-    total = 0.0
-    for k in range(1, dest_index + 1):
-        here, there = seq[k - 1], seq[k]
-        distance = om.dist(here["xy"], there["xy"])
-        total += distance
-        street = there["street"]
-        sec = {"index": k, "count": dest_index, "map": "%s_section_%d" % (route["id"], k),
-               "street": spoken_street(street), "distance_m": int(round(distance))}
-        if here["kind"] == "dep":
-            sec.update({"from": route["departure"]["spoken"], "from_kind": "start"})
-        else:
-            sec.update({"from": junction_title(here["j"], here["stop"]["street_before"]),
-                        "from_kind": "intersection"})
-        if there["kind"] == "junction":
-            j, stop = there["j"], there["stop"]
-            sec.update({
-                "to": to_phrase(j, street),
-                "to_kind": "roundabout" if j.is_roundabout else "intersection",
-                "to_name": junction_title(j, street),
-                "junction_id": "j_%s" % j.key,
-                "detail": level2_file(route, j.key),
-                "type_text": type_text(j),
-                "control_text": control_sentence(j),
-                "side": stop["in"][1],
-                "side_relative": relative_side(j.arm(stop["in"][0]), stop["in"][1], leaving=False),
-            })
-            sec.update(maneuver(route, stop, j))
-        else:
-            side, side_relative = "", ""
-            if here["kind"] == "junction" and here["stop"].get("out"):
-                out = here["stop"]["out"]
-                side = out[1]
-                side_relative = relative_side(here["j"].arm(out[0]), out[1], leaving=True)
-            spoken = route["destination"]["spoken"]
-            sec.update({"to": ("the " + spoken) if spoken[0].islower() else spoken, "to_kind": "destination",
-                        "to_name": route["destination"]["name"], "junction_id": "", "detail": "",
-                        "type_text": "", "control_text": "", "side": side, "side_relative": side_relative,
-                        "crossings": [], "around": "", "turn": "", "next_street": "", "next_side": "",
-                        "next_side_relative": ""})
-        sections.append(sec)
-    doc = {
-        "route": route["id"], "number": route["number"], "title": route["title"],
-        "start": route["departure"]["spoken"], "destination": route["destination"]["spoken"],
-        "destination_side": route["destination"].get("side") or "",
-        "intersections": len(route["stops"]), "total_m": int(round(total)), "sections": sections,
-    }
-    return doc, seq
-
-
-def section_stubs(j, skip_arm, heading, taken):
-    """Squared screen direction for every arm of j except skip_arm."""
-    stubs = []
-    for arm in j.arms:
-        if arm is skip_arm:
-            continue
-        exact = (arm.bearing - heading) % 360.0
-        want = snap(exact)
-        options = sorted({(want + d) % 360 for d in (0, 45, -45, 90, -90, 135, -135)},
-                         key=lambda o: abs(om.angle_diff(o, exact)))
-        chosen = next((o for o in options if all(abs(om.angle_diff(o, t)) >= 44 for t in taken)), want)
-        taken.append(chosen)
-        stubs.append((arm, chosen))
-    return stubs
-
-
-def stub_lines(stubs):
-    """Opposite stubs of one street through a junction become one line."""
-    lines = []
-    used = set()
-    for x, (name, centre, end, d) in enumerate(stubs):
-        if x in used:
-            continue
-        partner = next((y for y, other in enumerate(stubs) if y != x and y not in used and other[0] == name
-                        and other[1] == centre and abs(om.angle_diff(other[3], d + 180)) < 1), None)
-        if partner is not None:
-            used.update({x, partner})
-            lines.append((name, [stubs[partner][2], centre, end]))
-        else:
-            used.add(x)
-            lines.append((name, [centre, end]))
-    return lines
-
-
-def section_heading(here, there):
-    """Walking direction drawn as up: along the street, not the straight line
-    between the two points, so the street walked runs straight up the screen."""
-    if there["kind"] == "junction":
-        return (there["j"].arm(there["stop"]["in"][0]).bearing + 180.0) % 360.0
-    if here["kind"] == "junction" and here["stop"].get("out"):
-        return here["j"].arm(here["stop"]["out"][0]).bearing
-    return om.bearing(here["xy"], there["xy"])
-
-
-def build_section(route, seq, sec):
-    """One stretch of the walk: from where the traveller is to the next intersection."""
-    k = sec["index"]
-    here, there = seq[k - 1], seq[k]
-    heading = section_heading(here, there)
-    p, q = SEC_P, SEC_Q
     features = []
-    stubs = []
-    junctions = []
+    features.append(feature("road_main", "corridor",
+                            line_geom([along((0.0, 0.0), th_back, -12), along((0.0, 0.0), th_fwd, -12)]),
+                            conf["main"], custom={"width_mm": ROAD_HALF * 2}))
+    features.append(feature("road_near", "corridor", line_geom([A, along(A, th_near, -12)]),
+                            near_arm["name"], custom={"width_mm": ROAD_HALF * 2}))
+    features.append(feature("road_far", "corridor", line_geom([B, along(B, th_far, -12)]),
+                            far_arm["name"], custom={"width_mm": ROAD_HALF * 2}))
+    features.append(feature("center", "center", point_geom((0, 0)), "Center", custom={"radius_mm": CENTER_R}))
 
-    if here["kind"] == "dep":
-        street_start = add(p, unit(180.0), SEC_EXT)
-    else:
-        street_start = p
-        j, stop = here["j"], here["stop"]
-        for arm, d in section_stubs(j, j.arm(stop["out"][0]), heading, [0.0]):
-            stubs.append((arm.name, p, add(p, unit(d), SEC_STUB), d))
-        junctions.append((here, p, "from"))
+    # Sidewalks. The main street's sidewalk on each side turns the corners of
+    # the side street on that side and runs straight past the other junction.
+    sidewalks = [
+        ([along(scale(n_near, d), th_fwd, 2.0), a_fwd], conf["main"]),
+        ([a_fwd, along(a_fwd, th_near, 2.0)], near_arm["name"]),
+        ([along(a_back, th_near, 2.0), a_back], near_arm["name"]),
+        ([a_back, along(a_back, th_back, 2.0)], conf["main"]),
+        ([along(scale(n_far, d), th_back, 2.0), b_back], conf["main"]),
+        ([b_back, along(b_back, th_far, 2.0)], far_arm["name"]),
+        ([along(b_fwd, th_far, 2.0), b_fwd], far_arm["name"]),
+        ([b_fwd, along(b_fwd, th_fwd, 2.0)], conf["main"]),
+    ]
+    for k, (pts, street) in enumerate(sidewalks):
+        features.append(sidewalk_feature(k, pts, street))
 
-    turn_dir = None
-    if there["kind"] == "junction":
-        street_end = q
-        j, stop = there["j"], there["stop"]
-        out_arm = j.arm(stop["out"][0]) if stop.get("out") else None
-        for arm, d in section_stubs(j, j.arm(stop["in"][0]), heading, [180.0]):
-            stubs.append((arm.name, q, add(q, unit(d), SEC_STUB), d))
-            if arm is out_arm:
-                turn_dir = d
-        junctions.append((there, q, "to"))
-    elif k + 1 < len(seq) and seq[k + 1]["kind"] == "junction":
-        # The destination sits just before a junction: show that corner too.
-        beyond = seq[k + 1]
-        b = add(q, unit(0.0), SEC_BEYOND)
-        street_end = b
-        j, stop = beyond["j"], beyond["stop"]
-        for arm, d in section_stubs(j, j.arm(stop["in"][0]), heading, [180.0]):
-            stubs.append((arm.name, b, add(b, unit(d), SEC_STUB), d))
-        junctions.append((beyond, b, "beyond"))
-    else:
-        street_end = add(q, unit(0.0), SEC_EXT)
-
-    features.append(feature("street_0", "corridor", line_geom([street_start, street_end]), there["street"]))
-    for n, (name, points) in enumerate(stub_lines(stubs)):
-        features.append(feature("cross_%d" % n, "corridor", line_geom(points), name))
-    for item, position, role in junctions:
-        features.append(intersection_feature(route, item["j"], item["stop"]["street_before"], position, role))
-
-    # Landmark boxes beside the start or destination dot.
-    for which, item_kind, anchor, ep in (("dep", here["kind"], p, route["departure"]),
-                                         ("dest", there["kind"], q, route["destination"])):
-        if item_kind not in ("dep", "dest") or not ep.get("tag"):
-            continue
-        normal = (1.0, 0.0) if ep["side"] == "right" else (-1.0, 0.0)
-        features.append(feature("landmark_%s" % which, "landmark", point_geom(anchor), ep["name"],
-                                side=ep["side"], custom={
-                                    "tag": ep["tag"],
-                                    "announcement": "%s on your %s" % (ep["name"], ep["side"]),
-                                    "offset_x": normal[0], "offset_y": normal[1]}))
-
-    route_points = [p, q]
-    waypoints = []
-    if turn_dir is not None:
-        route_points.append(add(q, unit(turn_dir), SEC_TURN))
-        waypoints.append("j_%s" % there["j"].key)
-    features.append(feature("route", "route", line_geom(route_points), route["title"], custom={
-        "departure": route["departure"]["spoken"], "destination": route["destination"]["spoken"],
-        "waypoints": ",".join(waypoints),
-        "start_kind": "departure" if here["kind"] == "dep" else "intersection",
-        "end_kind": "destination" if there["kind"] == "dest" else "continues",
-        "section": k, "sections": sec["count"]}))
-
-    return {
-        "type": "FeatureCollection",
-        "version": "1.0",
-        "metadata": {"name": "Route %d, section %d of %d" % (route["number"], k, sec["count"]),
-                     "scale": "1 unit = 1 mm on screen", "coordinate_unit": "arbitrary",
-                     "coordinate_origin": "top-left", "author": "tools/build_maps.py"},
-        "bounds": {"width": REF_W, "height": REF_H},
-        "features": features,
+    # Crosswalks, corner to corner as they are painted: the two across the side
+    # streets share their corner with the angled one across the main street.
+    marks = conf.get("markings", {})
+    cross = {
+        "diagonal": (a_fwd, b_back, conf["main"]),
+        "near_arm": (a_fwd, a_back, near_arm["name"]),
+        "near_main": (a_back, add(a_back, n_far, 2 * d), conf["main"]),
+        "far_arm": (b_back, b_fwd, far_arm["name"]),
+        "far_main": (b_fwd, add(b_fwd, n_near, 2 * d), conf["main"]),
     }
+    for key in conf["crosswalks"]:
+        p, q, street = cross[key]
+        features += crosswalk_features("crosswalk_%s" % key, p, q, street, marks.get(key, "zebra"), False)
 
+    features.append(feature("route", "route", line_geom(walk(capped=True)), "Route", custom={
+        "start_text": spec.START_TEXT, "end_text": spec.END_TEXT}))
+    shift_features(features, FRAME)
+    FRAME[:] = [0.0, 0.0]
+    tidy(features)
+    place_dots(features, stop["id"])
+    doc = document(stop["subtitle"], features, "center")
+    drawn = set(conf["crosswalks"])
+    facts = {
+        "heading": up,
+        "arms": [(conf["main"], om.compass8(main_b), "zebra" if "far_main" in drawn else None, False),
+                 (near_arm["name"], om.compass8(near_arm["bearing"]), "zebra" if "near_arm" in drawn else None, False),
+                 (conf["main"], om.compass8(main_b + 180), "zebra" if "near_main" in drawn else None, False),
+                 (far_arm["name"], om.compass8(far_arm["bearing"]), "zebra" if "far_arm" in drawn else None, False)],
+        "crossed": ["%s, on the angled crosswalk between %s and %s" % (conf["main"], near_arm["name"], far_arm["name"])],
+    }
+    return doc, facts
 
-# Sentence assembly. The app builds the same sentences from the same pieces
-# (Directions/DirectionsComposer.swift); this copy writes them into
-# docs/ROUTES.md with every detail switched on, so the team can proofread
-# exactly what participants hear.
-
-def distance_text(metres, units="feet"):
-    if units == "feet":
-        feet = metres * 3.28084
-        step = 10 if feet < 500 else 50
-        return "about %d feet" % max(step, int(math.floor(feet / step + 0.5)) * step)
-    step = 5 if metres < 200 else 10
-    return "about %d metres" % max(step, int(math.floor(metres / step + 0.5)) * step)
-
-
-def turn_sentence(sec, side, with_then):
-    turn, street = sec["turn"], sec["next_street"]
-    if turn == "straight":
-        text = "continue straight on %s" % street
-    elif turn.startswith("slight "):
-        text = "bear %s onto %s" % (turn[len("slight "):], street)
-    elif turn.startswith("sharp "):
-        text = "make a sharp %s onto %s" % (turn[len("sharp "):], street)
-    else:
-        text = "turn %s onto %s" % (turn, street)
-    if side and sec["next_side"]:
-        text += ", on the %s side" % sec["next_side"]
-    return ("Then " + text if with_then else text[0].upper() + text[1:]) + "."
-
-
-def walk_sentence(sec, doc):
-    text = "Start at %s. " % doc["start"] if sec["index"] == 1 else ""
-    text += "Walk along %s" % sec["street"]
-    if sec["side"]:
-        text += ", on the %s side" % sec["side"]
-    text += ", %s, to %s." % (distance_text(sec["distance_m"]), sec["to"])
-    if sec["to_kind"] == "destination" and doc["destination_side"]:
-        text += " It is on your %s." % doc["destination_side"]
-    return text
-
-
-def maneuver_sentences(sec):
-    if sec["to_kind"] == "destination":
-        return ""
-    parts = ["At %s." % sec["to"], sec["type_text"][0].upper() + sec["type_text"][1:] + "."]
-    if sec["control_text"]:
-        parts.append(sec["control_text"])
-    for n, c in enumerate(sec["crossings"]):
-        text = "Cross %s. %s." % (c["street"], c["detail"])
-        if c["two_stage"]:
-            text += " Two stages, with a %s." % c["island"]
-        if c["one_way"]:
-            text += " One-way street."
-        parts.append(text)
-        if n == 0 and sec["around"] and len(sec["crossings"]) > 1:
-            parts.append("Walk around the %s side of the roundabout." % sec["around"])
-    if sec["turn"]:
-        parts.append(turn_sentence(sec, True, bool(sec["crossings"])))
-    return " ".join(parts)
 
 # ================================================================ output
 
@@ -1426,101 +863,96 @@ def build_all(preview=False):
     for old in os.listdir(MAPS_DIR):
         if old.endswith(".json"):
             os.remove(os.path.join(MAPS_DIR, old))
-    manifest = {"routes": []}
-    sheets = []
-    for route in spec.ROUTES:
-        doc, info = build_level1(route)
-        l1_name = "%s_overview" % route["id"]
-        write_json(l1_name, doc)
-        details = []
-        summaries = []
-        for i, stop in enumerate(route["stops"]):
-            prev_stop = route["stops"][i - 1] if i > 0 else None
-            next_stop = route["stops"][i + 1] if i + 1 < len(route["stops"]) else None
-            l2, summary = build_level2(route, stop, prev_stop, next_stop)
-            summaries.append((stop, summary))
-            name = level2_file(route, stop["junction"])
-            write_json(name, l2)
-            details.append(name)
+    if preview:
+        os.makedirs(PREVIEW_DIR, exist_ok=True)
+        for old in os.listdir(PREVIEW_DIR):
+            if old.endswith(".png"):
+                os.remove(os.path.join(PREVIEW_DIR, old))
+        import preview as pv
+
+    by_id = {}
+    overviews = {spec.TRAINING_OVERVIEW["id"]: spec.TRAINING_OVERVIEW, spec.ROUTE_OVERVIEW["id"]: spec.ROUTE_OVERVIEW}
+    stops = {s["id"]: s for s in spec.STOPS}
+    facts = {}
+    for map_id in spec.ORDER:
+        if map_id in overviews:
+            ov = overviews[map_id]
+            doc = build_overview(ov)
+            entry = {"id": map_id, "kind": "overview", "phase": "training", "log_id": ov["title"],
+                     "title": ov["title"], "subtitle": ov["subtitle"], "file": map_id,
+                     "announcement": check_spoken(ov["description"], map_id), "items": []}
             if preview:
-                import preview as pv
-                pv.render_level2(l2, os.path.join(PREVIEW_DIR, name + ".png"))
-        if preview:
-            import preview as pv
-            pv.render_level1(doc, os.path.join(PREVIEW_DIR, l1_name + ".png"))
-        directions, seq = build_directions(route)
-        directions_name = "%s_directions" % route["id"]
-        write_json(directions_name, directions)
-        section_names = []
-        for sec in directions["sections"]:
-            section_doc = build_section(route, seq, sec)
-            write_json(sec["map"], section_doc)
-            section_names.append(sec["map"])
+                pv.render_overview(doc, os.path.join(PREVIEW_DIR, map_id + ".png"))
+        else:
+            stop = stops[map_id]
+            if stop["junction"] in spec.OFFSET_JUNCTIONS:
+                doc, facts[map_id] = build_offset(stop)
+            else:
+                doc, facts[map_id] = build_intersection(stop)
+            for item in stop["items"]:
+                check_spoken(item["text"], map_id)
+            entry = {"id": map_id, "kind": "intersection", "phase": stop["phase"], "log_id": stop["log_id"],
+                     "title": stop["title"], "subtitle": stop["subtitle"], "file": map_id,
+                     "announcement": check_spoken(stop["announcement"], map_id), "items": stop["items"]}
             if preview:
-                import preview as pv
-                pv.render_level1(section_doc, os.path.join(PREVIEW_DIR, sec["map"] + ".png"))
-        manifest["routes"].append({
-            "id": route["id"], "number": route["number"], "title": route["title"],
-            "summary": route["summary"], "overview": l1_name, "details": details,
-            "sections": section_names, "directions": directions_name,
-            "departure": route["departure"]["spoken"], "destination": route["destination"]["spoken"],
-        })
-        sheets.append((route, summaries, directions))
-        print("%s: %d intersections, schematic scale %.3f mm per metre across, %.3f up" % (
-            route["id"], len(route["stops"]), info["k_mm_per_m"][0], info["k_mm_per_m"][1]))
-    with open(os.path.join(MAPS_DIR, "routes.json"), "w") as handle:
-        json.dump(manifest, handle, indent=1)
+                pv.render_intersection(doc, os.path.join(PREVIEW_DIR, map_id + ".png"))
+        write_json(map_id, doc)
+        by_id[map_id] = entry
+        print("%-22s %s" % (map_id, entry["subtitle"]))
+
+    study = {
+        "categories": [{"key": key, "title": title} for key, title in spec.CATEGORIES],
+        "phases": [{"key": key, "title": title} for key, title in spec.PHASES.items()],
+        "maps": [by_id[m] for m in spec.ORDER],
+    }
+    with open(os.path.join(MAPS_DIR, "study.json"), "w") as handle:
+        json.dump(study, handle, indent=1)
         handle.write("\n")
-    write_route_sheet(sheets)
+    write_study_sheet(study, facts, overviews)
 
 
-def write_route_sheet(sheets):
-    """docs/ROUTES.md: every intersection, its control, crossings and what the walk crosses."""
-    up_names = {45: "northeast", 135: "southeast", 225: "southwest", 315: "northwest", 0: "north"}
-    lines = ["# Routes", "",
-             "Generated by `tools/build_maps.py` from OpenStreetMap and `tools/route_spec.py`. Do not edit by hand.",
-             "",
-             "Crosswalks marked *assumed* are not in OpenStreetMap; they were added from the team's notes or",
-             "because the junction has no crossing data at all. Please check them on site.", ""]
-    for route, summaries, directions in sheets:
-        lines += ["## Route %d: %s" % (route["number"], route["title"]), "",
-                  "From %s to %s. %s." % (route["departure"]["name"], route["destination"]["name"], route["summary"]),
-                  "Drawn with %s at the top of the screen." % up_names.get(route["up"], "%d degrees" % route["up"]), "",
-                  "| # | Intersection | Legs | Control | Walk crosses |",
-                  "|---|---|---|---|---|"]
-        for n, (stop, s) in enumerate(summaries, 1):
-            control = s["control"] + (" (%s)" % s["control_source"] if s["control_source"] else "")
-            crossed = "; ".join(s["crossed"]) if s["crossed"] else "nothing"
-            kind = "roundabout" if s["roundabout"] else ""
-            lines.append("| %d | %s %s | %d | %s | %s |" % (n, s["title"], kind, s["legs"], control, crossed))
-        lines.append("")
-        lines.append("<details><summary>Crosswalks at each intersection</summary>")
-        lines.append("")
-        for stop, s in summaries:
-            lines.append("**%s**" % s["title"])
+def write_study_sheet(study, facts, overviews):
+    """docs/STUDY.md: every map and every word spoken on it, for proofreading."""
+    titles = dict((c["key"], c["title"]) for c in study["categories"])
+    phases = dict((p["key"], p["title"]) for p in study["phases"])
+    lines = ["# Study maps and wording", "",
+             "Generated by `tools/build_maps.py` from `tools/study_spec.py`. Do not edit by hand.", "",
+             "Everything the app says on each map, in study order. The announcement plays when a map opens;",
+             "the information items play with a double tap and are stepped through with three-finger swipes.",
+             "In Trial 2 the researcher can switch each item off; the announcement always plays.", "",
+             "## Points for the team to confirm", ""]
+    lines += ["- %s" % note for note in spec.TEAM_NOTES]
+    lines.append("")
+    for m in study["maps"]:
+        lines += ["## %s: %s" % (m["title"], m["subtitle"]), "",
+                  "%s. Map file `%s.json`, logged as \"%s\"." % (phases[m["phase"]], m["file"], m["log_id"]), "",
+                  "![%s](map_previews/%s.png)" % (m["title"], m["file"]), ""]
+        if m["kind"] == "overview":
+            ov = overviews[m["id"]]
+            lines += ["**Overview:** %s" % m["announcement"], "",
+                      "What each point says when touched:", "",
+                      "- Start dot: \"%s\"" % ov["start"]["text"]]
+            for leg in ov["legs"]:
+                if leg["node"]["kind"] == "intersection":
+                    stubs = join_names(sorted({s[2] for s in leg["node"]["stubs"]}))
+                    lines.append("- Square %d: \"%s\" Cross streets drawn: %s." % (
+                        leg["node"]["number"], leg["node"]["text"], stubs))
+            lines += ["- End dot: \"%s\"" % ov["end"]["text"], ""]
+        else:
+            lines += ["**Announcement:** %s" % m["announcement"], ""]
+            for n, item in enumerate(m["items"], 1):
+                lines.append("%d. *%s:* %s" % (n, titles[item["category"]], item["text"]))
+            f = facts.get(m["id"])
+            if f:
+                lines += ["", "Drawn with %s at the top. Legs:" % om.compass8(f["heading"]), ""]
+                for name, toward, crossing, median in f["arms"]:
+                    lines.append("- %s, to the %s: %s%s" % (
+                        name, toward, ("%s crosswalk" % crossing) if crossing else "no crosswalk drawn",
+                        ", median" if median else ""))
+                lines.append("")
+                lines.append("The route crosses: %s." % join_names(f["crossed"]))
             lines.append("")
-            for name, toward, crossing, assumed, island in s["arms"]:
-                if crossing:
-                    extra = (" (assumed)" if assumed else "") + (", refuge island" if island else "")
-                    lines.append("- %s leg, to the %s: %s%s" % (name, toward, crossing, extra))
-                else:
-                    lines.append("- %s leg, to the %s: no crosswalk in OSM" % (name, toward))
-            lines.append("")
-        lines.append("</details>")
-        lines.append("")
-        lines.append("<details><summary>Turn-by-turn directions, as spoken with every detail on</summary>")
-        lines.append("")
-        lines.append("Distances in feet and sides as compass words. In the app, each setting that is off "
-                     "leaves its part out; nothing else changes.")
-        lines.append("")
-        for sec in directions["sections"]:
-            text = walk_sentence(sec, directions)
-            extra = maneuver_sentences(sec)
-            lines.append("%d. %s%s" % (sec["index"], text, (" " + extra) if extra else ""))
-        lines.append("")
-        lines.append("</details>")
-        lines.append("")
-    with open(os.path.join(REPO, "docs", "ROUTES.md"), "w") as handle:
+    with open(os.path.join(REPO, "docs", "STUDY.md"), "w") as handle:
         handle.write("\n".join(lines))
 
 

@@ -3,7 +3,7 @@
 A junction is described by its arms (the streets leaving it, with a true
 compass bearing), the crossings recorded on each arm, and how traffic is
 controlled there. Everything here is plain data read from OSM; the study
-choices that sit on top of it live in route_spec.py.
+choices that sit on top of it live in study_spec.py.
 """
 
 import collections

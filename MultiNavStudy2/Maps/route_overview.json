@@ -1,0 +1,593 @@
+{
+ "type": "FeatureCollection",
+ "version": "1.0",
+ "metadata": {
+  "name": "Route overview",
+  "scale": "1 unit = 1 mm on screen",
+  "coordinate_unit": "arbitrary",
+  "coordinate_origin": "top-left",
+  "author": "tools/build_maps.py"
+ },
+ "bounds": {
+  "width": 60.0,
+  "height": 116.0
+ },
+ "features": [
+  {
+   "id": "street_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      106.0
+     ],
+     [
+      42.0,
+      94.0
+     ],
+     [
+      42.0,
+      73.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "street_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      73.5
+     ],
+     [
+      17.5,
+      73.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Moulton Street"
+   }
+  },
+  {
+   "id": "street_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.5,
+      73.5
+     ],
+     [
+      17.5,
+      47.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Commercial Street"
+   }
+  },
+  {
+   "id": "street_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.5,
+      47.0
+     ],
+     [
+      42.0,
+      47.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Street"
+   }
+  },
+  {
+   "id": "street_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      47.0
+     ],
+     [
+      42.0,
+      23.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "street_5",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      23.0
+     ],
+     [
+      27.15,
+      8.15
+     ]
+    ]
+   },
+   "properties": {
+    "name": "York Street"
+   }
+  },
+  {
+   "id": "cross_0",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      51.0,
+      94.0
+     ],
+     [
+      42.0,
+      94.0
+     ],
+     [
+      33.0,
+      94.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Silver Street"
+   }
+  },
+  {
+   "id": "cross_1",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      73.5
+     ],
+     [
+      42.0,
+      64.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "cross_2",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      73.5
+     ],
+     [
+      51.0,
+      73.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Exchange Street"
+   }
+  },
+  {
+   "id": "cross_3",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.5,
+      47.0
+     ],
+     [
+      17.5,
+      38.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Commercial Street"
+   }
+  },
+  {
+   "id": "cross_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.5,
+      47.0
+     ],
+     [
+      8.5,
+      47.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Wharf"
+   }
+  },
+  {
+   "id": "cross_5",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      47.0
+     ],
+     [
+      51.0,
+      47.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Street"
+   }
+  },
+  {
+   "id": "cross_6",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      47.0
+     ],
+     [
+      42.0,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street"
+   }
+  },
+  {
+   "id": "cross_7",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      51.0,
+      23.0
+     ],
+     [
+      42.0,
+      23.0
+     ],
+     [
+      33.0,
+      23.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Center Street"
+   }
+  },
+  {
+   "id": "cross_8",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      23.0
+     ],
+     [
+      42.0,
+      14.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Pleasant Street"
+   }
+  },
+  {
+   "id": "node_1",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.0,
+     94.0
+    ]
+   },
+   "properties": {
+    "name": "Intersection 1",
+    "custom": {
+     "cue": "Intersection 1: 4-way intersection of Fore Street and Silver Street.",
+     "number": "1"
+    }
+   }
+  },
+  {
+   "id": "node_2",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.0,
+     73.5
+    ]
+   },
+   "properties": {
+    "name": "Intersection 2",
+    "custom": {
+     "cue": "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street.",
+     "number": "2"
+    }
+   }
+  },
+  {
+   "id": "node_3",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.5,
+     47.0
+    ]
+   },
+   "properties": {
+    "name": "Intersection 3",
+    "custom": {
+     "cue": "Intersection 3: 4-way intersection of Commercial Street and Union Street.",
+     "number": "3"
+    }
+   }
+  },
+  {
+   "id": "node_4",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.0,
+     47.0
+    ]
+   },
+   "properties": {
+    "name": "Intersection 4",
+    "custom": {
+     "cue": "Intersection 4: 4-way intersection of Union Street and Fore Street.",
+     "number": "4"
+    }
+   }
+  },
+  {
+   "id": "node_5",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     42.0,
+     23.0
+    ]
+   },
+   "properties": {
+    "name": "Intersection 5",
+    "custom": {
+     "cue": "Intersection 5: 5-way intersection of Fore Street, Center Street, and York Street.",
+     "number": "5"
+    }
+   }
+  },
+  {
+   "id": "route",
+   "type": "route",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      42.0,
+      106.0
+     ],
+     [
+      42.0,
+      94.0
+     ],
+     [
+      42.0,
+      73.5
+     ],
+     [
+      17.5,
+      73.5
+     ],
+     [
+      17.5,
+      47.0
+     ],
+     [
+      42.0,
+      47.0
+     ],
+     [
+      42.0,
+      23.0
+     ],
+     [
+      27.15,
+      8.15
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Route overview",
+    "custom": {
+     "start_text": "Start of route: You are here, at Dock Fore, 336 Fore Street.",
+     "end_text": "End of route: Your destination, Gorham's Corner."
+    }
+   }
+  },
+  {
+   "id": "label_1",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     47.0,
+     89.0
+    ]
+   },
+   "properties": {
+    "name": "1",
+    "custom": {
+     "size_mm": "3.6",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_2",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     47.0,
+     68.5
+    ]
+   },
+   "properties": {
+    "name": "2",
+    "custom": {
+     "size_mm": "3.6",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_3",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     22.5,
+     42.0
+    ]
+   },
+   "properties": {
+    "name": "3",
+    "custom": {
+     "size_mm": "3.6",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_4",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     47.0,
+     42.0
+    ]
+   },
+   "properties": {
+    "name": "4",
+    "custom": {
+     "size_mm": "3.6",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_5",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     47.0,
+     18.0
+    ]
+   },
+   "properties": {
+    "name": "5",
+    "custom": {
+     "size_mm": "3.6",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_start",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     24.2,
+     106.0
+    ]
+   },
+   "properties": {
+    "name": "Start of Route",
+    "custom": {
+     "size_mm": "3.2",
+     "weight": "bold"
+    }
+   }
+  },
+  {
+   "id": "label_end",
+   "type": "label",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     27.15,
+     2.65
+    ]
+   },
+   "properties": {
+    "name": "End of Route",
+    "custom": {
+     "size_mm": "3.2",
+     "weight": "bold"
+    }
+   }
+  }
+ ]
+}
