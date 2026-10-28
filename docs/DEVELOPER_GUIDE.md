@@ -1,7 +1,7 @@
 # Developer guide
 
-How MultiNav Study 2 is put together: where the maps come from, how they are drawn and touched, and where
-to make common changes.
+How MultiNav Study 2 is put together: where the maps and the wording come from, how a map is drawn, touched
+and read aloud, and where to make common changes.
 
 ## Layout
 
@@ -10,185 +10,185 @@ MultiNavStudy2.xcodeproj      project; the app folder is a synchronized group
 Config/Info.plist             file sharing key, merged into the generated Info.plist
 MultiNavStudy2/
   App/                        app entry, lifecycle
-  Setup/                      study setup screen, settings, routes.json reader (RouteCatalog)
-  Directions/                 turn-by-turn directions and the sentences built from them
-  Screens/                    the map screens, the session that runs them, the SwiftUI to UIKit bridge
-  Map/                        map model, drawing, touch surface, the two map controllers
+  Study/                      the study (study.json reader), settings, the session, the researcher's screen
+  Screens/                    the map screen and the visit that times and counts it
+  Map/                        map model, drawing, touch surface, the two map controllers, the description player
   Feedback/                   haptics, sounds, speech, and the FeedbackManager that runs them
   Logging/                    study logs and the Data Files screen
   Support/                    swipe-back blocker
-  Maps/                       generated map JSON, bundled as resources
+  Maps/                       generated map JSON and study.json, bundled as resources
   Assets.xcassets             app icon and accent colour
-MultiNavStudy2Tests/          map data and session tests (Swift Testing)
-tools/                        map generator, OSM extracts, the team's KML, icon script (make_app_icon.py)
-docs/                         this guide, ROUTES.md, map previews
+MultiNavStudy2Tests/          content, player, session and robustness tests (Swift Testing)
+tools/                        map generator, study spec, OSM extract, icon script (make_app_icon.py)
+docs/                         this guide, STUDY.md, map previews
 ```
 
 ## Files
 
 | File | What it does |
 |---|---|
-| `App/MultiNavStudy2App.swift` | `@main`; starts the feedback engines, logs launch, background and foreground |
-| `Setup/SetupView.swift` | the first screen: route, stage, per-stage options, Start; ends the log session on returning to it |
-| `Setup/StudySettings.swift` | the settings (`StudySettings`, one `StageSettings` per stage), saved in UserDefaults by `SettingsStore`; `SessionConfig` is the frozen copy a session runs with |
-| `Setup/RouteCatalog.swift` | reads `Maps/routes.json` |
-| `Directions/RouteDirections.swift` | reads `Maps/routeN_directions.json`: one section per stretch of the walk |
-| `Directions/DirectionsComposer.swift` | builds every spoken direction from those pieces, leaving out what the settings switch off |
-| `Screens/RouteSession.swift` | one session: the map shown, moving between sections, the time limit, the lock, the log session |
-| `Screens/MapScreens.swift` | the route map and close-up screens, the top bar (End, section arrows, time left), screen announcements |
-| `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps and double taps, VoiceOver direct touch, back and section gestures |
-| `Map/OverviewController.swift` | route maps (full route or one section): drawing, hit-testing, feedback, taps, double tap to open an intersection |
-| `Map/DetailController.swift` | intersection close-up: drawing, hit-testing, feedback, double tap to go back |
-| `Map/MapModels.swift` | reads a map with the MultiNav `TactileMapDocument` loader into drawable elements; works out turn dots and crosswalk stripe spans |
+| `App/MultiNavStudy2App.swift` | `@main`; resumes a session the app was closed in, starts the feedback engines, logs launch, background and foreground |
+| `Study/StudyContent.swift` | reads `Maps/study.json`: every map in study order with its phase, log name, announcement and information items; `InfoCategory` and `StudyPhase` |
+| `Study/StudySettings.swift` | the participant ID, the information items for Trial 2 (`InfoSettings`), and the options, saved in UserDefaults by `SettingsStore`; each change to an item is logged |
+| `Study/StudySession.swift` | one participant's session: start, end, visits per map, which maps are done, the next map, kept in UserDefaults so it survives a relaunch |
+| `Study/StudyHomeView.swift` | the researcher's screen: participant, Open Next, the maps by phase, customization, options, data |
+| `Screens/MapScreen.swift` | a map full screen, with Done, the title and (Trial 2) the information items sheet |
+| `Screens/MapVisit.swift` | one visit: starts the session if needed, plays the announcement when the map opens, times the visit, counts plays, writes the visit row when it ends |
+| `Map/DescriptionPlayer.swift` | the announcement and the information items: play, stop, start over, step forward and back, carry on to the next item |
+| `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps, double taps, two-finger double taps and three-finger swipes, VoiceOver direct touch, magic tap, scroll and escape |
+| `Map/OverviewController.swift` | route overviews: drawing, hit-testing, feedback, gestures |
+| `Map/IntersectionController.swift` | intersection maps: drawing, hit-testing, feedback, gestures |
+| `Map/StudyMapController.swift` | what the map screen needs from either controller |
+| `Map/MapModels.swift` | reads a map with the MultiNav `TactileMapDocument` loader into drawable elements |
 | `Map/MapTransform.swift` | millimetres to points with MultiNav `PhysicalDimensions` |
 | `Map/MapStyle.swift` | every colour, size and touch radius, in mm |
-| `Map/MapDrawing.swift`, `Map/MapGeometry.swift` | drawing and geometry helpers |
-| `Feedback/FeedbackManager.swift` | one feedback mode at a time; switching mode stops everything the last one started |
+| `Map/MapDrawing.swift`, `Map/MapGeometry.swift` | drawing (stripes, unmarked crossings, labels) and geometry helpers |
+| `Feedback/FeedbackManager.swift` | one feedback mode at a time; switching mode stops everything the last one started; map speech and tracked description speech |
 | `Feedback/HapticService.swift` | Core Haptics patterns; restarts the engine after a reset or a VoiceOver change |
-| `Feedback/AudioService.swift` | the ding and the crosswalk click, synthesised once, played from one engine |
-| `Feedback/SpeechService.swift` | VoiceOver announcement (default priority, so it can be cut off) or system voice |
-| `Logging/StudyLog.swift` | session touch and event CSVs (the touch log is a MultiNav `TouchLogger`), the app log |
+| `Feedback/AudioService.swift` | the ding, the crosswalk click, the centre chime and the boundary thud, synthesised once, played from one engine |
+| `Feedback/SpeechService.swift` | VoiceOver announcements (default priority, so they can be cut off) or the system voice, reporting when each phrase ends |
+| `Logging/StudyLog.swift` | the visits, events and touches CSVs (the touch log is a MultiNav `TouchLogger`), the app log |
 | `Logging/LogFilesView.swift` | list, share and delete logs |
 | `Support/DisableInteractivePopGesture.swift` | turns off swipe-back on map screens |
 
 ## Coordinates
 
 Everything on a map is in **millimetres on the glass**. `MapTransform` turns millimetres into points with
-`PhysicalDimensions.mmToPoints`, so a 4 mm road is 4 mm wide on every iPhone.
+`PhysicalDimensions.mmToPoints`, so a 12 mm road is 12 mm wide on every iPhone.
 
-* Full route and section maps have their origin at the top left, y down, inside a 60 by 116 mm reference
-  area (a 6.1 inch iPhone below the navigation bar).
-* Close-ups have their origin at the junction centre, y down, in the same reference area.
+* Overviews have their origin at the top left, y down, inside a 60 by 116 mm reference area (a 6.1 inch iPhone
+  below the navigation bar).
+* Intersection maps have their origin at the centre of the screen, y down, in the same reference area. The
+  junction itself sits at the centre unless the walk would not fit; then the map is centred on the walk (see
+  `frame_for`), so the junction centre is read from the map's `center` element, not assumed at (0, 0).
 
-The map is centred in the space between the navigation bar and the home indicator. If a phone has less room
-than the reference area, the whole map shrinks to fit; it never grows past true size.
+The map is centred in the space between the navigation bar and the home indicator, and drawing is clipped to
+that space. If a phone has less room than the reference area, the whole map shrinks to fit; it never grows
+past true size.
 
 ## How the maps are made
 
-`tools/build_maps.py` reads three things:
+`tools/build_maps.py` reads:
 
-* `tools/osm/*.json`, OpenStreetMap extracts of the two areas (roads, sidewalks, crossings, signals);
-* `tools/source/multinav_walking_routes.kml`, the team's map: route lines and the intersection pins;
-* `tools/route_spec.py`, the study choices: the intersections on each route, the side of the street the walk
-  uses at each one, endpoint names, and traffic control the team confirmed.
+* `tools/osm/old_port_area.json`, an OpenStreetMap extract of the Old Port (roads and crossings);
+* `tools/study_spec.py`, the study: the words spoken on every map (copied from the team's descriptions), the
+  overview layouts, and for each intersection which legs have crosswalks, zebra or unmarked, which are
+  straight or angled, the median, and the way the walk goes through it.
 
-It writes, per route: the full route map (`routeN_overview`), one close-up per intersection
-(`routeN_l2_<junction>`), one map per section (`routeN_section_K`) and the directions (`routeN_directions`),
-plus `routes.json`, `docs/ROUTES.md` and, with `--preview`, a true-size PNG of every map.
+It writes one JSON map per entry in `ORDER`, `Maps/study.json`, `docs/STUDY.md` and, with `--preview`, a
+true-size PNG of every map. It stops if a spoken text contains a dash or an arrow, if two dots on a map would
+touch, or if a route end falls off the screen.
 
-### Full route map
+### Overviews
 
-For each route the generator lists the stops in order (start, each intersection, destination) and gives
-each street run one direction, the true bearing turned so the route goes up the screen and squared to 90
-degrees (45 where a street really is diagonal). Gaps between stops follow real distance but never fall below
-10 mm between intersections or 8 mm to an endpoint. Every arm the walk does not use becomes an 8 mm stub at
-its own squared angle. The largest scale that fits the reference area is chosen, and then one axis may be
-stretched by up to 2.6 times to use the rest of the screen.
+Each overview is a list of legs from the start, each a screen direction and a length in mm ending at an
+intersection (red square with its spoken cue), a plain corner or the end. Stubs are the streets the walk does
+not follow. The layouts follow the team's mockups and are not to scale.
 
-Orientation: Routes 1 and 2 have northeast at the top, Route 3 southwest, Route 4 southeast. Portland's
-downtown grid runs northeast and northwest, so a turn of 45 degrees squares its streets to the screen.
+### Intersection maps
 
-### Sections and directions
-
-A route has one section per stretch: from the start to the first intersection, from each intersection to the
-next, and from the last one to the destination. `build_directions` writes, for each section, the street and
-side walked (as a compass word and as left or right), the distance, and what to do at the intersection it ends
-at: the crossings in walking order (with signal, marking, island and one-way details), the side walked round a
-roundabout, and the turn, worked out from the bearings of the arm walked in on and the arm walked out on
-(straight within 25 degrees, slight to 60, a turn to 150, sharp beyond).
-
-`build_section` draws each section heading-up: the street walked runs straight up the middle, from where the
-traveller is (88 mm down) to the next intersection (32 mm down), with every other arm of both intersections as
-a 16 mm stub at its squared angle, and the route drawn 14 mm past the top intersection along the street it
-turns onto. "Up" follows the street's own direction, not the straight line between the two points, so a
-street that is walked straight is drawn straight.
-
-The app joins the pieces into sentences (`DirectionsComposer`); `build_maps.py` joins them the same way, with
-every detail on, for the directions in `docs/ROUTES.md`, and a test checks one section word for word.
-
-### Close-ups
-
-Each arm keeps its true bearing, turned the same way as the overview. Roads are 12 mm wide (7 mm at the
-roundabout). Sidewalks run 13.1 mm from each road's centre line and meet at the corners; crosswalks run
-from corner to corner across the arms where OpenStreetMap records a crossing, so a walk along a sidewalk
-meets the crosswalk exactly where the sidewalk turns. Crossings with a refuge island are split in two at the
-island. The walking path follows the sidewalk on the chosen side, crossing arms corner to corner by the
-shorter way round, unless `via` in the spec says otherwise.
+* **Arms** come from OpenStreetMap at their true bearings, with the names the team uses (`rename`).
+* **Orientation**: the map is turned so the arm walked in on points down and the walk goes up. The return at
+  Gorham's Corner, which starts at the corner, faces its first crossing instead (`"heading": "first_crossing"`).
+* **Roads** are 12 mm wide and run off the screen. Sidewalk centre lines run 13.1 mm from each road's centre
+  and meet at the corners.
+* **Crosswalks** run corner to corner on the legs listed in the spec. `straight` squares one up when its ends
+  are more than 2 mm uneven; `skew` moves one end further out along its arm, for the crosswalks the team
+  describes as angled. A leg with a `median` gets a green strip from just inside its crosswalk outwards, and
+  its crosswalk is split in two around it.
+* **The walk** follows the chosen side of the arm walked in on, crosses arms corner to corner (the shorter way
+  round unless `via` says otherwise) and leaves along the chosen side of the arm walked out on. It starts 16 mm
+  before its first crosswalk and ends 14 mm after its last, unless the spec or the screen edge says otherwise.
+  Jogs shorter than 1.5 mm are smoothed out.
+* **The offset intersection** (Exchange Street and Moulton Street) has its own builder, `build_offset`: Fore
+  Street straight through two junction points `offset_mm` apart, Exchange Street on one side and Moulton
+  Street on the other, and the angled crosswalk between their corners.
+* **Dots** are placed by the generator: an orange turn dot where the walk bends more than 40 degrees, a pink
+  dot at each crosswalk end, and the two yellow route ends. A route end wins over a turn, and a turn over a
+  crosswalk end; dots that would touch, or that the screen edge would cut, are left out.
+* **Tidying**: sidewalks, crosswalks and medians shorter than 1.5 mm or wholly off screen are left out.
 
 Zebra bars are painted only where a crossing lies over the road: up to three, one centred in each equal share
 of that span, with fewer on a short span (half of a split crossing) so bars stay at least 1 mm apart.
-`MapDrawing.stripeLayout` and `tools/preview.py` use the same rule.
-
-Crosswalks marked *assumed* in `docs/ROUTES.md` come from `assume_crossing` in the spec and should be
-checked on site.
+`MapDrawing.stripeLayout` and `tools/preview.py` use the same rule. An unmarked crossing is drawn as two thin
+dashed lines; it feels and sounds the same as a zebra.
 
 ## Touch handling
 
 `TactileCanvasView` reads touches directly whether VoiceOver is on or off, so both behave the same. Under
-VoiceOver it is a direct-touch element (`.allowsDirectInteraction`, `.silentOnTouch`). It follows one finger;
-a second finger stops exploring so multi-finger gestures do not buzz.
+VoiceOver it is a direct-touch element (`.allowsDirectInteraction`, `.silentOnTouch`) with no hint, so
+VoiceOver reads only its short name when the map opens.
 
-* A tap is a touch shorter than 0.45 s that moves less than 28 points. A second tap within 0.45 s and 48
-  points is a double tap; a single tap is reported once the double-tap window has passed.
-* Back: three-finger swipe right (a gesture recogniser, plus a raw-touch check), VoiceOver escape,
-  VoiceOver three-finger scroll right. On a route map the session decides: it ends the session and leaves,
-  unless the setup locks the map (then it says so).
-* Sections: three-finger swipe up and down, the same two ways, and VoiceOver three-finger scroll up and down.
-  The session reports a new section to VoiceOver as a page change; at either end it returns false so
-  VoiceOver plays its boundary sound.
-* A three-finger gesture is acted on once even if the recogniser and the raw check both see it.
+* A tap is a touch shorter than 0.45 s that moves less than 28 points. A second tap within 0.45 s and 48 points
+  is a double tap; a single tap is reported once the double-tap window has passed.
+* A two-finger tap is two fingers down and up within 0.4 s without moving; two within 0.5 s are a two-finger
+  double tap. VoiceOver sends the same gesture as the magic tap; either way it is acted on once.
+* Three-finger swipes are seen by a gesture recogniser and by a raw-touch check, and by VoiceOver as scrolls;
+  each is acted on once. Up and down step through the information items (returning false at either end so
+  VoiceOver plays its boundary sound); right, and the VoiceOver escape gesture, mean ready to cross.
+* A second finger stops exploring, so multi-finger gestures do not buzz.
 
-Each controller hit-tests in millimetres in a fixed priority order (see the tables in the README). Once the
-finger is on an element it keeps it within an extra 0.8 mm, so a finger resting on an edge does not flicker
-between two elements. Feedback changes only when the element changes. Move events are logged at most 10
-times a second; feedback reacts to every move.
+Each controller hit-tests in millimetres in a fixed priority order (see the tables in the README). On an
+intersection map the median comes before the path, so it is felt where the path crosses it, and the centre
+after it, so it never interrupts the path. Once the finger is on an element it keeps it within an extra 0.8 mm,
+so a finger resting on an edge does not flicker between two elements. Move events are logged at most 10 times
+a second; feedback reacts to every move.
+
+## Speech and the description player
+
+`FeedbackManager.speak` says a map name at once, cutting off the name before it; the same words within half a
+second are said once. `speakTracked` speaks part of a description and reports when it ends: finished, or cut
+off. `SpeechService` gets that from VoiceOver's announcement-finished notification (matched by text; an
+announcement cut off by one with the same words is told apart by a short window) or from the speech
+synthesiser's delegate.
+
+`DescriptionPlayer` keeps one thing playing at a time. Starting anything cuts off what was playing; a stop by
+the participant says "Stopped."; an item that finishes starts the next; a token makes sure a late report from
+an older phrase is ignored. Controllers ask `player.isPlaying` before saying a map name, so names never cut
+the description off. `MapVisit` counts what the player reports for the visits log.
 
 ## Feedback
 
 `FeedbackManager.set(_:)` takes one mode. A new mode stops the old one's haptic loop and timers first, so
-nothing is left running. Speech is separate and is never stopped by a mode change; a new phrase cuts off the
-old one, and the same phrase asked for twice within half a second is spoken once.
-
-A session switches vibration, sounds and map speech on or off with `configure(_:)`, and sets the system
-voice speed. Prompts about the session (section numbers, time warnings, the lock message) are spoken with
-`essential: true`, so they are heard even with map speech off. A route overview or a section's directions
-after a new screen are spoken queued, so they follow VoiceOver reading the screen instead of cutting it off.
+nothing is left running.
 
 | Mode | Haptic | Sound |
 |---|---|---|
 | road | continuous, intensity 1.0, sharpness 0.1 | |
 | sidewalk | continuous, 0.78, 0.78 | |
 | intersection | 0.15 s pulse every 0.25 s, 1.0, 0.5 | ding every 0.4 s |
-| landmark | 0.08 s pulse every 0.12 s, 1.0, 0.7 | |
+| endpoint | 0.08 s pulse every 0.12 s, 1.0, 0.7 | |
 | route | 0.12 s pulse every 0.2 s, 1.0, 0.85 | |
 | crosswalk | road buzz when over a road | click every 0.17 s |
 | routeOverCrosswalk | route pulse | click every 0.17 s |
 | turn | medium impact with each ding | ding every 0.4 s |
 | crosswalkEnd | | one ding |
-| island | two transients 0.11 s apart, every 0.55 s, 0.85, 0.4 | |
+| center | none | two-note chime (784 then 523 Hz) every 0.7 s |
+| median | sharp taps every 0.08 s, 1.0, 0.9 | |
 
-The ding is a 1120 Hz tone with an 8 ms attack and fast decay; the click is a 12 ms tick. The audio session
-is playback mixed with others, so both are heard with the ringer switch off and alongside VoiceOver.
+The ding is a 1120 Hz tone with an 8 ms attack and fast decay; the click is a 12 ms tick; the boundary thud is a
+90 ms 330 Hz tone. The audio session is playback mixed with others, so all of them are heard with the ringer
+switch off and alongside VoiceOver.
 
 ## Common changes
 
 | Change | Where |
 |---|---|
-| Colours, line widths, dot sizes, touch radii | `Map/MapStyle.swift` (keep `tools/build_maps.py` and `tools/preview.py` in step for the generator) |
+| Words spoken on any map | `tools/study_spec.py` (`STOPS`, `TRAINING_OVERVIEW`, `ROUTE_OVERVIEW`), then rebuild |
+| Which legs have crosswalks, markings, angles, medians | `JUNCTIONS` and `OFFSET_JUNCTIONS` in `tools/study_spec.py` |
+| The walk through an intersection, start and end gaps | `in`, `out`, `via`, `start_gap`, `end_gap` on the stop in `tools/study_spec.py` |
+| Overview layout | `legs` in `TRAINING_OVERVIEW` or `ROUTE_OVERVIEW` |
+| Colours, line widths, dot sizes, touch radii | `Map/MapStyle.swift` (keep `tools/build_maps.py` and `tools/preview.py` in step) |
 | Haptic strengths and timings | `Feedback/HapticService.swift`, `Feedback/FeedbackManager.swift` |
-| Spoken wording of crosswalks, sidewalks, intro lines | `tools/build_maps.py` (`crosswalk_name`, `control_sentence`, `build_level2`) |
-| Turn-by-turn pieces (turn words, crossing details) | `tools/build_maps.py` (`maneuver`, `turn_word`, `crossing_detail`) |
-| How directions are joined into sentences | `Directions/DirectionsComposer.swift`, and its copy in `tools/build_maps.py` (`walk_sentence`, `maneuver_sentences`) |
-| Setup options and their defaults | `Setup/StudySettings.swift`, `Setup/SetupView.swift` |
-| Which side of a street a route walks, endpoint names, control | `tools/route_spec.py` |
-| Minimum spacing on the overview | `MIN_GAP_JUNCTIONS`, `STUB` in `tools/build_maps.py` |
+| Gestures | `Map/TactileCanvasView.swift`, and what they do in the two controllers |
+| Researcher options and their defaults | `Study/StudySettings.swift`, `Study/StudyHomeView.swift` |
 | Log columns | `Logging/StudyLog.swift` |
 
 After changing anything under `tools/`, run `python3 tools/build_maps.py --preview` and the tests.
 
 ## Refreshing the OpenStreetMap data
 
-`tools/fetch_osm.sh` downloads both extracts again from the Overpass API (USM and Forest Avenue:
-43.6585, -70.2825 to 43.6680, -70.2715; Old Port: 43.6535, -70.2600 to 43.6635, -70.2440). Rebuild the maps
-afterwards and compare the previews. Node IDs in `route_spec.py` may need updating if OpenStreetMap has been
-re-edited around a junction; the build stops with the junction's name if an arm it expects is missing.
+`tools/fetch_osm.sh` downloads the extract again from the Overpass API (Old Port: 43.6535, -70.2600 to
+43.6635, -70.2440). Rebuild the maps afterwards and compare the previews. Node IDs in `study_spec.py` may need
+updating if OpenStreetMap has been re-edited around a junction; the build stops with the junction's name if an
+arm it expects is missing.
