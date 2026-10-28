@@ -1,118 +1,127 @@
 // SessionTests.swift
-// Checks the setup settings, the spoken directions and the log file names.
+// The participant session, the settings and the log files it writes.
 
 import Foundation
 import Testing
 @testable import MultiNavStudy2
 
 @MainActor
+@Suite(.serialized)
 struct SessionTests {
-    private func composer(_ route: Int, _ change: (inout StageSettings) -> Void = { _ in },
-                          units: DistanceUnits = .feet, sides: SideWords = .compass) throws -> DirectionsComposer {
-        let directions = try RouteDirections.load(named: "route\(route)_directions")
-        var options = StageSettings.defaults(for: .onRoute)
-        change(&options)
-        return DirectionsComposer(directions: directions, options: options, units: units, sideWords: sides)
+    private func freshDefaults() -> UserDefaults {
+        let name = "SessionTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: name)!
+        defaults.removePersistentDomain(forName: name)
+        return defaults
     }
 
-    /// The wording participants hear, with every detail on, matches docs/ROUTES.md.
-    @Test func firstSectionOfRouteOne() throws {
-        let words = try composer(1)
-        let section = try #require(words.directions.sections.first)
-        #expect(words.sectionIntro(section, withDirections: true) ==
-            "Section 1 of 7. Start at U S M, Bedford Street. Walk along Bedford Street, on the northwest side, "
-            + "about 550 feet, to Deering Avenue. At Deering Avenue. 3-way intersection. "
-            + "No traffic signals or stop signs. Cross Deering Avenue. Marked crosswalk. "
-            + "Then turn right onto Deering Avenue, on the southwest side.")
+    @Test func sessionCountsVisitsAndFindsTheNextMap() throws {
+        let session = StudySession(defaults: freshDefaults())
+        let state = session.startIfNeeded(participantID: "P-test 07!")
+        #expect(state.participantID == "P-test07")
+        #expect(state.fileStem.hasPrefix("P-test07_"))
+        let first = try #require(StudyContent.maps.first)
+        #expect(session.nextMap?.id == first.id)
+        #expect(session.beginVisit(first) == 1)
+        #expect(session.beginVisit(first) == 2)
+        #expect(session.nextMap?.id == first.id, "opened but not explored to the end")
+        #expect(session.phaseBetweenMaps == "Training, between maps")
+        session.markFinished(first)
+        #expect(session.nextMap?.id == StudyContent.maps[1].id)
+        for map in StudyContent.maps where map.phase != .trial2 { session.markFinished(map) }
+        #expect(session.phaseBetweenMaps == "Customization")
+        let trial2 = try #require(StudyContent.maps(in: .trial2).first)
+        _ = session.beginVisit(trial2)
+        #expect(session.phaseBetweenMaps == "Trial 2, between intersections")
+        session.end(reason: "Test finished")
+        #expect(!session.isActive)
+        #expect(!StudyLog.shared.isSessionActive)
     }
 
-    @Test func switchedOffPartsAreLeftOut() throws {
-        let words = try composer(1, {
-            $0.distances = false
-            $0.intersectionDetails = false
-            $0.crosswalkDetails = false
-        }, sides: .relative)
-        let section = try #require(words.directions.sections.first)
-        #expect(words.directionsText(section) ==
-            "Start at U S M, Bedford Street. Walk along Bedford Street, on the right-hand side, to Deering Avenue. "
-            + "At Deering Avenue. Cross Deering Avenue. Then turn right onto Deering Avenue, on the left-hand side.")
-        let roundabout = words.directions.sections[1]
-        #expect(words.maneuver(roundabout).contains("Two stages, with a splitter island."))
-        #expect(words.maneuver(roundabout).contains("Walk around the east side of the roundabout."))
-    }
-
-    @Test func distancesRoundSensibly() throws {
-        let feet = try composer(1)
-        #expect(feet.distance(168) == "about 550 feet")
-        #expect(feet.distance(20) == "about 70 feet")
-        let metres = try composer(1, units: .metres)
-        #expect(metres.distance(168) == "about 170 metres")
-        #expect(metres.distance(2) == "about 5 metres")
-    }
-
-    /// No dash or arrow in any direction, whatever the researcher switches off.
-    @Test(arguments: [1, 2, 3, 4])
-    func directionsHaveNoDashes(route: Int) throws {
-        for mask in 0..<32 {
-            for units in DistanceUnits.allCases {
-                for sides in SideWords.allCases {
-                    let words = try composer(route, {
-                        $0.turnByTurn = mask & 1 != 0
-                        $0.distances = mask & 2 != 0
-                        $0.streetSide = mask & 4 != 0
-                        $0.intersectionDetails = mask & 8 != 0
-                        $0.crosswalkDetails = mask & 16 != 0
-                    }, units: units, sides: sides)
-                    var texts = [words.overview(), words.summary()]
-                    for section in words.directions.sections {
-                        texts += [words.sectionIntro(section, withDirections: true), words.brief(section),
-                                  words.routeLeg(section, first: section.index == 1)]
-                        if !section.endsAtDestination { texts.append(words.routeContinuation(section)) }
-                    }
-                    for text in texts {
-                        #expect(!text.contains("\u{2014}") && !text.contains("\u{2013}") && !text.contains("\u{2192}"),
-                                "dash or arrow in: \(text)")
-                        #expect(!text.contains("  ") && !text.contains(" ,") && !text.contains(".."), "spacing in: \(text)")
-                    }
-                }
-            }
-        }
+    @Test func sessionSurvivesARelaunch() {
+        let defaults = freshDefaults()
+        let first = StudySession(defaults: defaults)
+        first.startIfNeeded(participantID: "P08")
+        _ = first.beginVisit(StudyContent.maps[0])
+        StudyLog.shared.endSession(reason: "App closed")
+        let again = StudySession(defaults: defaults)
+        #expect(again.state?.participantID == "P08")
+        #expect(again.visits(StudyContent.maps[0]) == 1)
+        again.resumeAfterLaunch()
+        #expect(StudyLog.shared.isSessionActive)
+        again.end(reason: "Test finished")
     }
 
     @Test func settingsSurviveMissingKeys() throws {
-        let saved = #"{"routeID":"route3","stage":"onRoute","onRoute":{"mapMode":"fullRoute","speech":false}}"#
+        let saved = #"{"participantID":"P03","info":{"off":["control"]}}"#
         let settings = try JSONDecoder().decode(StudySettings.self, from: Data(saved.utf8))
-        #expect(settings.routeID == "route3")
-        #expect(settings.stage == .onRoute)
-        #expect(settings.onRoute.mapMode == .fullRoute)
-        #expect(settings.onRoute.speech == false)
-        #expect(settings.onRoute.turnByTurn == true)
-        #expect(settings.preJourney == StageSettings.defaults(for: .preJourney))
-        #expect(settings.units == .feet)
-    }
-
-    @Test func stagesKeepTheirOwnOptions() {
-        var settings = StudySettings()
-        settings[.onRoute].landmarks = false
-        #expect(settings.preJourney.landmarks)
-        #expect(!settings.onRoute.landmarks)
-        #expect(settings.preJourney.mapMode == .fullRoute)
-        #expect(settings.onRoute.mapMode == .sections)
+        #expect(settings.participantID == "P03")
+        #expect(!settings.info[.control])
+        #expect(settings.info[.geometry])
+        #expect(settings.participantCanFinish)
+        #expect(settings.voiceSpeed == .normal)
+        #expect(settings.showMap)
+        let roundTrip = try JSONDecoder().decode(StudySettings.self, from: JSONEncoder().encode(settings))
+        #expect(roundTrip == settings)
     }
 
     @Test func logFileNames() {
         var parts = DateComponents()
         parts.year = 2026
         parts.month = 10
-        parts.day = 16
-        parts.hour = 15
-        parts.minute = 30
+        parts.day = 28
+        parts.hour = 14
+        parts.minute = 25
         parts.second = 12
         let date = Calendar.current.date(from: parts)!
-        #expect(StudyLog.fileStem(route: 2, stage: .preJourney, practice: false, date: date) == "Route2_PreJourney_20261016_153012")
-        #expect(StudyLog.fileStem(route: 4, stage: .onRoute, practice: true, date: date) == "Route4_OnRoute_Practice_20261016_153012")
-        #expect(LogFile.title(forStem: "Route2_PreJourney_20261016_153012_touches") == "Route 2, pre-journey learning, touches")
-        #expect(LogFile.title(forStem: "Route4_OnRoute_Practice_20261016_153012_events") == "Route 4, on route, practice, events")
-        #expect(LogFile.title(forStem: "Route1_20261002_153012_touches") == "Route 1, touches")
+        #expect(StudyLog.fileStem(participant: "P07", date: date) == "P07_20261028_142512")
+        #expect(StudyLog.fileStem(participant: "", date: date) == "Session_20261028_142512")
+        #expect(LogFile.title(forStem: "P07_20261028_142512_visits") == "P07, visits")
+        #expect(LogFile.title(forStem: "Session_20261028_142512_touches") == "No participant ID, touches")
+        #expect(LogFile.title(forStem: "Route1_20261002_153012_touches") == "Route1, touches")
+    }
+
+    /// One visit writes one row to the visits file, with the counts the team asked for.
+    @Test func visitRowIsWritten() throws {
+        let session = StudySession(defaults: freshDefaults())
+        let state = session.startIfNeeded(participantID: "PV1")
+        let map = try #require(StudyContent.map(id: "return_3"))
+        let opened = Date()
+        var info = InfoSettings()
+        info[.signals] = false
+        StudyLog.shared.beginMap(map, visit: 1, opened: opened, settings: info)
+        var summary = VisitSummary(phase: map.phase, mapID: map.logID, mapName: map.title, visit: 1, opened: opened,
+                                   firstTouch: opened.addingTimeInterval(2), ended: opened.addingTimeInterval(32.5),
+                                   endedBy: "Done button", settingsAtOpen: info, voiceOver: false)
+        summary.announcementPlays = 2
+        summary.announcementRepeats = 1
+        summary.detailActivations = 1
+        summary.itemPlays = [.geometry: 2, .direction: 1]
+        summary.settingsAtEnd = info
+        StudyLog.shared.endMap(summary)
+        session.end(reason: "Test finished")
+
+        let url = StudyLog.documents.appendingPathComponent(state.fileStem + "_visits.csv")
+        let lines = try String(contentsOf: url, encoding: .utf8).split(separator: "\n").map(String.init)
+        #expect(lines.count == 2)
+        let header = lines[0].split(separator: ",", omittingEmptySubsequences: false).map(String.init)
+        let row = lines[1].split(separator: ",", omittingEmptySubsequences: false).map(String.init)
+        #expect(header.count == row.count)
+        func value(_ column: String) -> String? {
+            header.firstIndex(of: column).map { row[$0] }
+        }
+        #expect(value("Participant") == "PV1")
+        #expect(value("Phase") == "Trial 2")
+        #expect(value("Map") == "Reversed intersection 3")
+        #expect(value("Seconds From Opening") == "32.5")
+        #expect(value("Seconds From First Touch") == "30.5")
+        #expect(value("Announcement Plays") == "2")
+        #expect(value("Items Played") == "3")
+        #expect(value("Item Replays") == "1")
+        #expect(value("Pedestrian signals Setting") == "Off")
+        #expect(value("Intersection geometry Plays") == "2")
+        for suffix in ["visits", "events", "touches"] {
+            try? FileManager.default.removeItem(at: StudyLog.documents.appendingPathComponent(state.fileStem + "_\(suffix).csv"))
+        }
     }
 }

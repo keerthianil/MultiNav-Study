@@ -1,9 +1,9 @@
 // RobustnessTests.swift
 // Drives every map the way a participant might: dragging everywhere, tapping,
-// double tapping, moving through every section and back, drawing each map,
-// with the main settings all on and all off, so nothing can crash in a
-// session. Also checks that the touch surface is a VoiceOver direct-touch
-// area and hands each VoiceOver gesture to the map once.
+// double tapping, two-finger double tapping, swiping through the items and
+// finishing, with the information items all on and all off, so nothing can
+// crash in a session. Also checks that the touch surface is a VoiceOver
+// direct-touch area and hands each VoiceOver gesture to the map once.
 
 import CoreGraphics
 import Foundation
@@ -14,21 +14,21 @@ import UIKit
 /// Records what the touch surface reports.
 @MainActor
 final class GestureRecorder: TactileCanvasDelegate {
-    var backs: [String] = []
-    var sections: [(forward: Bool, gesture: String, voiceOverScroll: Bool)] = []
-    var magicTaps = 0
-    var sectionAnswer = true
+    var finishes: [String] = []
+    var items: [(forward: Bool, gesture: String, voiceOverScroll: Bool)] = []
+    var twoFingerDoubleTaps: [String] = []
+    var itemAnswer = true
 
     func canvas(_ canvas: TactileCanvasView, touch phase: CanvasTouchPhase, mm: CGPoint, screen: CGPoint) {}
     func canvas(_ canvas: TactileCanvasView, singleTapAt mm: CGPoint, screen: CGPoint) {}
     func canvas(_ canvas: TactileCanvasView, doubleTapAt mm: CGPoint, screen: CGPoint) {}
-    func canvasRequestsBack(_ canvas: TactileCanvasView, gesture: String) { backs.append(gesture) }
-    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
-                               voiceOverScroll: Bool) -> Bool {
-        sections.append((forward, gesture, voiceOverScroll))
-        return sectionAnswer
+    func canvasTwoFingerDoubleTap(_ canvas: TactileCanvasView, gesture: String) { twoFingerDoubleTaps.append(gesture) }
+    func canvasRequestsFinish(_ canvas: TactileCanvasView, gesture: String) { finishes.append(gesture) }
+    func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
+                            voiceOverScroll: Bool) -> Bool {
+        items.append((forward, gesture, voiceOverScroll))
+        return itemAnswer
     }
-    func canvasMagicTap(_ canvas: TactileCanvasView) { magicTaps += 1 }
 }
 
 @Suite(.serialized)
@@ -36,31 +36,8 @@ final class GestureRecorder: TactileCanvasDelegate {
 struct RobustnessTests {
     private let screen = CGRect(x: 0, y: 0, width: 402, height: 874)
 
-    private func config(_ route: RouteInfo, mode: MapMode, allOn: Bool) -> SessionConfig {
-        var settings = StudySettings()
-        settings.routeID = route.id
-        settings.stage = mode == .fullRoute ? .preJourney : .onRoute
-        var options = settings[settings.stage]
-        options.mapMode = mode
-        if !allOn {
-            options.turnByTurn = false
-            options.distances = false
-            options.streetSide = false
-            options.intersectionDetails = false
-            options.crosswalkDetails = false
-            options.intersectionCloseUps = false
-            options.landmarks = false
-            options.showMap = false
-            options.vibration = false
-            options.sounds = false
-            options.speech = false
-        }
-        settings[settings.stage] = options
-        return SessionConfig(route: route, settings: settings)
-    }
-
     /// Drags across the whole map row by row, then taps and double taps on a grid.
-    private func explore(_ controller: any MapController, canvas: TactileCanvasView, area: CGRect) {
+    private func explore(_ controller: any StudyMapController, canvas: TactileCanvasView, area: CGRect) {
         var y = area.minY
         while y <= area.maxY {
             controller.canvas(canvas, touch: .began, mm: CGPoint(x: area.minX, y: y), screen: .zero)
@@ -85,7 +62,11 @@ struct RobustnessTests {
             }
             y += 6
         }
-        controller.canvasMagicTap(canvas)
+        controller.canvasTwoFingerDoubleTap(canvas, gesture: "Test")
+        for forward in [true, true, false, true, true, true, true, true, true] {
+            _ = controller.canvasRequestsItem(canvas, forward: forward, gesture: "Test", voiceOverScroll: !forward)
+        }
+        controller.canvasTwoFingerDoubleTap(canvas, gesture: "Test")
     }
 
     private func draw(_ scene: any MapScene) {
@@ -95,106 +76,78 @@ struct RobustnessTests {
         }
     }
 
-    @Test(arguments: RouteCatalog.routes)
-    func routeMapsSurviveASession(route: RouteInfo) throws {
-        for mode in MapMode.allCases {
-            for allOn in [true, false] {
-                let session = RouteSession(config: config(route, mode: mode, allOn: allOn))
-                let controller = try #require(session.controller, "Route \(route.number) did not load")
-                let canvas = TactileCanvasView(frame: screen)
-                canvas.scene = controller
-                canvas.delegate = controller
-                controller.canvas = canvas
-                session.appear()
-                var visited = 0
-                repeat {
-                    visited += 1
-                    draw(controller)
-                    explore(controller, canvas: canvas, area: CGRect(origin: .zero, size: controller.mapSize))
-                } while session.moveSection(forward: true, gesture: "Test")
-                if mode == .sections {
-                    #expect(visited == route.sections.count)
-                    #expect(!session.moveSection(forward: true, gesture: "Test"), "moved past the last section")
-                    while session.moveSection(forward: false, gesture: "Test", voiceOverScroll: true) {}
-                    #expect(session.currentSection?.index == 1)
-                } else {
-                    #expect(visited == 1)
-                }
-                _ = controller.canvasRequestsSection(canvas, forward: true, gesture: "Test", voiceOverScroll: false)
-                session.magicTap()
-                session.requestLeave(gesture: "Test")
-                session.end(reason: "Test finished")
-                #expect(!StudyLog.shared.isSessionActive)
-            }
-        }
-    }
-
-    @Test(arguments: RouteCatalog.routes)
-    func closeUpsSurviveExploring(route: RouteInfo) throws {
-        let directions = try RouteDirections.load(named: route.directions)
+    @Test(arguments: StudyContent.maps)
+    func everyMapSurvivesAVisit(map: StudyMap) throws {
+        let store = SettingsStore.shared
+        let saved = store.settings
+        defer { store.settings = saved }
         for allOn in [true, false] {
-            let config = config(route, mode: .fullRoute, allOn: allOn)
-            let composer = DirectionsComposer(directions: directions, config: config)
-            for file in route.details {
-                let map = try MapLoader.detail(named: file)
-                let controller = DetailController(config: config, map: map, composer: composer,
-                                                  section: directions.section(withDetail: file))
-                let canvas = TactileCanvasView(frame: screen)
-                canvas.scene = controller
-                canvas.delegate = controller
-                controller.canvas = canvas
-                controller.screenDidAppear()
-                draw(controller)
-                let area = CGRect(x: -map.size.width / 2, y: -map.size.height / 2,
-                                  width: map.size.width, height: map.size.height)
-                explore(controller, canvas: canvas, area: area)
-                #expect(!controller.canvasRequestsSection(canvas, forward: true, gesture: "Test", voiceOverScroll: true))
-                #expect(!controller.intro.isEmpty)
-            }
+            var settings = saved
+            settings.participantID = "TEST"
+            for category in InfoCategory.allCases { settings.info[category] = allOn }
+            settings.showMap = allOn
+            store.settings = settings
+
+            let visit = MapVisit(map: map)
+            let controller = try #require(visit.controller, "\(map.id) did not load")
+            let canvas = TactileCanvasView(frame: screen)
+            canvas.scene = controller
+            canvas.delegate = controller
+            controller.canvas = canvas
+            var closed = false
+            visit.onClose = { closed = true }
+            visit.appear()
+            draw(controller)
+            let area = controller.isCentered
+                ? CGRect(x: -controller.mapSize.width / 2, y: -controller.mapSize.height / 2,
+                         width: controller.mapSize.width, height: controller.mapSize.height)
+                : CGRect(origin: .zero, size: controller.mapSize)
+            explore(controller, canvas: canvas, area: area)
+            controller.canvasRequestsFinish(canvas, gesture: "Test")
+            #expect(closed, "the participant's gesture closes the map by default")
+            #expect(visit.isFinished)
+            visit.disappear()
         }
-        FeedbackManager.shared.configure(FeedbackManager.Options())
+        StudySession.shared.end(reason: "Test finished")
+        Self.removeTestLogs()
     }
 
-    /// A locked map keeps the participant on it; the researcher's End still works.
-    @Test func lockedMapStaysOpen() throws {
-        let route = try #require(RouteCatalog.routes.first)
-        var settings = StudySettings()
-        settings.routeID = route.id
-        settings.participantCanLeave = false
-        var left = false
-        let session = RouteSession(config: SessionConfig(route: route, settings: settings))
-        session.onLeave = { left = true }
-        session.appear()
-        session.requestLeave(gesture: "Test")
-        #expect(!left)
-        #expect(StudyLog.shared.isSessionActive)
-        session.end(reason: "Test finished")
-        #expect(left)
-        #expect(!StudyLog.shared.isSessionActive)
+    /// The logs these tests write, under the participant ID TEST.
+    static func removeTestLogs() {
+        let files = (try? FileManager.default.contentsOfDirectory(at: StudyLog.documents, includingPropertiesForKeys: nil)) ?? []
+        for file in files where file.lastPathComponent.hasPrefix("TEST_") || file.lastPathComponent.hasPrefix("Session_") {
+            try? FileManager.default.removeItem(at: file)
+        }
     }
 
-    @Test func backGesturesLeaveByDefault() throws {
-        let route = try #require(RouteCatalog.routes.first)
-        #expect(StudySettings().participantCanLeave)
-        var settings = StudySettings()
-        settings.routeID = route.id
-        var left = false
-        let session = RouteSession(config: SessionConfig(route: route, settings: settings))
-        session.onLeave = { left = true }
-        session.appear()
-        session.requestLeave(gesture: "Test")
-        #expect(left)
-        #expect(!StudyLog.shared.isSessionActive)
+    @Test func gestureCanBeTurnedOff() throws {
+        let store = SettingsStore.shared
+        let saved = store.settings
+        defer { store.settings = saved }
+        store.settings.participantCanFinish = false
+        store.settings.participantID = "TEST"
+        let map = try #require(StudyContent.map(id: "intersection_1"))
+        let visit = MapVisit(map: map)
+        let controller = try #require(visit.controller)
+        var closed = false
+        visit.onClose = { closed = true }
+        visit.appear()
+        controller.onFinishRequest?("Test")
+        #expect(!closed)
+        visit.finish(by: "Done button")
+        #expect(closed, "the researcher's Done always works")
+        StudySession.shared.end(reason: "Test finished")
+        Self.removeTestLogs()
     }
 
     @Test func mapIsAVoiceOverDirectTouchArea() {
         let canvas = TactileCanvasView(frame: screen)
-        canvas.configureAccessibility(label: "Route 1, section 1 of 7", hint: "Drag to explore.")
+        canvas.configureAccessibility(label: "Intersection map")
         #expect(canvas.isAccessibilityElement)
         #expect(canvas.accessibilityTraits.contains(.allowsDirectInteraction))
         #expect(canvas.accessibilityDirectTouchOptions.contains(.silentOnTouch))
-        #expect(canvas.accessibilityLabel == "Route 1, section 1 of 7")
-        #expect(canvas.accessibilityHint == "Drag to explore.")
+        #expect(canvas.accessibilityLabel == "Intersection map")
+        #expect(canvas.accessibilityHint == nil)
     }
 
     @Test func voiceOverGesturesReachTheMap() async throws {
@@ -204,29 +157,32 @@ struct RobustnessTests {
 
         #expect(canvas.accessibilityScroll(.up))
         try await Task.sleep(nanoseconds: 600_000_000)
-        recorder.sectionAnswer = false
+        recorder.itemAnswer = false
         #expect(!canvas.accessibilityScroll(.down), "the boundary must reach VoiceOver")
         try await Task.sleep(nanoseconds: 600_000_000)
         #expect(canvas.accessibilityScroll(.right))
         #expect(!canvas.accessibilityScroll(.left))
+        try await Task.sleep(nanoseconds: 600_000_000)
         #expect(canvas.accessibilityPerformEscape())
         #expect(canvas.accessibilityPerformMagicTap())
 
-        let directions = recorder.sections.map { $0.forward }
-        let allFromVoiceOver = recorder.sections.allSatisfy { $0.voiceOverScroll }
-        #expect(directions == [true, false])
-        #expect(allFromVoiceOver)
-        #expect(recorder.backs == ["VoiceOver three-finger swipe right", "VoiceOver escape"])
-        #expect(recorder.magicTaps == 1)
+        #expect(recorder.items.map(\.forward) == [true, false])
+        #expect(recorder.items.allSatisfy { $0.voiceOverScroll })
+        #expect(recorder.finishes == ["VoiceOver three-finger swipe right", "VoiceOver escape"])
+        #expect(recorder.twoFingerDoubleTaps == ["VoiceOver magic tap"])
     }
 
-    /// The swipe recogniser and the raw touch check can both see one swipe.
-    @Test func oneSwipeCountsOnce() {
+    /// The swipe recogniser and the raw touch check can both see one swipe,
+    /// and VoiceOver can send a two-finger double tap both ways.
+    @Test func oneGestureCountsOnce() {
         let canvas = TactileCanvasView(frame: screen)
         let recorder = GestureRecorder()
         canvas.delegate = recorder
         #expect(canvas.accessibilityScroll(.up))
         #expect(canvas.accessibilityScroll(.up))
-        #expect(recorder.sections.count == 1)
+        #expect(recorder.items.count == 1)
+        #expect(canvas.accessibilityPerformMagicTap())
+        #expect(canvas.accessibilityPerformMagicTap())
+        #expect(recorder.twoFingerDoubleTaps.count == 1)
     }
 }
