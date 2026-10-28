@@ -2,16 +2,23 @@
 // Study logs, written to the app's Documents folder (visible in the Files
 // app under On My iPhone > MultiNav Study 2, and from Finder over USB).
 //
-// Each session (one route, one stage) writes two CSV files:
-//   Route1_PreJourney_20261016_153012_touches.csv  every touch down, move
-//       (10 per second) and up, with the element under the finger, in
-//       points and mm, and the stage, view and section it happened in
-//   Route1_PreJourney_20261016_153012_events.csv   every setting used,
-//       screens and sections opened, taps, double taps, back gestures,
-//       everything spoken, time warnings, VoiceOver changes, errors
-// A practice run adds "_Practice" after the stage. Across all sessions,
-// MultiNav_app_log.csv keeps app starts, background and foreground changes,
-// sessions and every error.
+// Each participant session writes three CSV files, named by participant ID
+// and start time:
+//   P07_20261028_142512_visits.csv   one row per map visit: when the map
+//       opened, the first touch, when exploring ended and how, how long it
+//       took, how often the announcement and each information item played,
+//       which items were switched on, and how many settings changed
+//   P07_20261028_142512_events.csv   everything in order: maps opened and
+//       closed, every announcement and item started, finished, stopped or
+//       replayed, gestures, every change to the information items, what
+//       the map said, VoiceOver changes, errors
+//   P07_20261028_142512_touches.csv  every touch down, move (10 per second)
+//       and up, with what was under the finger and what was being spoken
+// Every row carries the participant, the phase (Training, Practice, Trial 1,
+// Customization, Trial 2), the map ("Intersection 2", "Reversed intersection
+// 5") and the visit number, so practice attempts and repeated visits can be
+// told apart. Across sessions, MultiNav_app_log.csv keeps app starts,
+// background and foreground changes, sessions and every error.
 //
 // The touch file is written by a TouchLogger, the logging protocol from the
 // MultiNav package.
@@ -66,15 +73,16 @@ final class CSVWriter {
 
 @MainActor
 final class StudyTouchLogger: TouchLogger {
-    static let header = ["Time Stamp", "Trial Time", "Touch Event", "Object Type", "Touch X", "Touch Y",
-                         "Touch X (mm)", "Touch Y (mm)", "Stage", "View", "Section", "Condition", "VoiceOver"]
+    static let header = ["Time Stamp", "Session Time", "Map Time", "Participant", "Phase", "Map", "Visit",
+                         "Touch Event", "Object", "Touch X", "Touch Y", "Touch X (mm)", "Touch Y (mm)",
+                         "Speaking", "VoiceOver"]
 
     private var writer: CSVWriter?
     private(set) var fileURL: URL?
 
     var isSessionActive: Bool { writer != nil }
 
-    /// `metadata["file"]` is the full path of the CSV to create.
+    /// `metadata["file"]` is the full path of the CSV to create or append to.
     func startSession(metadata: [String: String]) {
         endSession()
         guard let path = metadata["file"] else { return }
@@ -95,20 +103,23 @@ final class StudyTouchLogger: TouchLogger {
     @discardableResult
     func logEvent(_ event: TouchEvent) -> Bool {
         guard let writer else { return false }
+        let c = event.custom
         writer.write([
             StudyLog.timestamp(event.timestamp),
-            StudyLog.trialTime(event.sessionElapsed),
+            StudyLog.clock(event.sessionElapsed),
+            c["map_time"] ?? "",
+            c["participant"] ?? "",
+            c["phase"] ?? "",
+            c["map"] ?? "",
+            c["visit"] ?? "",
             event.eventType.rawValue,
             event.elementName,
             String(format: "%.1f", event.touchPoint.x),
             String(format: "%.1f", event.touchPoint.y),
-            event.custom["x_mm"] ?? "",
-            event.custom["y_mm"] ?? "",
-            event.custom["stage"] ?? "",
-            event.custom["view"] ?? "",
-            event.custom["section"] ?? "",
-            event.custom["condition"] ?? "",
-            event.custom["voiceover"] ?? "",
+            c["x_mm"] ?? "",
+            c["y_mm"] ?? "",
+            c["speaking"] ?? "",
+            c["voiceover"] ?? "",
         ])
         return true
     }
@@ -116,6 +127,34 @@ final class StudyTouchLogger: TouchLogger {
     func flush() {
         writer?.flush()
     }
+}
+
+// MARK: - One map visit, summed up
+
+/// Everything the visits file records about one visit to one map.
+struct VisitSummary {
+    var phase: StudyPhase
+    var mapID: String
+    var mapName: String
+    var visit: Int
+    var opened: Date
+    var firstTouch: Date?
+    var ended: Date
+    var endedBy: String
+    var announcementPlays = 0
+    var announcementRepeats = 0
+    var detailActivations = 0
+    var itemPlays: [InfoCategory: Int] = [:]
+    /// Information items in use when the map opened, or nil on an overview.
+    var settingsAtOpen: InfoSettings?
+    var settingsAtEnd: InfoSettings?
+    var settingsChanges = 0
+    var touches = 0
+    var voiceOver: Bool
+
+    var itemsPlayed: Int { itemPlays.values.reduce(0, +) }
+    /// Plays of an item beyond its first in this visit.
+    var itemReplays: Int { itemPlays.values.reduce(0) { $0 + max($1 - 1, 0) } }
 }
 
 // MARK: - Study log
@@ -126,36 +165,46 @@ final class StudyLog {
 
     enum Category: String {
         case session = "Session"
+        case map = "Map"
+        case description = "Description"
         case setting = "Setting"
-        case screen = "Screen"
-        case section = "Section"
         case gesture = "Gesture"
         case speech = "Speech"
-        case timer = "Timer"
         case voiceOver = "VoiceOver"
         case app = "App"
         case error = "Error"
     }
 
-    /// Which map the participant is on, for the View column.
-    enum View: String {
-        case fullRoute = "Full route"
-        case section = "Section"
-        case intersection = "Intersection"
+    static let eventHeader = ["Time Stamp", "Session Time", "Map Time", "Participant", "Phase", "Map", "Visit",
+                              "Category", "Event", "Detail", "VoiceOver"]
+
+    static var visitHeader: [String] {
+        var header = ["Participant", "Phase", "Map", "Map Name", "Visit", "Opened", "First Touch", "Ended",
+                      "Ended By", "Seconds From Opening", "Seconds From First Touch", "Announcement Plays",
+                      "Announcement Repeats", "Detail Activations", "Items Played", "Item Replays"]
+        header += InfoCategory.allCases.map { "\($0.title) Plays" }
+        header += InfoCategory.allCases.map { "\($0.title) Setting" }
+        header += ["Settings Changes", "Settings At End", "Touches", "VoiceOver"]
+        return header
     }
 
-    static let eventHeader = ["Time Stamp", "Trial Time", "Category", "Event", "Detail",
-                              "Stage", "View", "Section", "Condition"]
+    private struct MapContext {
+        let phase: String
+        let map: String
+        let visit: Int
+        let opened: Date
+    }
 
     private let touchLogger = StudyTouchLogger()
     private var eventWriter: CSVWriter?
+    private var visitWriter: CSVWriter?
     private var appLog: CSVWriter?
     private var sessionStart: Date?
-    private(set) var activeSessionID: UUID?
-    private var stage = ""
-    private var view = ""
-    private var section = ""
-    private var condition = ""
+    private(set) var participant = ""
+    private(set) var fileStem = ""
+    private var context: MapContext?
+    /// Phase written while no map is open, for changes made between maps.
+    var phaseBetweenMaps: () -> String = { "" }
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "MultiNavStudy2", category: "study")
 
     nonisolated static let appLogName = "MultiNav_app_log.csv"
@@ -170,44 +219,42 @@ final class StudyLog {
     }
 
     var isSessionActive: Bool { sessionStart != nil }
+    var isMapOpen: Bool { context != nil }
 
     // MARK: Sessions
 
-    /// Log file name without the ending, e.g. Route1_PreJourney_20261016_153012.
-    static func fileStem(route: Int, stage: StudyStage, practice: Bool, date: Date) -> String {
-        "Route\(route)_\(stage.fileToken)" + (practice ? "_Practice" : "") + "_\(fileStamp(date))"
+    /// Log file name without its ending, e.g. P07_20261028_142512, or
+    /// Session_20261028_142512 without a participant ID.
+    static func fileStem(participant: String, date: Date) -> String {
+        (participant.isEmpty ? "Session" : participant) + "_" + fileStamp(date)
     }
 
-    func startSession(config: SessionConfig) {
-        if activeSessionID == config.id, isSessionActive { return }
+    func startSession(participant id: String, stem: String, started: Date, resumed: Bool) {
+        if isSessionActive, stem == fileStem { return }
         endSession(reason: "New session started")
+        sessionStart = started
+        participant = id
+        fileStem = stem
+        context = nil
 
-        let now = Date()
-        sessionStart = now
-        activeSessionID = config.id
-        stage = config.stageDescription
-        view = ""
-        section = ""
-        condition = "Route \(config.route.number), \(config.stageDescription)"
-
-        let base = Self.fileStem(route: config.route.number, stage: config.stage, practice: config.practiceRun, date: now)
-        let touchURL = Self.documents.appendingPathComponent(base + "_touches.csv")
-        let eventURL = Self.documents.appendingPathComponent(base + "_events.csv")
-
+        let touchURL = Self.documents.appendingPathComponent(stem + "_touches.csv")
+        let eventURL = Self.documents.appendingPathComponent(stem + "_events.csv")
+        let visitURL = Self.documents.appendingPathComponent(stem + "_visits.csv")
         touchLogger.startSession(metadata: ["file": touchURL.path])
         do {
             eventWriter = try CSVWriter(url: eventURL, header: Self.eventHeader)
+            visitWriter = try CSVWriter(url: visitURL, header: Self.visitHeader)
         } catch {
-            self.error("Could not create event log \(eventURL.lastPathComponent): \(error.localizedDescription)")
+            self.error("Could not create the logs for \(stem): \(error.localizedDescription)")
         }
-
-        event(.session, "Session started", detail: "Route \(config.route.number): \(config.route.title)")
-        for (name, value) in config.logEntries {
-            event(.setting, name, detail: value)
+        if resumed {
+            event(.session, "Session resumed", detail: "The app was reopened during the session")
+        } else {
+            event(.session, "Session started", detail: id.isEmpty ? "No participant ID" : "Participant \(id)")
         }
         event(.session, "Device", detail: "\(UIDevice.current.model), \(AppInfo.versionDescription)")
         event(.voiceOver, UIAccessibility.isVoiceOverRunning ? "VoiceOver on" : "VoiceOver off")
-        appEvent("Session started", detail: base)
+        appEvent(resumed ? "Session resumed" : "Session started", detail: stem)
     }
 
     func endSession(reason: String) {
@@ -217,24 +264,65 @@ final class StudyLog {
         touchLogger.endSession()
         eventWriter?.close()
         eventWriter = nil
+        visitWriter?.close()
+        visitWriter = nil
         sessionStart = nil
-        activeSessionID = nil
+        context = nil
+        participant = ""
+        fileStem = ""
     }
 
-    /// Records the map now on screen. `section` is the section number in
-    /// section by section mode (kept while an intersection close-up is open).
-    func setView(_ newView: View, section newSection: Int?, condition text: String) {
-        view = newView.rawValue
-        section = newSection.map(String.init) ?? ""
-        condition = text
-        event(.screen, "Opened", detail: text)
+    // MARK: Maps
+
+    /// Records a map opening. Every event and touch until `endMap` belongs to it.
+    func beginMap(_ map: StudyMap, visit: Int, opened: Date, settings: InfoSettings?) {
+        context = MapContext(phase: map.phase.title, map: map.logID, visit: visit, opened: opened)
+        event(.map, "Map opened", detail: "\(map.title), \(map.subtitle)")
+        if let settings {
+            event(.setting, "Information items", detail: settings.summary)
+        }
+    }
+
+    /// Writes the visit's row to the visits file and closes the map's context.
+    func endMap(_ summary: VisitSummary) {
+        event(.map, "Map closed", detail: summary.endedBy)
+        context = nil
+        guard let visitWriter else { return }
+        func seconds(_ from: Date?) -> String {
+            guard let from else { return "" }
+            return String(format: "%.1f", summary.ended.timeIntervalSince(from))
+        }
+        var row = [participant, summary.phase.title, summary.mapID, summary.mapName, String(summary.visit),
+                   Self.timestamp(summary.opened), summary.firstTouch.map(Self.timestamp) ?? "",
+                   Self.timestamp(summary.ended), summary.endedBy, seconds(summary.opened),
+                   seconds(summary.firstTouch), String(summary.announcementPlays),
+                   String(summary.announcementRepeats), String(summary.detailActivations),
+                   String(summary.itemsPlayed), String(summary.itemReplays)]
+        row += InfoCategory.allCases.map { String(summary.itemPlays[$0] ?? 0) }
+        row += summary.settingsAtOpen?.columns ?? InfoCategory.allCases.map { _ in "" }
+        row += [String(summary.settingsChanges), summary.settingsAtEnd?.summary ?? "", String(summary.touches),
+                summary.voiceOver ? "On" : "Off"]
+        visitWriter.write(row)
+        visitWriter.flush()
+    }
+
+    /// A change to the information items, from the first screen or from the
+    /// map's Information sheet.
+    func infoChanged(category: InfoCategory, on: Bool, settings: InfoSettings) {
+        event(.setting, "\(category.title) \(on ? "on" : "off")", detail: "Now: \(settings.summary)")
+        NotificationCenter.default.post(name: .studyInfoChanged, object: nil)
     }
 
     // MARK: Writing
 
-    func touch(_ type: StudyTouchType, element: String, screen: CGPoint, mm: CGPoint) {
+    func touch(_ type: StudyTouchType, element: String, screen: CGPoint, mm: CGPoint, speaking: String) {
         guard let start = sessionStart else { return }
         let now = Date()
+        var custom = contextFields(now)
+        custom["x_mm"] = String(format: "%.2f", mm.x)
+        custom["y_mm"] = String(format: "%.2f", mm.y)
+        custom["speaking"] = speaking
+        custom["voiceover"] = UIAccessibility.isVoiceOverRunning ? "On" : "Off"
         touchLogger.logEvent(TouchEvent(
             timestamp: now,
             sessionElapsed: now.timeIntervalSince(start),
@@ -242,22 +330,25 @@ final class StudyLog {
             elementName: element,
             elementType: nil,
             touchPoint: screen,
-            custom: [
-                "x_mm": String(format: "%.2f", mm.x),
-                "y_mm": String(format: "%.2f", mm.y),
-                "stage": stage,
-                "view": view,
-                "section": section,
-                "condition": condition,
-                "voiceover": UIAccessibility.isVoiceOverRunning ? "On" : "Off",
-            ]))
+            custom: custom))
     }
 
     func event(_ category: Category, _ name: String, detail: String = "") {
         guard let start = sessionStart, let eventWriter else { return }
         let now = Date()
-        eventWriter.write([Self.timestamp(now), Self.trialTime(now.timeIntervalSince(start)),
-                           category.rawValue, name, detail, stage, view, section, condition])
+        let c = contextFields(now)
+        eventWriter.write([Self.timestamp(now), Self.clock(now.timeIntervalSince(start)), c["map_time"] ?? "",
+                           participant, c["phase"] ?? "", c["map"] ?? "", c["visit"] ?? "",
+                           category.rawValue, name, detail,
+                           UIAccessibility.isVoiceOverRunning ? "On" : "Off"])
+    }
+
+    private func contextFields(_ now: Date) -> [String: String] {
+        guard let context else {
+            return ["participant": participant, "phase": phaseBetweenMaps(), "map": "", "visit": "", "map_time": ""]
+        }
+        return ["participant": participant, "phase": context.phase, "map": context.map,
+                "visit": String(context.visit), "map_time": Self.clock(now.timeIntervalSince(context.opened))]
     }
 
     /// App-wide events, kept across sessions.
@@ -267,7 +358,7 @@ final class StudyLog {
     }
 
     func error(_ message: String) {
-        appLog?.write([Self.timestamp(Date()), Category.error.rawValue, message, condition])
+        appLog?.write([Self.timestamp(Date()), Category.error.rawValue, message, context?.map ?? ""])
         appLog?.flush()
         event(.error, message)
         logger.error("\(message, privacy: .public)")
@@ -276,6 +367,7 @@ final class StudyLog {
     func flush() {
         touchLogger.flush()
         eventWriter?.flush()
+        visitWriter?.flush()
         appLog?.flush()
     }
 
@@ -303,9 +395,18 @@ final class StudyLog {
         fileFormatter.string(from: date)
     }
 
-    /// Minutes, seconds and tenths since the session began, e.g. 02:07.4.
-    static func trialTime(_ seconds: TimeInterval) -> String {
+    /// Minutes, seconds and tenths, e.g. 02:07.4 (hours are added past an hour).
+    static func clock(_ seconds: TimeInterval) -> String {
         let tenths = Int(max(seconds, 0) * 10)
-        return String(format: "%02d:%02d.%d", tenths / 600, (tenths / 10) % 60, tenths % 10)
+        let minutes = tenths / 600
+        if minutes >= 60 {
+            return String(format: "%d:%02d:%02d.%d", minutes / 60, minutes % 60, (tenths / 10) % 60, tenths % 10)
+        }
+        return String(format: "%02d:%02d.%d", minutes, (tenths / 10) % 60, tenths % 10)
     }
+}
+
+extension Notification.Name {
+    /// Posted after the researcher switches an information item on or off.
+    static let studyInfoChanged = Notification.Name("studyInfoChanged")
 }

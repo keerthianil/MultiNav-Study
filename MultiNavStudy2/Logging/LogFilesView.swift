@@ -10,9 +10,8 @@ struct LogFile: Identifiable, Hashable {
     var id: URL { url }
     var name: String { url.lastPathComponent }
 
-    /// "Route 3, pre-journey learning, touches" from
-    /// Route3_PreJourney_20261016_153012_touches.csv. Files from earlier
-    /// builds, without a stage, read "Route 3, touches".
+    /// "P07, visits" from P07_20261028_142512_visits.csv, or "No participant
+    /// ID, events" for a session started without one.
     var title: String {
         if name == StudyLog.appLogName { return "App log" }
         return Self.title(forStem: url.deletingPathExtension().lastPathComponent) ?? name
@@ -20,18 +19,9 @@ struct LogFile: Identifiable, Hashable {
 
     nonisolated static func title(forStem stem: String) -> String? {
         let parts = stem.split(separator: "_").map(String.init)
-        guard parts.count >= 4, parts[0].hasPrefix("Route"), let kind = parts.last else { return nil }
-        var words = ["Route \(parts[0].dropFirst("Route".count))"]
-        for token in parts.dropFirst().dropLast(3) {
-            switch token {
-            case "PreJourney": words.append("pre-journey learning")
-            case "OnRoute": words.append("on route")
-            case "Practice": words.append("practice")
-            default: words.append(token)
-            }
-        }
-        words.append(kind)
-        return words.joined(separator: ", ")
+        guard parts.count == 4, let kind = parts.last, ["visits", "events", "touches"].contains(kind) else { return nil }
+        let who = parts[0] == "Session" ? "No participant ID" : parts[0]
+        return "\(who), \(kind)"
     }
 }
 
@@ -43,7 +33,7 @@ struct LogFilesView: View {
     var body: some View {
         List {
             if files.isEmpty {
-                Text("No log files yet. Start a session to create them.")
+                Text("No log files yet. Opening a map starts a session and creates them.")
                     .foregroundStyle(.secondary)
             } else {
                 Section {

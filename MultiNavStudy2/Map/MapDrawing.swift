@@ -1,5 +1,5 @@
 // MapDrawing.swift
-// Core Graphics helpers shared by both map levels.
+// Core Graphics helpers shared by both kinds of map.
 
 import UIKit
 
@@ -60,6 +60,49 @@ enum MapDrawing {
         context.setLineCap(.round)
     }
 
+    /// An unmarked crossing: two thin dashed lines along its edges, where a
+    /// marked one has zebra bars.
+    static func unmarkedCrossing(from a: CGPoint, to b: CGPoint, offset: CGFloat, lineWidth: CGFloat,
+                                 dash: CGFloat, in context: CGContext) {
+        let length = hypot(b.x - a.x, b.y - a.y)
+        guard length > 1 else { return }
+        let nx = -(b.y - a.y) / length
+        let ny = (b.x - a.x) / length
+        context.saveGState()
+        context.setStrokeColor(MapStyle.crosswalkWhite.cgColor)
+        context.setLineWidth(lineWidth)
+        context.setLineCap(.butt)
+        context.setLineDash(phase: 0, lengths: [dash, dash * 0.75])
+        for side: CGFloat in [-1, 1] {
+            context.beginPath()
+            context.move(to: CGPoint(x: a.x + nx * offset * side, y: a.y + ny * offset * side))
+            context.addLine(to: CGPoint(x: b.x + nx * offset * side, y: b.y + ny * offset * side))
+            context.strokePath()
+        }
+        context.restoreGState()
+    }
+
+    /// A label printed on the map, centred on `center`, black with a white
+    /// halo so it reads over any colour.
+    static func label(_ text: String, at center: CGPoint, size: CGFloat, angle: CGFloat, in context: CGContext) {
+        let font = UIFont.systemFont(ofSize: size, weight: .bold)
+        let halo = NSAttributedString(string: text, attributes: [
+            .font: font, .foregroundColor: UIColor.white,
+            .strokeColor: UIColor.white, .strokeWidth: -16,
+        ])
+        let ink = NSAttributedString(string: text, attributes: [.font: font, .foregroundColor: MapStyle.labelBlack])
+        let textSize = ink.size()
+        context.saveGState()
+        context.translateBy(x: center.x, y: center.y)
+        context.rotate(by: angle * .pi / 180)
+        let origin = CGPoint(x: -textSize.width / 2, y: -textSize.height / 2)
+        UIGraphicsPushContext(context)
+        halo.draw(at: origin)
+        ink.draw(at: origin)
+        UIGraphicsPopContext()
+        context.restoreGState()
+    }
+
     /// A dark screen for when the researcher hides the map. Touch still works.
     static func drawHiddenMap(in context: CGContext) {
         let bounds = context.boundingBoxOfClipPath
@@ -71,20 +114,5 @@ enum MapDrawing {
         ])
         let size = text.size()
         text.draw(at: CGPoint(x: bounds.midX - size.width / 2, y: bounds.midY - size.height / 2))
-    }
-
-    /// White label inside a landmark box, shrunk to fit.
-    static func drawTag(_ tag: String, in rect: CGRect) {
-        guard !tag.isEmpty else { return }
-        var size = rect.height * 0.7
-        var attributes: [NSAttributedString.Key: Any] = [:]
-        var text = NSAttributedString(string: tag)
-        repeat {
-            attributes = [.font: UIFont.systemFont(ofSize: size, weight: .bold), .foregroundColor: UIColor.white]
-            text = NSAttributedString(string: tag, attributes: attributes)
-            size -= 0.5
-        } while text.size().width > rect.width && size > 4
-        let textSize = text.size()
-        text.draw(at: CGPoint(x: rect.midX - textSize.width / 2, y: rect.midY - textSize.height / 2))
     }
 }

@@ -10,11 +10,11 @@ import TactileMapCore
 
 extension TactileElementType {
     static let sidewalk = TactileElementType(rawValue: "sidewalk")
-    static let island = TactileElementType(rawValue: "island")
-    static let roundabout = TactileElementType(rawValue: "roundabout")
-    static let centralIsland = TactileElementType(rawValue: "central_island")
+    static let median = TactileElementType(rawValue: "median")
     static let junctionCenter = TactileElementType(rawValue: "center")
-    static let info = TactileElementType(rawValue: "info")
+    static let turn = TactileElementType(rawValue: "turn")
+    static let crosswalkEnd = TactileElementType(rawValue: "crosswalk_end")
+    static let mapLabel = TactileElementType(rawValue: "label")
 }
 
 // MARK: - Shared pieces
@@ -24,129 +24,76 @@ struct MapLine {
     let name: String
     let points: [CGPoint]
     let width: CGFloat
-    /// The name without compass words, for when sides are switched off.
-    var simpleName: String?
 }
 
 struct RouteEndpoint {
-    enum Kind { case departure, destination }
+    enum Kind { case start, end }
     let kind: Kind
     let position: CGPoint
     let announcement: String
 }
 
-// MARK: - Route maps (full route and sections)
-
-struct OverviewIntersection {
-    enum Kind { case junction, roundabout }
-    /// Where an intersection sits on a section map.
-    enum Role { case route, sectionStart, next, beyond }
-    let id: String
-    let name: String
-    let announcement: String
-    let kind: Kind
-    let legs: Int
-    let detailFile: String
+/// Text printed on a map for anyone watching; it is never spoken.
+struct MapLabel {
+    let text: String
     let position: CGPoint
-    /// "Bedford Street, and Deering Avenue", for announcements without the type.
-    var namesText = ""
-    var role: Role = .route
+    let size: CGFloat
+    let angle: CGFloat
 }
 
-struct OverviewLandmark {
+// MARK: - Route overviews
+
+struct OverviewNode {
     let id: String
+    let number: Int
     let name: String
-    let tag: String
-    let announcement: String
-    let anchor: CGPoint
-    /// Unit vector from the road to the box, in screen axes.
-    let offset: CGVector
-
-    var boxCenter: CGPoint {
-        let style = MapStyle.Overview.self
-        let extent = abs(offset.dx) * style.landmarkWidth / 2 + abs(offset.dy) * style.landmarkHeight / 2
-        let distance = style.roadWidth / 2 + style.landmarkGap + extent
-        return CGPoint(x: anchor.x + offset.dx * distance, y: anchor.y + offset.dy * distance)
-    }
-
-    var boxRect: CGRect {
-        let c = boxCenter
-        let style = MapStyle.Overview.self
-        return CGRect(x: c.x - style.landmarkWidth / 2, y: c.y - style.landmarkHeight / 2,
-                      width: style.landmarkWidth, height: style.landmarkHeight)
-    }
+    /// Spoken when the finger reaches the node, e.g. "Intersection 1: 4-way
+    /// intersection of Fore Street and Silver Street."
+    let cue: String
+    let position: CGPoint
 }
 
 struct OverviewMap {
     let title: String
     let size: CGSize
     let streets: [MapLine]
-    let intersections: [OverviewIntersection]
-    let landmarks: [OverviewLandmark]
+    let nodes: [OverviewNode]
     let route: [CGPoint]
-    let departureName: String
-    let destinationName: String
-    let waypointIDs: [String]
     let endpoints: [RouteEndpoint]
-    /// On a section map: which section, out of how many.
-    var sectionIndex: Int?
-    var sectionCount: Int?
-
-    /// Distance along the route at which each waypoint is reached.
-    var legBoundaries: [CGFloat] {
-        waypointIDs.compactMap { id in intersections.first { $0.id == id } }
-            .map { MapGeometry.arcLength(of: $0.position, along: route) }
-    }
+    let labels: [MapLabel]
 }
 
-// MARK: - Intersection close-ups
+// MARK: - Intersection maps
 
 struct Crosswalk {
     enum Ends { case both, start, end }
+    enum Marking { case zebra, unmarked }
     let id: String
     let name: String
-    /// The name without signal, marking or one-way details.
-    let simpleName: String
     let start: CGPoint
     let end: CGPoint
     let ends: Ends
-    let assumed: Bool
-    /// The part of the crossing that lies over the roadway, where the stripes are painted.
+    let marking: Marking
+    /// The part of the crossing that lies over the roadway, where it is painted.
     var paintStart: CGPoint
     var paintEnd: CGPoint
 }
 
-struct CircleArea {
-    let name: String
-    let radius: CGFloat
-}
-
-struct RingRoad {
-    let name: String
-    let radius: CGFloat
-    let width: CGFloat
-}
-
-struct DetailMap {
+struct IntersectionMap {
     let title: String
-    let spokenTitle: String
-    let intro: String
-    /// "4-way intersection" and "Traffic signals.", the parts of the intro
-    /// that can be switched off.
-    let typeText: String
-    let controlText: String
-    let isRoundabout: Bool
     let size: CGSize
     let roads: [MapLine]
-    let islands: [MapLine]
+    let medians: [MapLine]
     let sidewalks: [MapLine]
     let crosswalks: [Crosswalk]
-    let ring: RingRoad?
-    let centralIsland: CircleArea?
-    let center: CircleArea?
+    let center: CGPoint?
+    let centerRadius: CGFloat
+    /// False where a crosswalk runs over the centre, so its ring is not drawn there.
+    let showsCenterMark: Bool
     let route: [CGPoint]
     let endpoints: [RouteEndpoint]
-    /// Crosswalk ends drawn as pink dots (shared corners appear once).
+    /// Crosswalk ends drawn as pink dots, placed by the map generator so no
+    /// two dots overlap.
     let crosswalkEnds: [CGPoint]
     /// Bends on the walking path drawn as orange turn dots.
     let turns: [CGPoint]
@@ -168,16 +115,11 @@ enum MapLoader {
     static func overview(named file: String, bundle: Bundle = .main) throws -> OverviewMap {
         let document = try TactileMapDocument.load(from: file, bundle: bundle)
         var streets: [MapLine] = []
-        var intersections: [OverviewIntersection] = []
-        var landmarks: [OverviewLandmark] = []
+        var nodes: [OverviewNode] = []
         var route: [CGPoint] = []
-        var departure = ""
-        var destination = ""
-        var waypoints: [String] = []
-        var startsAtDeparture = true
-        var endsAtDestination = true
-        var sectionIndex: Int?
-        var sectionCount: Int?
+        var startText = ""
+        var endText = ""
+        var labels: [MapLabel] = []
 
         for element in document.features {
             let custom = element.properties.custom
@@ -186,104 +128,61 @@ enum MapLoader {
                 streets.append(MapLine(id: element.id, name: element.properties.name,
                                        points: element.points, width: MapStyle.Overview.roadWidth))
             case .intersection:
-                let role: OverviewIntersection.Role
-                switch custom["role"] {
-                case "from": role = .sectionStart
-                case "to": role = .next
-                case "beyond": role = .beyond
-                default: role = .route
-                }
-                intersections.append(OverviewIntersection(
+                nodes.append(OverviewNode(
                     id: element.id,
+                    number: Int(custom["number"] ?? "") ?? 0,
                     name: element.properties.name,
-                    announcement: custom["announcement"] ?? element.properties.name,
-                    kind: custom["kind"] == "roundabout" ? .roundabout : .junction,
-                    legs: Int(custom["legs"] ?? "") ?? 0,
-                    detailFile: custom["detail"] ?? "",
-                    position: element.points.first ?? .zero,
-                    namesText: custom["names_text"] ?? "",
-                    role: role))
-            case .landmark:
-                landmarks.append(OverviewLandmark(
-                    id: element.id,
-                    name: element.properties.name,
-                    tag: custom["tag"] ?? "",
-                    announcement: custom["announcement"] ?? element.properties.name,
-                    anchor: element.points.first ?? .zero,
-                    offset: CGVector(dx: CGFloat(Double(custom["offset_x"] ?? "") ?? 0),
-                                     dy: CGFloat(Double(custom["offset_y"] ?? "") ?? 0))))
+                    cue: custom["cue"] ?? element.properties.name,
+                    position: element.points.first ?? .zero))
             case .route:
                 route = element.points
-                departure = custom["departure"] ?? ""
-                destination = custom["destination"] ?? ""
-                waypoints = (custom["waypoints"] ?? "").split(separator: ",").map(String.init)
-                // Section maps start and end part-way along the walk.
-                startsAtDeparture = (custom["start_kind"] ?? "departure") == "departure"
-                endsAtDestination = (custom["end_kind"] ?? "destination") == "destination"
-                sectionIndex = custom["section"].flatMap { Int($0) }
-                sectionCount = custom["sections"].flatMap { Int($0) }
+                startText = custom["start_text"] ?? "Start of route"
+                endText = custom["end_text"] ?? "End of route"
+            case .mapLabel:
+                labels.append(label(element))
             default:
                 break
             }
         }
         guard route.count > 1 else { throw MapLoadError.missing(file, "route") }
-
-        var endpoints: [RouteEndpoint] = []
-        if startsAtDeparture {
-            endpoints.append(RouteEndpoint(kind: .departure, position: route[0],
-                                           announcement: "Your location, \(departure)"))
-        }
-        if endsAtDestination {
-            endpoints.append(RouteEndpoint(kind: .destination, position: route[route.count - 1],
-                                           announcement: "Destination, \(destination)"))
-        }
         return OverviewMap(
             title: document.metadata?.name ?? file,
             size: CGSize(width: document.bounds.width, height: document.bounds.height),
-            streets: streets, intersections: intersections, landmarks: landmarks,
-            route: route, departureName: departure, destinationName: destination,
-            waypointIDs: waypoints, endpoints: endpoints,
-            sectionIndex: sectionIndex, sectionCount: sectionCount)
+            streets: streets, nodes: nodes, route: route,
+            endpoints: [
+                RouteEndpoint(kind: .start, position: route[0], announcement: startText),
+                RouteEndpoint(kind: .end, position: route[route.count - 1], announcement: endText),
+            ],
+            labels: labels)
     }
 
-    static func detail(named file: String, bundle: Bundle = .main) throws -> DetailMap {
+    static func intersection(named file: String, bundle: Bundle = .main) throws -> IntersectionMap {
         let document = try TactileMapDocument.load(from: file, bundle: bundle)
-        var title = document.metadata?.name ?? file
-        var spokenTitle = title
-        var intro = title
-        var typeText = ""
-        var controlText = ""
-        var isRoundabout = false
         var roads: [MapLine] = []
-        var islands: [MapLine] = []
+        var medians: [MapLine] = []
         var sidewalks: [MapLine] = []
         var crosswalks: [Crosswalk] = []
-        var ring: RingRoad?
-        var centralIsland: CircleArea?
-        var center: CircleArea?
+        var center: CGPoint?
+        var centerRadius: CGFloat = 0
+        var showsCenterMark = true
         var route: [CGPoint] = []
-        var departure = ""
-        var destination = ""
+        var startText = ""
+        var endText = ""
+        var crosswalkEnds: [CGPoint] = []
+        var turns: [CGPoint] = []
 
         for element in document.features {
             let custom = element.properties.custom
             let name = element.properties.name
             let width = CGFloat(Double(custom["width_mm"] ?? "") ?? 0)
             switch element.elementType {
-            case .info:
-                intro = name
-                title = custom["title"] ?? title
-                spokenTitle = custom["spoken_title"] ?? title
-                typeText = custom["type_text"] ?? ""
-                controlText = custom["control_text"] ?? ""
-                isRoundabout = custom["kind"] == "roundabout"
             case .corridor:
                 roads.append(MapLine(id: element.id, name: name, points: element.points, width: width))
-            case .island:
-                islands.append(MapLine(id: element.id, name: name, points: element.points, width: width))
+            case .median:
+                medians.append(MapLine(id: element.id, name: name, points: element.points, width: width))
             case .sidewalk:
                 sidewalks.append(MapLine(id: element.id, name: name, points: element.points,
-                                         width: MapStyle.Detail.sidewalkWidth, simpleName: custom["simple_name"]))
+                                         width: MapStyle.Intersection.sidewalkWidth))
             case .crosswalk:
                 let points = element.points
                 guard points.count >= 2 else { continue }
@@ -293,30 +192,31 @@ enum MapLoader {
                 case "end": ends = .end
                 default: ends = .both
                 }
-                crosswalks.append(Crosswalk(id: element.id, name: name, simpleName: custom["simple_name"] ?? name,
-                                            start: points[0],
+                crosswalks.append(Crosswalk(id: element.id, name: name, start: points[0],
                                             end: points[points.count - 1], ends: ends,
-                                            assumed: custom["assumed"] == "yes",
+                                            marking: custom["marking"] == "unmarked" ? .unmarked : .zebra,
                                             paintStart: points[0], paintEnd: points[points.count - 1]))
-            case .roundabout:
-                ring = RingRoad(name: name, radius: CGFloat(Double(custom["radius_mm"] ?? "") ?? 0), width: width)
-            case .centralIsland:
-                centralIsland = CircleArea(name: name, radius: CGFloat(Double(custom["radius_mm"] ?? "") ?? 0))
             case .junctionCenter:
-                center = CircleArea(name: name, radius: CGFloat(Double(custom["radius_mm"] ?? "") ?? 0))
+                center = element.points.first
+                centerRadius = CGFloat(Double(custom["radius_mm"] ?? "") ?? 0)
+                showsCenterMark = custom["mark"] != "no"
             case .route:
                 route = element.points
-                departure = custom["departure"] ?? "Your location"
-                destination = custom["destination"] ?? "End of route"
+                startText = custom["start_text"] ?? "You are here"
+                endText = custom["end_text"] ?? "End of intersection route"
+            case .turn:
+                if let p = element.points.first { turns.append(p) }
+            case .crosswalkEnd:
+                if let p = element.points.first { crosswalkEnds.append(p) }
             default:
                 break
             }
         }
         guard route.count > 1 else { throw MapLoadError.missing(file, "walking route") }
 
+        // Stripes and markings are painted only over the roadway.
         func isOnRoadway(_ p: CGPoint) -> Bool {
-            if let ring, abs(hypot(p.x, p.y) - ring.radius) <= ring.width / 2 { return true }
-            return roads.contains { MapGeometry.polylineDistance(p, $0.points) <= $0.width / 2 }
+            roads.contains { MapGeometry.polylineDistance(p, $0.points) <= $0.width / 2 }
         }
         for i in crosswalks.indices {
             let a = crosswalks[i].start
@@ -331,44 +231,26 @@ enum MapLoader {
             }
         }
 
-        var crosswalkEnds: [CGPoint] = []
-        for crosswalk in crosswalks {
-            var points: [CGPoint] = []
-            if crosswalk.ends != .end { points.append(crosswalk.start) }
-            if crosswalk.ends != .start { points.append(crosswalk.end) }
-            for point in points where !crosswalkEnds.contains(where: { MapGeometry.distance($0, point) < 2.0 }) {
-                crosswalkEnds.append(point)
-            }
-        }
-
-        return DetailMap(
-            title: title, spokenTitle: spokenTitle, intro: intro, typeText: typeText, controlText: controlText,
-            isRoundabout: isRoundabout,
+        return IntersectionMap(
+            title: document.metadata?.name ?? file,
             size: CGSize(width: document.bounds.width, height: document.bounds.height),
-            roads: roads, islands: islands, sidewalks: sidewalks,
-            crosswalks: crosswalks, ring: ring, centralIsland: centralIsland, center: center,
+            roads: roads, medians: medians, sidewalks: sidewalks, crosswalks: crosswalks,
+            center: center, centerRadius: centerRadius, showsCenterMark: showsCenterMark,
             route: route,
             endpoints: [
-                RouteEndpoint(kind: .departure, position: route[0], announcement: departure),
-                RouteEndpoint(kind: .destination, position: route[route.count - 1], announcement: destination),
+                RouteEndpoint(kind: .start, position: route[0], announcement: startText),
+                RouteEndpoint(kind: .end, position: route[route.count - 1], announcement: endText),
             ],
             crosswalkEnds: crosswalkEnds,
-            turns: routeTurns(route))
+            turns: turns)
     }
 
-    /// Bends on the walking path sharper than the turn threshold, at least 4 mm apart.
-    static func routeTurns(_ route: [CGPoint]) -> [CGPoint] {
-        guard route.count >= 3 else { return [] }
-        var turns: [CGPoint] = []
-        for i in 1..<(route.count - 1) {
-            let angle = abs(MapGeometry.turnAngle(route[i - 1], route[i], route[i + 1]))
-            guard angle > MapStyle.Detail.turnThresholdDegrees else { continue }
-            if turns.contains(where: { MapGeometry.distance($0, route[i]) < MapStyle.Detail.turnMergeDistance }) {
-                continue
-            }
-            turns.append(route[i])
-        }
-        return turns
+    private static func label(_ element: MapElement) -> MapLabel {
+        let custom = element.properties.custom
+        return MapLabel(text: element.properties.name,
+                        position: element.points.first ?? .zero,
+                        size: CGFloat(Double(custom["size_mm"] ?? "") ?? 3),
+                        angle: CGFloat(Double(custom["angle"] ?? "") ?? 0))
     }
 }
 

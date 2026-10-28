@@ -1,6 +1,7 @@
 // MultiNavStudy2App.swift
 // App entry. Starts the feedback engines early so the first touch on a map
-// is not delayed, and records app lifecycle changes in the study logs.
+// is not delayed, carries on a session the app was closed in, and records
+// app lifecycle changes in the study logs.
 
 import SwiftUI
 
@@ -10,21 +11,25 @@ struct MultiNavStudy2App: App {
 
     init() {
         StudyLog.shared.appEvent("App launched", detail: AppInfo.versionDescription)
+        StudyLog.shared.phaseBetweenMaps = { StudySession.shared.phaseBetweenMaps }
+        StudySession.shared.resumeAfterLaunch()
         FeedbackManager.shared.prepare()
     }
 
     var body: some Scene {
         WindowGroup {
-            SetupView()
+            StudyHomeView()
         }
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .active:
                 FeedbackManager.shared.handleForeground()
                 StudyLog.shared.appEvent("App active")
+                StudyLog.shared.event(.app, "App active")
             case .background:
                 FeedbackManager.shared.handleBackground()
                 StudyLog.shared.appEvent("App in background")
+                StudyLog.shared.event(.app, "App in background")
                 StudyLog.shared.flush()
             case .inactive:
                 FeedbackManager.shared.stopAll()

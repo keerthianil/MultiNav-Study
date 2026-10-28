@@ -6,9 +6,9 @@
 // one begins, so moving between elements never leaves a stray vibration or
 // sound running. Setting the mode that is already playing does nothing.
 //
-// A session can switch vibration, sounds or map speech off (configure).
-// Prompts about the session itself, such as section numbers and time
-// warnings, are marked essential and are spoken even with map speech off.
+// Speech is separate. A map name cuts off the name before it; the
+// intersection descriptions are spoken through `speakTracked`, which says
+// when each phrase ends so the next item can follow.
 
 import UIKit
 
@@ -18,14 +18,14 @@ final class FeedbackManager {
 
     enum Mode: Equatable {
         case none
-        /// Streets, roundabout roadway and junction centre: steady heavy buzz.
+        /// Streets: steady heavy buzz.
         case road
         /// Sidewalks: softer steady buzz.
         case sidewalk
         /// Overview intersections: slow pulse and a ding every 0.4 s.
         case intersection
-        /// Landmarks and route start or end: fast pulse.
-        case landmark
+        /// Route start or end: fast pulse.
+        case endpoint
         /// Route line: rhythmic pulse.
         case route
         /// Crosswalk: click every 0.17 s, with the road buzz when over a road.
@@ -36,20 +36,13 @@ final class FeedbackManager {
         case turn
         /// Crosswalk end dot: one ding, nothing else.
         case crosswalkEnd
-        /// Refuge and splitter islands: two soft taps, repeating.
-        case island
-    }
-
-    /// What a session lets through; everything is on outside a session.
-    struct Options: Equatable {
-        var vibration = true
-        var sounds = true
-        var speech = true
-        var voiceSpeed: VoiceSpeed = .normal
+        /// Centre of the intersection: its own two-note chime, and no vibration.
+        case center
+        /// Median: fast, sharp pulses.
+        case median
     }
 
     private(set) var mode: Mode = .none
-    private(set) var options = Options()
     private let haptics = HapticService()
     private let audio = AudioService()
     private let speech = SpeechService()
@@ -83,11 +76,9 @@ final class FeedbackManager {
         haptics.restart()
     }
 
-    /// Applies a session's choices. Called with the defaults when it ends.
-    func configure(_ newOptions: Options) {
-        stopAll()
-        options = newOptions
-        speech.rateMultiplier = newOptions.voiceSpeed.rateMultiplier
+    /// The speed of the system voice, used when VoiceOver is off.
+    func setVoiceSpeed(_ speed: VoiceSpeed) {
+        speech.rateMultiplier = speed.rateMultiplier
     }
 
     func set(_ newMode: Mode) {
@@ -98,32 +89,33 @@ final class FeedbackManager {
         case .none:
             break
         case .road:
-            vibrate(.road)
+            haptics.play(.road)
         case .sidewalk:
-            vibrate(.sidewalk)
+            haptics.play(.sidewalk)
         case .intersection:
-            vibrate(.intersection)
-            ding()
-            if options.sounds { dingTimer = repeating(0.4) { $0.audio.ding() } }
-        case .landmark:
-            vibrate(.landmark)
+            haptics.play(.intersection)
+            audio.ding()
+            dingTimer = repeating(0.4) { $0.audio.ding() }
+        case .endpoint:
+            haptics.play(.endpoint)
         case .route:
-            vibrate(.route)
+            haptics.play(.route)
         case .crosswalk(let overRoad):
-            if overRoad { vibrate(.road) }
+            if overRoad { haptics.play(.road) }
             startClicks()
         case .routeOverCrosswalk:
-            vibrate(.route)
+            haptics.play(.route)
             startClicks()
         case .turn:
             turnDing()
-            if options.sounds || options.vibration {
-                dingTimer = repeating(0.4) { $0.turnDing() }
-            }
+            dingTimer = repeating(0.4) { $0.turnDing() }
         case .crosswalkEnd:
-            ding()
-        case .island:
-            vibrate(.island)
+            audio.ding()
+        case .center:
+            audio.chime()
+            dingTimer = repeating(0.7) { $0.audio.chime() }
+        case .median:
+            haptics.play(.median)
         }
     }
 
@@ -141,11 +133,9 @@ final class FeedbackManager {
 
     /// Speaks at once, cutting off anything still being said. The same words
     /// asked for again within half a second (the two taps of a double tap)
-    /// are not repeated. Map speech can be switched off for a session;
-    /// essential prompts are spoken regardless. A queued phrase waits for
-    /// the current speech to finish.
-    func speak(_ text: String, essential: Bool = false, queued: Bool = false) {
-        guard !text.isEmpty, options.speech || essential else { return }
+    /// are not repeated. A queued phrase waits for the current speech.
+    func speak(_ text: String, queued: Bool = false) {
+        guard !text.isEmpty else { return }
         let now = CACurrentMediaTime()
         if text == lastSpoken.text, now - lastSpoken.time < 0.5 { return }
         lastSpoken = (text, now)
@@ -153,33 +143,35 @@ final class FeedbackManager {
         StudyLog.shared.event(.speech, text)
     }
 
-    /// Reports a new page, such as a new section, after a VoiceOver scroll
-    /// gesture. VoiceOver expects a page-scrolled notification then; without
-    /// VoiceOver it is ordinary speech.
-    func speakPageStatus(_ text: String) {
-        if UIAccessibility.isVoiceOverRunning {
-            lastSpoken = (text, CACurrentMediaTime())
-            UIAccessibility.post(notification: .pageScrolled, argument: text)
-            StudyLog.shared.event(.speech, text)
-        } else {
-            speak(text, essential: true)
+    /// Speaks a part of a description and reports when it ends: true when it
+    /// was heard to the end, false when something cut it off.
+    func speakTracked(_ text: String, queued: Bool = false, completion: @escaping (Bool) -> Void) {
+        lastSpoken = (text, CACurrentMediaTime())
+        speech.speak(text, queued: queued) { finished in
+            MainActor.assumeIsolated { completion(finished) }
         }
+        StudyLog.shared.event(.speech, text)
     }
 
     /// One sharp tap, for a single tap on the map.
     func pulse() {
-        if options.vibration { haptics.tap() }
+        haptics.tap()
     }
 
     /// One turn ding with its tap, for a single tap on a turn dot.
     func turnDing() {
-        ding()
-        if options.vibration { haptics.turnTap() }
+        audio.ding()
+        haptics.turnTap()
     }
 
-    /// Confirms a gesture such as going back or changing section.
-    func backTap() {
-        if options.vibration { haptics.turnTap() }
+    /// Confirms a gesture such as finishing or moving between items.
+    func confirm() {
+        haptics.turnTap()
+    }
+
+    /// A low tone when there is no item further that way.
+    func boundary() {
+        audio.boundary()
     }
 
     func handleBackground() {
@@ -201,17 +193,8 @@ final class FeedbackManager {
     }
 
     private func startClicks() {
-        guard options.sounds else { return }
         audio.click()
         clickTimer = repeating(0.17) { $0.audio.click() }
-    }
-
-    private func vibrate(_ pattern: HapticService.Pattern) {
-        if options.vibration { haptics.play(pattern) }
-    }
-
-    private func ding() {
-        if options.sounds { audio.ding() }
     }
 
     /// A repeating main-thread timer that keeps firing while a finger is moving.

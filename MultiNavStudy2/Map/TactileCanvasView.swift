@@ -1,15 +1,19 @@
 // TactileCanvasView.swift
-// The touch surface for both map levels.
+// The touch surface for every map.
 //
 // Touches are read directly (touchesBegan/Moved/Ended) whether or not
 // VoiceOver is on, so exploration behaves the same in both modes. Under
 // VoiceOver the view is a direct-touch element that stays silent on touch,
 // which hands every finger movement to the map instead of to VoiceOver.
 //
-// Back gestures: three-finger swipe right (with or without VoiceOver) and
-// the VoiceOver escape gesture (two-finger scrub). Section gestures:
-// three-finger swipe up for the next section, down for the previous one.
-// Each three-finger gesture is recognised once, however it arrives.
+// Gestures, each recognised once however it arrives:
+//   double tap                      the information items: play or stop
+//   two-finger double tap           the announcement: play again or stop
+//                                   (VoiceOver: the magic tap)
+//   three-finger swipe up / down    next / previous information item
+//                                   (VoiceOver: three-finger scroll)
+//   three-finger swipe right        finished exploring
+//                                   (VoiceOver: also the escape gesture)
 
 import UIKit
 
@@ -19,6 +23,8 @@ protocol MapScene: AnyObject {
     var mapSize: CGSize { get }
     /// True when map (0, 0) is the centre of the drawing area.
     var isCentered: Bool { get }
+    /// White, or black while the map is hidden.
+    var fillColor: UIColor { get }
     func draw(in context: CGContext, transform: MapTransform)
 }
 
@@ -31,13 +37,13 @@ protocol TactileCanvasDelegate: AnyObject {
     func canvas(_ canvas: TactileCanvasView, touch phase: CanvasTouchPhase, mm: CGPoint, screen: CGPoint)
     func canvas(_ canvas: TactileCanvasView, singleTapAt mm: CGPoint, screen: CGPoint)
     func canvas(_ canvas: TactileCanvasView, doubleTapAt mm: CGPoint, screen: CGPoint)
-    func canvasRequestsBack(_ canvas: TactileCanvasView, gesture: String)
-    /// Next (forward) or previous section. Returns false when there is no
-    /// section that way, so VoiceOver can play its boundary sound.
+    func canvasTwoFingerDoubleTap(_ canvas: TactileCanvasView, gesture: String)
+    func canvasRequestsFinish(_ canvas: TactileCanvasView, gesture: String)
+    /// Next (forward) or previous information item. Returns false when there
+    /// is none that way, so VoiceOver can play its boundary sound.
     /// `voiceOverScroll` is true when VoiceOver sent the gesture as a scroll.
-    func canvasRequestsSection(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
-                               voiceOverScroll: Bool) -> Bool
-    func canvasMagicTap(_ canvas: TactileCanvasView)
+    func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
+                            voiceOverScroll: Bool) -> Bool
 }
 
 final class TactileCanvasView: UIView {
@@ -56,7 +62,7 @@ final class TactileCanvasView: UIView {
 
     private(set) var mapTransform = MapTransform()
 
-    // Touch tracking.
+    // One-finger tracking.
     private var activeTouch: UITouch?
     private var touchStart: CGPoint = .zero
     private var touchStartTime: TimeInterval = 0
@@ -64,6 +70,14 @@ final class TactileCanvasView: UIView {
     private var lastTapTime: TimeInterval = 0
     private var lastTapPoint: CGPoint = .zero
     private var pendingSingleTap: DispatchWorkItem?
+
+    // Multi-finger tracking, from the first finger down to the last one up.
+    private var mostFingers = 0
+    private var fingersStartTime: TimeInterval = 0
+    private var fingersStart: CGPoint = .zero
+    private var fingersMoved: CGFloat = 0
+    private var lastTwoFingerTap: TimeInterval = 0
+    private var lastTwoFingerDoubleTap: TimeInterval = 0
     private var threeFingerStart: CGPoint?
     private var lastThreeFingerAction: TimeInterval = 0
 
@@ -71,6 +85,8 @@ final class TactileCanvasView: UIView {
     private let tapMaxDuration: TimeInterval = 0.45
     private let doubleTapMaxInterval: TimeInterval = 0.45
     private let doubleTapMaxDistance: CGFloat = 48
+    private let twoFingerTapMaxDuration: TimeInterval = 0.4
+    private let twoFingerDoubleTapInterval: TimeInterval = 0.5
     private let threeFingerSwipeDistance: CGFloat = 60
 
     override init(frame: CGRect) {
@@ -114,16 +130,21 @@ final class TactileCanvasView: UIView {
 
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
-        context.setFillColor(MapStyle.background.cgColor)
+        context.setFillColor((scene?.fillColor ?? MapStyle.background).cgColor)
         context.fill(bounds)
+        // Roads run on past the map's edge; keep them out from under the top
+        // bar and the home indicator.
+        context.saveGState()
+        context.clip(to: bounds.inset(by: contentInsets))
         scene?.draw(in: context, transform: mapTransform)
+        context.restoreGState()
     }
 
     // MARK: Accessibility
 
-    func configureAccessibility(label: String, hint: String) {
+    func configureAccessibility(label: String) {
         accessibilityLabel = label
-        accessibilityHint = hint
+        accessibilityHint = nil
         applyAccessibilityTraits()
     }
 
@@ -145,14 +166,14 @@ final class TactileCanvasView: UIView {
     }
 
     override func accessibilityPerformEscape() -> Bool {
-        delegate?.canvasRequestsBack(self, gesture: "VoiceOver escape")
+        threeFingerAction(.finish, gesture: "VoiceOver escape")
         return true
     }
 
     override func accessibilityScroll(_ direction: UIAccessibilityScrollDirection) -> Bool {
         switch direction {
         case .right:
-            return threeFingerAction(.back, gesture: "VoiceOver three-finger swipe right")
+            return threeFingerAction(.finish, gesture: "VoiceOver three-finger swipe right")
         case .up:
             return threeFingerAction(.next, gesture: "VoiceOver three-finger swipe up", voiceOverScroll: true)
         case .down:
@@ -163,7 +184,7 @@ final class TactileCanvasView: UIView {
     }
 
     override func accessibilityPerformMagicTap() -> Bool {
-        delegate?.canvasMagicTap(self)
+        twoFingerDoubleTap(gesture: "VoiceOver magic tap")
         return true
     }
 
@@ -172,11 +193,11 @@ final class TactileCanvasView: UIView {
         switch gesture.direction {
         case .up: threeFingerAction(.next, gesture: "Three-finger swipe up")
         case .down: threeFingerAction(.previous, gesture: "Three-finger swipe down")
-        default: threeFingerAction(.back, gesture: "Three-finger swipe right")
+        default: threeFingerAction(.finish, gesture: "Three-finger swipe right")
         }
     }
 
-    private enum ThreeFingerAction { case back, next, previous }
+    private enum ThreeFingerAction { case finish, next, previous }
 
     /// Runs a three-finger gesture once. The swipe recogniser and the raw
     /// touch check can both see the same swipe; the second is ignored.
@@ -186,22 +207,45 @@ final class TactileCanvasView: UIView {
         guard now - lastThreeFingerAction > 0.5 else { return true }
         lastThreeFingerAction = now
         switch action {
-        case .back:
-            delegate?.canvasRequestsBack(self, gesture: gesture)
+        case .finish:
+            delegate?.canvasRequestsFinish(self, gesture: gesture)
             return true
         case .next:
-            return delegate?.canvasRequestsSection(self, forward: true, gesture: gesture,
-                                                   voiceOverScroll: voiceOverScroll) ?? false
+            return delegate?.canvasRequestsItem(self, forward: true, gesture: gesture,
+                                                voiceOverScroll: voiceOverScroll) ?? false
         case .previous:
-            return delegate?.canvasRequestsSection(self, forward: false, gesture: gesture,
-                                                   voiceOverScroll: voiceOverScroll) ?? false
+            return delegate?.canvasRequestsItem(self, forward: false, gesture: gesture,
+                                                voiceOverScroll: voiceOverScroll) ?? false
         }
+    }
+
+    /// The two-finger double tap, once, whether VoiceOver sends it as a
+    /// magic tap or passes the touches through.
+    private func twoFingerDoubleTap(gesture: String) {
+        let now = CACurrentMediaTime()
+        guard now - lastTwoFingerDoubleTap > 0.6 else { return }
+        lastTwoFingerDoubleTap = now
+        delegate?.canvasTwoFingerDoubleTap(self, gesture: gesture)
     }
 
     // MARK: Touches
 
+    private func liveTouches(_ event: UIEvent?) -> Set<UITouch> {
+        event?.allTouches?.filter { $0.phase != .ended && $0.phase != .cancelled } ?? []
+    }
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let fingers = event?.allTouches?.filter { $0.phase != .ended && $0.phase != .cancelled }.count ?? touches.count
+        let live = liveTouches(event)
+        let fingers = max(live.count, touches.count)
+        if mostFingers == 0 {
+            fingersStartTime = touches.first?.timestamp ?? CACurrentMediaTime()
+            fingersMoved = 0
+        }
+        if fingers > mostFingers {
+            mostFingers = fingers
+            fingersStart = centroid(of: live.isEmpty ? touches : live)
+            fingersMoved = 0
+        }
         if fingers > 1 {
             // A multi-finger gesture: stop exploring so it does not buzz or speak.
             sequenceHadExtraFingers = true
@@ -210,8 +254,8 @@ final class TactileCanvasView: UIView {
                 activeTouch = nil
                 report(.cancelled, touch.location(in: self))
             }
-            if fingers >= 3, let all = event?.allTouches {
-                threeFingerStart = centroid(of: all)
+            if fingers >= 3 {
+                threeFingerStart = centroid(of: live)
             }
             return
         }
@@ -225,13 +269,18 @@ final class TactileCanvasView: UIView {
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let start = threeFingerStart, let all = event?.allTouches, all.count >= 3 {
-            let now = centroid(of: all)
+        let live = liveTouches(event)
+        if live.count >= 2, live.count == mostFingers {
+            let now = centroid(of: live)
+            fingersMoved = max(fingersMoved, hypot(now.x - fingersStart.x, now.y - fingersStart.y))
+        }
+        if let start = threeFingerStart, live.count >= 3 {
+            let now = centroid(of: live)
             let dx = now.x - start.x
             let dy = now.y - start.y
             if dx > threeFingerSwipeDistance, abs(dy) < threeFingerSwipeDistance {
                 threeFingerStart = nil
-                threeFingerAction(.back, gesture: "Three-finger swipe right")
+                threeFingerAction(.finish, gesture: "Three-finger swipe right")
             } else if -dy > threeFingerSwipeDistance, abs(dx) < threeFingerSwipeDistance {
                 threeFingerStart = nil
                 threeFingerAction(.next, gesture: "Three-finger swipe up")
@@ -250,8 +299,8 @@ final class TactileCanvasView: UIView {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if event?.allTouches?.allSatisfy({ $0.phase == .ended || $0.phase == .cancelled }) ?? true {
-            threeFingerStart = nil
+        if liveTouches(event).isEmpty {
+            fingersLifted(at: touches.first?.timestamp ?? CACurrentMediaTime())
         }
         guard let touch = activeTouch, touches.contains(touch) else { return }
         activeTouch = nil
@@ -285,17 +334,40 @@ final class TactileCanvasView: UIView {
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        threeFingerStart = nil
+        if liveTouches(event).isEmpty {
+            mostFingers = 0
+            threeFingerStart = nil
+        }
         guard let touch = activeTouch, touches.contains(touch) else { return }
         activeTouch = nil
         cancelPendingTap()
         report(.cancelled, touch.location(in: self))
     }
 
+    /// The last finger is up: a quick, still touch of exactly two fingers is
+    /// a two-finger tap, and two of them close together a double tap.
+    private func fingersLifted(at time: TimeInterval) {
+        defer {
+            mostFingers = 0
+            threeFingerStart = nil
+        }
+        guard mostFingers == 2, time - fingersStartTime < twoFingerTapMaxDuration,
+              fingersMoved < tapMaxDisplacement else { return }
+        let now = CACurrentMediaTime()
+        if now - lastTwoFingerTap < twoFingerDoubleTapInterval {
+            lastTwoFingerTap = 0
+            twoFingerDoubleTap(gesture: "Two-finger double tap")
+        } else {
+            lastTwoFingerTap = now
+        }
+    }
+
     /// Stops any touch in progress, for example when the screen is leaving.
     func reset() {
         cancelPendingTap()
         lastTapTime = 0
+        lastTwoFingerTap = 0
+        mostFingers = 0
         threeFingerStart = nil
         if let touch = activeTouch {
             activeTouch = nil

@@ -5,16 +5,17 @@
 //   road        steady heavy buzz          intensity 1.0, sharpness 0.10
 //   sidewalk    softer steady buzz         intensity 0.78, sharpness 0.78
 //   intersection slow pulse 0.15 s every 0.25 s, intensity 1.0, sharpness 0.5
-//   landmark    fast pulse 0.08 s every 0.12 s, intensity 1.0, sharpness 0.7
+//   endpoint    fast pulse 0.08 s every 0.12 s, intensity 1.0, sharpness 0.7
 //   route       rhythmic pulse 0.12 s every 0.2 s, intensity 1.0, sharpness 0.85
-//   island      two soft taps then a rest, every 0.55 s
+//   median      fast, sharp taps, one every 0.08 s, intensity 1.0, sharpness 0.9
+// The centre of an intersection has no vibration at all.
 
 import CoreHaptics
 import UIKit
 
 final class HapticService {
     enum Pattern: Equatable {
-        case road, sidewalk, intersection, landmark, route, island
+        case road, sidewalk, intersection, endpoint, route, median
     }
 
     private var engine: CHHapticEngine?
@@ -154,7 +155,7 @@ final class HapticService {
         }
     }
 
-    /// Light tap with the turn ding, felt even with the ringer off.
+    /// Light tap with the turn ding, and to confirm a gesture.
     func turnTap() {
         impact.impactOccurred(intensity: 0.9)
         impact.prepare()
@@ -177,23 +178,23 @@ final class HapticService {
             guard let pattern = try? CHHapticPattern(events: [event], parameters: []) else { return nil }
             return (pattern, period)
         }
-        func island() -> (CHHapticPattern, TimeInterval)? {
-            let events = [0.0, 0.11].map { time in
+        func taps(every period: TimeInterval, count: Int, _ intensity: Float, _ sharpness: Float) -> (CHHapticPattern, TimeInterval)? {
+            let events = (0..<count).map { i in
                 CHHapticEvent(eventType: .hapticTransient, parameters: [
-                    CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.85),
-                    CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.4),
-                ], relativeTime: time)
+                    CHHapticEventParameter(parameterID: .hapticIntensity, value: intensity),
+                    CHHapticEventParameter(parameterID: .hapticSharpness, value: sharpness),
+                ], relativeTime: period * Double(i))
             }
             guard let pattern = try? CHHapticPattern(events: events, parameters: []) else { return nil }
-            return (pattern, 0.55)
+            return (pattern, period * Double(count))
         }
         let all: [(Pattern, (CHHapticPattern, TimeInterval)?)] = [
             (.road, continuous(1.0, 0.1)),
             (.sidewalk, continuous(0.78, 0.78)),
             (.intersection, pulsing(on: 0.15, every: 0.25, 1.0, 0.5)),
-            (.landmark, pulsing(on: 0.08, every: 0.12, 1.0, 0.7)),
+            (.endpoint, pulsing(on: 0.08, every: 0.12, 1.0, 0.7)),
             (.route, pulsing(on: 0.12, every: 0.2, 1.0, 0.85)),
-            (.island, island()),
+            (.median, taps(every: 0.08, count: 4, 1.0, 0.9)),
         ]
         for (key, value) in all {
             if let value { cache[key] = (value.0, value.1) }
