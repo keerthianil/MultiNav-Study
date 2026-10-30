@@ -1,15 +1,17 @@
 // StudyHomeView.swift
-// The first screen, for the researcher. It follows the study in order:
-// the participant ID, then every map by phase (training, practice, Trial 1,
-// Trial 2), with the information items for Trial 2 set between the trials.
-// "Open next" opens the next map in study order, so between intersections
-// the researcher needs one button. Any map can also be opened again, for
-// example to repeat the practice; each visit is logged with its number.
+// The first screen, for the researcher, kept short: the participant, Open
+// Next, then every map by phase, with one row for the Trial 2 information
+// items between the trials. "Open Next" opens the next map in study order,
+// so between intersections the researcher needs one button. Any map can be
+// opened again, for example to repeat the practice; each visit is logged
+// with its number. Options are behind the gear in the top bar.
 
 import SwiftUI
 
 enum AppScreen: Hashable {
     case map(String)
+    case info
+    case settings
     case files
 }
 
@@ -24,30 +26,37 @@ struct StudyHomeView: View {
             Form {
                 participantSection
                 nextSection
-                phaseSection(.training, header: "Training, indoors",
-                             footer: "The made-up route and intersection teach the gestures; the route overview is "
-                                + "the real route. Every item plays on every map here.")
-                phaseSection(.practice, header: "Practice, Fore Street and Pearl Street",
-                             footer: "Open it again to repeat the practice; each attempt is logged with its number.")
-                phaseSection(.trial1, header: "Trial 1, every item, to Gorham's Corner",
-                             footer: "Every information item plays, whatever is set below.")
-                InfoSettingsSection(header: "Customization, information items for Trial 2", footer: "Trial 2 plays only the items switched on. The announcement of the "
-                                    + "intersection and the route's crossings always plays, and the map's sounds "
-                                    + "and vibration never change. Items can also be changed on the map, from the "
-                                    + "top bar. Every change is logged.")
-                phaseSection(.trial2, header: "Trial 2, chosen items, back toward the Maine Center",
-                             footer: "The same intersections in reverse, each turned to the way the participant "
-                                + "walks in.")
-                optionsSection
-                dataSection
+                phaseSection(.training, header: "Training")
+                phaseSection(.practice, header: "Practice")
+                phaseSection(.trial1, header: "Trial 1, all items")
+                customizationSection
+                phaseSection(.trial2, header: "Trial 2, chosen items")
+                Section {
+                    NavigationLink(value: AppScreen.files) {
+                        Label("Data Files", systemImage: "doc.text")
+                    }
+                    .accessibilityHint("View, share and delete the study logs.")
+                }
             }
             .navigationTitle("MultiNav Study 2")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(value: AppScreen.settings) {
+                        Image(systemName: "gearshape")
+                    }
+                    .accessibilityLabel("Settings")
+                }
+            }
             .navigationDestination(for: AppScreen.self) { screen in
                 switch screen {
                 case .map(let id):
                     if let map = StudyContent.map(id: id) {
                         MapScreen(map: map, path: $path)
                     }
+                case .info:
+                    InfoItemsView()
+                case .settings:
+                    StudySettingsView()
                 case .files:
                     LogFilesView()
                 }
@@ -82,9 +91,9 @@ struct StudyHomeView: View {
         } header: {
             Text("Participant")
         } footer: {
-            Text(session.isActive
-                 ? "Every log row carries this ID. End the session before the next participant."
-                 : "Letters, digits and hyphens. A session starts with the first map opened.")
+            if !session.isActive {
+                Text("The session starts when the first map opens.")
+            }
         }
     }
 
@@ -113,7 +122,7 @@ struct StudyHomeView: View {
 
     // MARK: Phases
 
-    private func phaseSection(_ phase: StudyPhase, header: String, footer: String) -> some View {
+    private func phaseSection(_ phase: StudyPhase, header: String) -> some View {
         Section {
             ForEach(StudyContent.maps(in: phase)) { map in
                 MapRow(map: map, visits: session.visits(map), finished: session.isFinished(map),
@@ -123,40 +132,19 @@ struct StudyHomeView: View {
             }
         } header: {
             Text(header)
-        } footer: {
-            Text(footer)
         }
     }
 
-    // MARK: Options and data
+    // MARK: Customization
 
-    private var optionsSection: some View {
+    private var customizationSection: some View {
         Section {
-            Toggle("Participant can finish with a gesture", isOn: $store.settings.participantCanFinish)
-            Picker("System voice speed", selection: $store.settings.voiceSpeed) {
-                ForEach(VoiceSpeed.allCases) { Text($0.title).tag($0) }
+            NavigationLink(value: AppScreen.info) {
+                LabeledContent("Information items", value: store.settings.info.summary)
             }
-            Toggle("Show the map on screen", isOn: $store.settings.showMap)
+            .accessibilityHint("Choose which items Trial 2 plays.")
         } header: {
-            Text("Options")
-        } footer: {
-            Text("With the gesture on, a three-finger swipe right (or the VoiceOver escape) means the participant is "
-                 + "ready to cross: the end time is logged and the map closes, as with Done. The system voice is "
-                 + "used when VoiceOver is off; VoiceOver uses its own voice and speed. With the map hidden the "
-                 + "screen stays dark, and touch, sound and vibration still work.")
-        }
-    }
-
-    private var dataSection: some View {
-        Section {
-            NavigationLink(value: AppScreen.files) {
-                Label("Data Files", systemImage: "doc.text")
-            }
-            .accessibilityHint("View, share and delete the study logs.")
-        } header: {
-            Text("Data")
-        } footer: {
-            Text("MultiNav Study 2, \(AppInfo.versionDescription)")
+            Text("Customization")
         }
     }
 
@@ -215,11 +203,58 @@ private struct MapRow: View {
     }
 }
 
+/// The Trial 2 information items, opened from the first screen.
+struct InfoItemsView: View {
+    var body: some View {
+        Form {
+            InfoSettingsSection(footer: "Trial 2 plays only the items switched on. Practice and Trial 1 always play "
+                                + "all six, the announcement always plays, and the map's sounds and vibration never "
+                                + "change. Every change is logged.")
+        }
+        .navigationTitle("Information Items")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// Options that rarely change, behind the gear on the first screen.
+struct StudySettingsView: View {
+    @ObservedObject private var store = SettingsStore.shared
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Participant can finish with a gesture", isOn: $store.settings.participantCanFinish)
+            } footer: {
+                Text("A three-finger swipe right, or the VoiceOver escape, means the participant is ready to cross: "
+                     + "the end time is logged and the map closes, as with Done.")
+            }
+            Section {
+                Picker("System voice speed", selection: $store.settings.voiceSpeed) {
+                    ForEach(VoiceSpeed.allCases) { Text($0.title).tag($0) }
+                }
+            } footer: {
+                Text("Used when VoiceOver is off. VoiceOver speaks in its own voice and speed.")
+            }
+            Section {
+                Toggle("Show the map on screen", isOn: $store.settings.showMap)
+            } footer: {
+                Text("Off keeps the screen dark. Touch, sound and vibration still work.")
+            }
+            Section {
+            } footer: {
+                Text("MultiNav Study 2, \(AppInfo.versionDescription)")
+            }
+        }
+        .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
 /// The six information items, each on or off, for Trial 2. Shared by the
-/// first screen and the map's Information sheet.
+/// Information Items screen and the map's sheet.
 struct InfoSettingsSection: View {
     @ObservedObject private var store = SettingsStore.shared
-    var header = "Information items for Trial 2"
+    var header = "Trial 2 information items"
     let footer: String
 
     var body: some View {
