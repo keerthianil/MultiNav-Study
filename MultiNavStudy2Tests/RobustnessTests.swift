@@ -3,7 +3,8 @@
 // double tapping, two-finger double tapping, swiping through the items and
 // finishing, with the information items all on and all off, so nothing can
 // crash in a session. Also checks that the touch surface is a VoiceOver
-// direct-touch area and hands each VoiceOver gesture to the map once.
+// direct-touch area and hands each VoiceOver gesture to the map once, even
+// a magic tap made with VoiceOver focus on the top bar.
 
 import CoreGraphics
 import Foundation
@@ -170,6 +171,33 @@ struct RobustnessTests {
         #expect(recorder.items.allSatisfy { $0.voiceOverScroll })
         #expect(recorder.finishes == ["VoiceOver three-finger swipe right", "VoiceOver escape"])
         #expect(recorder.twoFingerDoubleTaps == ["VoiceOver magic tap"])
+    }
+
+    /// A magic tap with VoiceOver focus on the top bar ends at the app
+    /// delegate, which hands it to the map on screen. With no map open it is
+    /// left to the system.
+    @Test func magicTapOffTheMapReachesIt() throws {
+        let store = SettingsStore.shared
+        let saved = store.settings
+        defer { store.settings = saved }
+        store.settings.participantID = "TEST"
+        let delegate = try #require(UIApplication.shared.delegate as? NSObject)
+        #expect(!delegate.accessibilityPerformMagicTap(), "no map open")
+
+        let map = try #require(StudyContent.map(id: "intersection_1"))
+        let visit = MapVisit(map: map)
+        let controller = try #require(visit.controller)
+        let canvas = TactileCanvasView(frame: screen)
+        let recorder = GestureRecorder()
+        canvas.delegate = recorder
+        controller.canvas = canvas
+        visit.appear()
+        #expect(delegate.accessibilityPerformMagicTap())
+        #expect(recorder.twoFingerDoubleTaps == ["VoiceOver magic tap"])
+        visit.finish(by: "Done button")
+        #expect(!delegate.accessibilityPerformMagicTap(), "the map has closed")
+        StudySession.shared.end(reason: "Test finished")
+        Self.removeTestLogs()
     }
 
     /// The swipe recogniser and the raw touch check can both see one swipe,

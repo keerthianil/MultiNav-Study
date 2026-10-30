@@ -10,6 +10,10 @@ import UIKit
 
 @MainActor
 final class MapVisit: ObservableObject {
+    /// The visit on screen, for gestures VoiceOver sends while its focus is
+    /// off the map, on the top bar.
+    private(set) static weak var current: MapVisit?
+
     let map: StudyMap
     let controller: (any StudyMapController)?
     let loadError: String?
@@ -77,8 +81,17 @@ final class MapVisit: ObservableObject {
                                voiceOver: UIAccessibility.isVoiceOverRunning)
         feedback.setVoiceSpeed(settings.voiceSpeed)
         UIApplication.shared.isIdleTimerDisabled = true
+        Self.current = self
         wire()
         announce()
+    }
+
+    /// A VoiceOver magic tap that reached the app while focus was on the top
+    /// bar: the same as one on the map.
+    func magicTapOffMap() -> Bool {
+        guard !isFinished, let canvas = controller?.canvas else { return false }
+        log.event(.gesture, "Magic tap with focus off the map")
+        return canvas.accessibilityPerformMagicTap()
     }
 
     private func wire() {
@@ -191,6 +204,7 @@ final class MapVisit: ObservableObject {
     private func end(by trigger: String) -> Bool {
         guard started, !isFinished else { return false }
         isFinished = true
+        if Self.current === self { Self.current = nil }
         announcementToken = UUID()
         controller?.player.stop(reason: trigger)
         controller?.canvas?.reset()
