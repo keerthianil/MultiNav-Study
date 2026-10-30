@@ -18,7 +18,7 @@ MultiNavStudy2/
   Support/                    swipe-back blocker
   Maps/                       generated map JSON and study.json, bundled as resources
   Assets.xcassets             app icon and accent colour
-MultiNavStudy2Tests/          content, player, session and robustness tests (Swift Testing)
+MultiNavStudy2Tests/          content, player, session, speech and robustness tests (Swift Testing)
 tools/                        map generator, study spec, OSM extract, icon script (make_app_icon.py)
 docs/                         this guide, STUDY.md, map previews
 ```
@@ -27,11 +27,11 @@ docs/                         this guide, STUDY.md, map previews
 
 | File | What it does |
 |---|---|
-| `App/MultiNavStudy2App.swift` | `@main`; resumes a session the app was closed in, starts the feedback engines, logs launch, background and foreground |
+| `App/MultiNavStudy2App.swift` | `@main`; resumes a session the app was closed in, starts the feedback engines, logs launch, background and foreground; its `AppDelegate` hands a magic tap made with VoiceOver focus on the top bar to the open map |
 | `Study/StudyContent.swift` | reads `Maps/study.json`: every map in study order with its phase, log name, announcement and information items; `InfoCategory` and `StudyPhase` |
 | `Study/StudySettings.swift` | the participant ID, the information items for Trial 2 (`InfoSettings`), and the options, saved in UserDefaults by `SettingsStore`; each change to an item is logged |
 | `Study/StudySession.swift` | one participant's session: start, end, visits per map, which maps are done, the next map, kept in UserDefaults so it survives a relaunch |
-| `Study/StudyHomeView.swift` | the researcher's screen: participant, Open Next, the maps by phase, customization, options, data |
+| `Study/StudyHomeView.swift` | the researcher's screen: participant, Open Next, the maps by phase, the Trial 2 information items row, Data Files; the Information Items screen and Settings (behind the gear) |
 | `Screens/MapScreen.swift` | a map full screen, with Done, the title and (Trial 2) the information items sheet |
 | `Screens/MapVisit.swift` | one visit: starts the session if needed, plays the announcement when the map opens, times the visit, counts plays, writes the visit row when it ends |
 | `Map/DescriptionPlayer.swift` | the announcement and the information items: play, stop, start over, step forward and back, carry on to the next item |
@@ -46,7 +46,7 @@ docs/                         this guide, STUDY.md, map previews
 | `Feedback/FeedbackManager.swift` | one feedback mode at a time; switching mode stops everything the last one started; map speech and tracked description speech |
 | `Feedback/HapticService.swift` | Core Haptics patterns; restarts the engine after a reset or a VoiceOver change |
 | `Feedback/AudioService.swift` | the ding, the crosswalk click, the centre chime and the boundary thud, synthesised once, played from one engine |
-| `Feedback/SpeechService.swift` | VoiceOver announcements (default priority, so they can be cut off) or the system voice, reporting when each phrase ends |
+| `Feedback/SpeechService.swift` | VoiceOver announcements (default priority, so they can be cut off) or the system voice, reporting when each phrase ends; never leaves a phrase waiting |
 | `Logging/StudyLog.swift` | the visits, events and touches CSVs (the touch log is a MultiNav `TouchLogger`), the app log |
 | `Logging/LogFilesView.swift` | list, share and delete logs |
 | `Support/DisableInteractivePopGesture.swift` | turns off swipe-back on map screens |
@@ -122,7 +122,10 @@ VoiceOver reads only its short name when the map opens.
 * A tap is a touch shorter than 0.45 s that moves less than 28 points. A second tap within 0.45 s and 48 points
   is a double tap; a single tap is reported once the double-tap window has passed.
 * A two-finger tap is two fingers down and up within 0.4 s without moving; two within 0.5 s are a two-finger
-  double tap. VoiceOver sends the same gesture as the magic tap; either way it is acted on once.
+  double tap. VoiceOver sends the same gesture as the magic tap; either way it is acted on once. VoiceOver
+  sends a magic tap to the focused element and up the responder chain, which ends at SwiftUI's own app
+  delegate; `AppDelegate` adds a handler to that class at launch, so with focus on the top bar the gesture
+  still reaches the open map (`MapVisit.current`). With no map open it is left to the system.
 * Three-finger swipes are seen by a gesture recogniser and by a raw-touch check, and by VoiceOver as scrolls;
   each is acted on once. Up and down step through the information items (returning false at either end so
   VoiceOver plays its boundary sound); right, and the VoiceOver escape gesture, mean ready to cross.
@@ -140,7 +143,10 @@ a second; feedback reacts to every move.
 second are said once. `speakTracked` speaks part of a description and reports when it ends: finished, or cut
 off. `SpeechService` gets that from VoiceOver's announcement-finished notification (matched by text; an
 announcement cut off by one with the same words is told apart by a short window) or from the speech
-synthesiser's delegate.
+synthesiser's delegate. Nothing is left waiting: a phrase VoiceOver never reports is given up after 6 s plus
+1.2 s a word (slower than VoiceOver's slowest rate) and reported cut off, and switching VoiceOver on or off
+ends every phrase waiting, so the player cannot get stuck holding map names back. `SpeechTests` drive this
+VoiceOver path with simulated announcement-finished notifications, since the simulator has no VoiceOver.
 
 `DescriptionPlayer` keeps one thing playing at a time. Starting anything cuts off what was playing; a stop by
 the participant says "Stopped."; an item that finishes starts the next; a token makes sure a late report from

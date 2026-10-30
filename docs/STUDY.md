@@ -8,6 +8,7 @@ In Trial 2 the researcher can switch each item off; the announcement always play
 
 ## Points for the team to confirm
 
+- The requirements list seven optional items, including Intersection features (medians, bike lanes, islands). The 10/28 descriptions give text for six, so the app has six switches; the median at Fore and Silver is described in items 1 and 5.
 - The route overview says 6 total street crossings. The five intersection descriptions add up to 7 (Fore and Silver at 1, Fore at 2, Union at 3, Fore at 4, Fore and Center at 5). Between them the walk also crosses Market Street (between 1 and 2), Wharf Street (on Moulton Street and on Union Street), and Cross Street and Cotton Street (between 4 and 5).
 - Pearl Street: the Fore Street leg toward Silver Street is split by the tip of the Boothby Square island, crossed on paving stones. The practice map shows it as a median; the description calls the intersection plus-shaped.
 - Gorham's Corner: aerial photos from 2025 show five zebra crosswalks, including the two across Pleasant Street and York Street added in 2023. The maps draw all five. The 2023 changes also set the signals to flash red as a five-way stop; the descriptions say signal controlled.

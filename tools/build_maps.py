@@ -138,7 +138,7 @@ def document(name, features, origin):
 
 def check_spoken(text, where):
     """No dashes or arrows in anything the app speaks: VoiceOver reads them out."""
-    for bad in ("—", "–", "→", "←"):
+    for bad in ("\u2014", "\u2013", "\u2192", "\u2190"):
         if bad in text:
             raise SystemExit("%s: dash or arrow in spoken text: %s" % (where, text))
     return text

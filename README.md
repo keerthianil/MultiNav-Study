@@ -38,11 +38,13 @@ The first screen follows the study from top to bottom.
 2. **Open Next**: opens the next map in study order. Between intersections this is the only button needed.
 3. **The maps, by phase**: any map can be opened again. Each row shows how often it has been opened, and the
    practice shows its attempts; every visit is logged with its number.
-4. **Customization**: the six information items for Trial 2, each on or off (all on by default). Practice and
-   Trial 1 always play every item.
-5. **Options**: whether the participant can finish with a gesture (on), the system voice speed (used when
-   VoiceOver is off), and whether the map is shown on screen (off keeps it dark; touch still works).
-6. **Data Files**: view, share and delete the logs.
+4. **Customization**, between the trials: *Information items* shows which of the six items Trial 2 plays (all
+   on by default) and opens their switches. Practice and Trial 1 always play every item.
+5. **Data Files**: view, share and delete the logs.
+
+The gear at the top opens **Settings**, which rarely change: whether the participant can finish with a gesture
+(on), the system voice speed (used when VoiceOver is off), and whether the map is shown on screen (off keeps it
+dark; touch still works). The app version is at the bottom.
 
 On a map the top bar is for the researcher: **Done** when the participant is ready to cross (with a
 confirmation when VoiceOver is off), and in Trial 2 a button for the information items, which can be changed
@@ -110,6 +112,9 @@ app follows when each announcement ends to read the next item. A two-finger doub
 tap, the three-finger swipes as scrolls (VoiceOver plays its boundary sound past the first or last item) and
 the three-finger swipe right also as the escape gesture. When a map opens, VoiceOver moves onto it and reads
 its name ("Intersection map"), then the announcement follows.
+
+The two-finger double tap works even when VoiceOver focus has moved to the top bar. Closing a map, opening the
+Trial 2 sheet or switching VoiceOver on or off stops whatever is being read, and nothing carries on after it.
 
 ## Logs
 

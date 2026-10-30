@@ -445,6 +445,9 @@ STOPS = [
 
 # Points for the team to confirm, listed at the top of docs/STUDY.md.
 TEAM_NOTES = [
+    "The requirements list seven optional items, including Intersection features (medians, bike lanes, "
+    "islands). The 10/28 descriptions give text for six, so the app has six switches; the median at Fore "
+    "and Silver is described in items 1 and 5.",
     "The route overview says 6 total street crossings. The five intersection descriptions add up to 7 "
     "(Fore and Silver at 1, Fore at 2, Union at 3, Fore at 4, Fore and Center at 5). Between them the walk "
     "also crosses Market Street (between 1 and 2), Wharf Street (on Moulton Street and on Union Street), and "
