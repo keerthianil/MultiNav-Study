@@ -11,7 +11,11 @@
 // A caller can ask to hear when its phrase ends: finished (true) or cut off
 // (false). VoiceOver reports the end of each announcement by its text; an
 // announcement that is cut off by a new one reports false a moment later,
-// which is ignored when the new phrase has the same words.
+// which is ignored when the new phrase has the same words. Two safeguards
+// keep a description from hanging, which would leave the map silent: if
+// VoiceOver is switched on or off, whatever was waiting counts as cut off,
+// and a phrase VoiceOver never reports on counts as cut off after a time
+// well beyond its slowest reading.
 
 import AVFoundation
 import UIKit
@@ -27,28 +31,47 @@ final class SpeechService: NSObject, AVSpeechSynthesizerDelegate, @unchecked Sen
     var rateMultiplier: Float = 1.1
 
     /// VoiceOver announcements still being spoken or waiting, oldest first.
-    private var announcements: [(text: String, completion: Completion?)] = []
+    private var announcements: [(id: Int, text: String, completion: Completion?)] = []
+    private var nextID = 0
     /// Announcements just cut off whose end report is still to come.
     private var cutOff: [(text: String, until: TimeInterval)] = []
     /// Every utterance until the synthesiser reports its end, held so its
     /// identifier cannot be reused by a newer one in the meantime.
     private var utterances: [ObjectIdentifier: (utterance: AVSpeechUtterance, completion: Completion?)] = [:]
-    private var observer: NSObjectProtocol?
+    private var observers: [NSObjectProtocol] = []
+
+    /// Whether VoiceOver is speaking for the app, and how an announcement
+    /// reaches it. The tests replace both.
+    var voiceOverRunning: () -> Bool = { UIAccessibility.isVoiceOverRunning }
+    var postAnnouncement: (NSAttributedString) -> Void = {
+        UIAccessibility.post(notification: .announcement, argument: $0)
+    }
 
     override init() {
         super.init()
         synthesizer.delegate = self
-        observer = NotificationCenter.default.addObserver(
+        let center = NotificationCenter.default
+        observers.append(center.addObserver(
             forName: UIAccessibility.announcementDidFinishNotification, object: nil, queue: .main
         ) { [weak self] note in
             let text = note.userInfo?[UIAccessibility.announcementStringValueUserInfoKey] as? String ?? ""
             let success = (note.userInfo?[UIAccessibility.announcementWasSuccessfulUserInfoKey] as? NSNumber)?.boolValue ?? false
             self?.announcementFinished(text, success: success)
-        }
+        })
+        observers.append(center.addObserver(
+            forName: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.stop()
+        })
     }
 
     deinit {
-        if let observer { NotificationCenter.default.removeObserver(observer) }
+        observers.forEach { NotificationCenter.default.removeObserver($0) }
+    }
+
+    /// Longest a phrase is waited on: far past the slowest VoiceOver reading.
+    var timeout: (String) -> TimeInterval = { text in
+        6 + Double(text.split(separator: " ").count) * 1.2
     }
 
     /// Speaks `text`, cutting off whatever is being said. A queued phrase
@@ -59,22 +82,29 @@ final class SpeechService: NSObject, AVSpeechSynthesizerDelegate, @unchecked Sen
             completion?(false)
             return
         }
-        if UIAccessibility.isVoiceOverRunning {
+        if voiceOverRunning() {
             if !queued {
                 let now = CACurrentMediaTime()
                 cutOff.removeAll { $0.until < now }
-                for pending in announcements {
-                    cutOff.append((pending.text, now + 0.8))
-                    pending.completion?(false)
-                }
+                let pending = announcements
                 announcements.removeAll()
+                for entry in pending {
+                    cutOff.append((entry.text, now + 0.8))
+                    entry.completion?(false)
+                }
             }
-            announcements.append((text, completion))
-            let announcement = NSAttributedString(string: text, attributes: [
+            nextID += 1
+            let id = nextID
+            announcements.append((id, text, completion))
+            if completion != nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + timeout(text)) { [weak self] in
+                    self?.giveUp(on: id)
+                }
+            }
+            postAnnouncement(NSAttributedString(string: text, attributes: [
                 .accessibilitySpeechQueueAnnouncement: NSNumber(value: queued),
                 .accessibilitySpeechAnnouncementPriority: UIAccessibilityPriority.default.rawValue,
-            ])
-            UIAccessibility.post(notification: .announcement, argument: announcement)
+            ]))
         } else {
             if !queued, synthesizer.isSpeaking {
                 synthesizer.stopSpeaking(at: .immediate)
@@ -92,17 +122,23 @@ final class SpeechService: NSObject, AVSpeechSynthesizerDelegate, @unchecked Sen
     /// VoiceOver itself when it reads the screen the listener moves to; until
     /// then nothing waits on it.
     func stop() {
-        for pending in announcements {
-            pending.completion?(false)
-        }
-        if !announcements.isEmpty {
-            let now = CACurrentMediaTime()
-            cutOff += announcements.map { ($0.text, now + 0.8) }
-            announcements.removeAll()
-        }
+        let pending = announcements
+        announcements.removeAll()
+        let now = CACurrentMediaTime()
+        cutOff += pending.map { ($0.text, now + 0.8) }
+        pending.forEach { $0.completion?(false) }
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
         }
+    }
+
+    /// VoiceOver never said this phrase ended: count it as cut off, so
+    /// whatever waits on it stops waiting.
+    private func giveUp(on id: Int) {
+        guard let index = announcements.firstIndex(where: { $0.id == id }) else { return }
+        let entry = announcements.remove(at: index)
+        cutOff.append((entry.text, CACurrentMediaTime() + 2))
+        entry.completion?(false)
     }
 
     private func announcementFinished(_ text: String, success: Bool) {
@@ -114,11 +150,10 @@ final class SpeechService: NSObject, AVSpeechSynthesizerDelegate, @unchecked Sen
         }
         guard let index = announcements.firstIndex(where: { $0.text == text }) else { return }
         // Anything queued before it has been dropped by VoiceOver.
-        for earlier in announcements[..<index] {
-            earlier.completion?(false)
-        }
+        let earlier = announcements[..<index]
         let done = announcements[index]
         announcements.removeSubrange(...index)
+        earlier.forEach { $0.completion?(false) }
         done.completion?(success)
     }
 
