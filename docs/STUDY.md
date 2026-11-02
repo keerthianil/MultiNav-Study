@@ -10,9 +10,6 @@ In Trial 2 the researcher can switch each item off; the announcement always play
 ## Points for the team to confirm
 
 - The requirements list seven optional items, including Intersection features (medians, bike lanes, islands). The 10/28 descriptions give text for six, so the app has six switches; the median at Fore and Silver is described in items 1 and 5.
-- Route overview: the square added at Commercial Street and Moulton Street has no number and says "4-way intersection of Commercial Street, Moulton Street, and Long Wharf." Its legs are Long Wharf, opposite Moulton Street, and Commercial Street.
-- Turn dots: intersections 3 and 4 were not in the 10/30 list but each keeps its turn after the crossing. They say "Turn right" at 3 and "Turn left" at 4, as their announcements continue right and left.
-- Reversed intersection 5: the announcement still names three streets; the 10/30 update added Pleasant Street to intersection 5 only.
 - In Trial 2 the count after each item covers only the items switched on, for example "1 of 5" with one item off.
 - Pearl Street: the Fore Street leg toward Silver Street is split by the tip of the Boothby Square island, crossed on paving stones. The practice map shows it as a median; the description calls the intersection plus-shaped.
 - Gorham's Corner: aerial photos from 2025 show five zebra crosswalks, including the two across Pleasant Street and York Street added in 2023. The maps draw all five. The 2023 changes also set the signals to flash red as a five-way stop; the descriptions say signal controlled.
@@ -77,7 +74,7 @@ What each point says when touched:
 - Start dot: "Start of route: You are here, at Dock Fore, 336 Fore Street."
 - Square 1: "Intersection 1: 4-way intersection of Fore Street and Silver Street." Cross streets drawn: Silver Street.
 - Square 2: "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street." Cross streets drawn: Exchange Street and Fore Street.
-- Square at Commercial Street and Moulton Street, no number: "4-way intersection of Commercial Street, Moulton Street, and Long Wharf." Cross streets drawn: Commercial Street and Long Wharf.
+- Square at Commercial Street and Moulton Street, no number: "4-way intersection of Commercial Street and Moulton Street." Cross streets drawn: Commercial Street and Long Wharf.
 - Square 3: "Intersection 3: 4-way intersection of Commercial Street and Union Street." Cross streets drawn: Commercial Street and Union Wharf.
 - Square 4: "Intersection 4: 4-way intersection of Union Street and Fore Street." Cross streets drawn: Fore Street and Union Street.
 - Square 5: "Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street." Cross streets drawn: Center Street and Pleasant Street.
@@ -247,7 +244,7 @@ Trial 2. Map file `return_5.json`, logged as "Reversed intersection 5".
 
 ![Reversed intersection 5](map_previews/return_5.png)
 
-**Announcement:** You are at the 5-way intersection of Center Street, Fore Street, and York Street. Your route first crosses Center Street, then turns left to cross Fore Street, and continues along Fore Street.
+**Announcement:** You are at the 5-way intersection of Center Street, Fore Street, York Street, and Pleasant Street. Your route first crosses Center Street, then turns left to cross Fore Street, and continues along Fore Street.
 
 1. *Intersection geometry:* This intersection has 5 legs, with York Street intersecting Center Street and Fore Street at a 45-degree angle.
 2. *Traffic direction:* All streets have two-way traffic.

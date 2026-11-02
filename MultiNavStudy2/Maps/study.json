@@ -326,7 +326,7 @@
    "title": "Reversed intersection 5",
    "subtitle": "Center Street, Fore Street and York Street",
    "file": "return_5",
-   "announcement": "You are at the 5-way intersection of Center Street, Fore Street, and York Street. Your route first crosses Center Street, then turns left to cross Fore Street, and continues along Fore Street.",
+   "announcement": "You are at the 5-way intersection of Center Street, Fore Street, York Street, and Pleasant Street. Your route first crosses Center Street, then turns left to cross Fore Street, and continues along Fore Street.",
    "items": [
     {
      "category": "geometry",

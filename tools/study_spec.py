@@ -116,10 +116,11 @@ ROUTE_OVERVIEW = {
             "text": "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street.",
             "stubs": [(0, 9.0, "Fore Street"), (90, 9.0, "Exchange Street")]}},
         # Not one of the study's intersections, so no number. Long Wharf
-        # leaves Commercial Street opposite Moulton Street.
+        # leaves Commercial Street opposite Moulton Street; like Union Wharf
+        # at intersection 3, it counts as a leg but is not named in the cue.
         {"dir": 270, "len": 24.5, "street": "Moulton Street", "node": {
             "kind": "intersection", "name": "Commercial Street and Moulton Street",
-            "text": "4-way intersection of Commercial Street, Moulton Street, and Long Wharf.",
+            "text": "4-way intersection of Commercial Street and Moulton Street.",
             "stubs": [(270, 9.0, "Long Wharf"), (180, 9.0, "Commercial Street")]}},
         {"dir": 0, "len": 26.5, "street": "Commercial Street", "node": {
             "kind": "intersection", "number": 3,
@@ -377,9 +378,10 @@ STOPS = [
         "junction": "gorhams_corner", "heading": "first_crossing",
         "in": ("York Street@191", "east"), "out": ("Fore Street@55", "northwest"),
         "turns": ["left", "right"],
-        "announcement": ("You are at the 5-way intersection of Center Street, Fore Street, and York Street. Your "
-                         "route first crosses Center Street, then turns left to cross Fore Street, and continues "
-                         "along Fore Street."),
+        # Pleasant Street added as the team added it at intersection 5 (10/30).
+        "announcement": ("You are at the 5-way intersection of Center Street, Fore Street, York Street, and "
+                         "Pleasant Street. Your route first crosses Center Street, then turns left to cross Fore "
+                         "Street, and continues along Fore Street."),
         "items": items(
             "This intersection has 5 legs, with York Street intersecting Center Street and Fore Street at a "
             "45-degree angle.",
@@ -469,13 +471,6 @@ TEAM_NOTES = [
     "The requirements list seven optional items, including Intersection features (medians, bike lanes, "
     "islands). The 10/28 descriptions give text for six, so the app has six switches; the median at Fore "
     "and Silver is described in items 1 and 5.",
-    "Route overview: the square added at Commercial Street and Moulton Street has no number and says \"4-way "
-    "intersection of Commercial Street, Moulton Street, and Long Wharf.\" Its legs are Long Wharf, opposite "
-    "Moulton Street, and Commercial Street.",
-    "Turn dots: intersections 3 and 4 were not in the 10/30 list but each keeps its turn after the crossing. "
-    "They say \"Turn right\" at 3 and \"Turn left\" at 4, as their announcements continue right and left.",
-    "Reversed intersection 5: the announcement still names three streets; the 10/30 update added Pleasant "
-    "Street to intersection 5 only.",
     "In Trial 2 the count after each item covers only the items switched on, for example \"1 of 5\" with one "
     "item off.",
     "Pearl Street: the Fore Street leg toward Silver Street is split by the tip of the Boothby Square island, "

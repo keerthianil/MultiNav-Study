@@ -48,10 +48,6 @@ struct StudyContentTests {
         let commercial = try #require(StudyContent.map(id: "intersection_3"))
         #expect(commercial.items[3].text == "The intersection has APS, located on a pole about 6 feet back from "
                 + "the intersection.")
-        let gorham = try #require(StudyContent.map(id: "return_5"))
-        #expect(gorham.announcement == "You are at the 5-way intersection of Center Street, Fore Street, and "
-                + "York Street. Your route first crosses Center Street, then turns left to cross Fore Street, and "
-                + "continues along Fore Street.")
         let union = try #require(StudyContent.map(id: "return_4"))
         #expect(union.items[5].text == "The truncated dome is misaligned with the crosswalk when approaching the "
                 + "Fore Street crossing. The truncated dome at the end of the crossing is aligned.")
@@ -63,6 +59,11 @@ struct StudyContentTests {
         #expect(gorhamsCorner.announcement == "You are at the 5-way intersection of Fore Street, Center Street, York "
                 + "Street, and Pleasant Street. Your route first crosses Fore Street, then turns right to cross "
                 + "Center Street, and continues along York Street to your destination.")
+        // The return names Pleasant Street the same way.
+        let gorhamsReturn = try #require(StudyContent.map(id: "return_5"))
+        #expect(gorhamsReturn.announcement == "You are at the 5-way intersection of Center Street, Fore Street, "
+                + "York Street, and Pleasant Street. Your route first crosses Center Street, then turns left to "
+                + "cross Fore Street, and continues along Fore Street.")
         let training = try #require(StudyContent.map(id: "training_intersection"))
         #expect(training.items[2].text == "The intersection is controlled by stop signs in all directions.")
     }
@@ -74,7 +75,7 @@ struct StudyContentTests {
         #expect(overview.nodes.map(\.cue) == [
             "Intersection 1: 4-way intersection of Fore Street and Silver Street.",
             "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street.",
-            "4-way intersection of Commercial Street, Moulton Street, and Long Wharf.",
+            "4-way intersection of Commercial Street and Moulton Street.",
             "Intersection 3: 4-way intersection of Commercial Street and Union Street.",
             "Intersection 4: 4-way intersection of Union Street and Fore Street.",
             "Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street.",

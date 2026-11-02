@@ -414,7 +414,7 @@
    "properties": {
     "name": "Commercial Street and Moulton Street",
     "custom": {
-     "cue": "4-way intersection of Commercial Street, Moulton Street, and Long Wharf."
+     "cue": "4-way intersection of Commercial Street and Moulton Street."
     }
    }
   },
