@@ -80,7 +80,23 @@ struct PlayerTests {
         #expect(p.playing == nil)
         #expect(started == 1)
         #expect(heard == InfoCategory.allCases)
-        #expect(voice.spoken == items.map(\.text))
+        #expect(voice.spoken == items.enumerated().map { "\($1.text) \($0 + 1) of 6" })
+    }
+
+    /// Each item ends with its place, counting only the items that play.
+    @Test func itemsSayTheirPlace() {
+        let (p, voice) = player()
+        p.toggleDetails(gesture: "Double tap")
+        #expect(voice.current == "Item about Intersection geometry. 1 of 6")
+        voice.finish()
+        #expect(voice.current == "Item about Traffic direction. 2 of 6")
+        p.setItems([items[0], items[1], items[3], items[5]])
+        p.toggleDetails(gesture: "Double tap")
+        for _ in 0..<4 { voice.finish() }
+        #expect(voice.spoken.suffix(4) == [
+            "Item about Intersection geometry. 1 of 4", "Item about Traffic direction. 2 of 4",
+            "Item about Pedestrian signals. 3 of 4", "Item about Truncated domes and curb cuts. 4 of 4",
+        ])
     }
 
     @Test func doubleTapStopsAndThenStartsOver() {
@@ -99,30 +115,31 @@ struct PlayerTests {
     @Test func swipesMoveBetweenItemsAndCarryOn() {
         let (p, voice) = player()
         p.toggleDetails(gesture: "Double tap")
-        #expect(p.step(forward: true, gesture: "Three-finger swipe up"))
-        #expect(p.step(forward: true, gesture: "Three-finger swipe up"))
+        #expect(p.step(forward: true, gesture: "Two-finger swipe up"))
+        #expect(p.step(forward: true, gesture: "Two-finger swipe up"))
         #expect(p.playing == .item(2))
-        #expect(p.step(forward: false, gesture: "Three-finger swipe down"))
+        #expect(p.step(forward: false, gesture: "Two-finger swipe down"))
         #expect(p.playing == .item(1))
         voice.finish()
         #expect(p.playing == .item(2), "carries on after a swipe")
-        #expect(voice.current == items[2].text)
+        #expect(voice.current == p.spoken(2))
     }
 
     @Test func swipesStopAtTheEnds() {
         let (p, voice) = player()
-        #expect(p.step(forward: true, gesture: "Three-finger swipe up"), "a swipe starts the items")
+        #expect(p.step(forward: true, gesture: "Two-finger swipe up"), "a swipe starts the items")
         #expect(p.playing == .item(0))
-        #expect(!p.step(forward: false, gesture: "Three-finger swipe down"), "nothing before the first item")
+        #expect(!p.step(forward: false, gesture: "Two-finger swipe down"), "nothing before the first item")
         #expect(voice.boundaries == 1)
-        for _ in 1..<items.count { #expect(p.step(forward: true, gesture: "Three-finger swipe up")) }
-        #expect(!p.step(forward: true, gesture: "Three-finger swipe up"))
+        for _ in 1..<items.count { #expect(p.step(forward: true, gesture: "Two-finger swipe up")) }
+        #expect(!p.step(forward: true, gesture: "Two-finger swipe up"))
         #expect(p.playing == .item(items.count - 1), "the last item keeps playing")
+        #expect(voice.boundaries == 2)
         voice.finish()
-        #expect(!p.step(forward: true, gesture: "VoiceOver three-finger swipe up", voiceOverScroll: true))
-        #expect(voice.boundaries == 2, "VoiceOver plays its own boundary sound")
+        #expect(!p.step(forward: true, gesture: "Two-finger swipe up"))
+        #expect(voice.boundaries == 3, "the map plays the boundary sound")
         #expect(voice.said.last == "End of details.")
-        #expect(p.step(forward: false, gesture: "Three-finger swipe down"))
+        #expect(p.step(forward: false, gesture: "Two-finger swipe down"))
         #expect(p.playing == .item(items.count - 2))
     }
 
@@ -148,7 +165,7 @@ struct PlayerTests {
         voice.finish()
         voice.finish()
         #expect(p.playing == nil)
-        #expect(voice.spoken.suffix(2) == items.prefix(2).map(\.text))
+        #expect(voice.spoken.suffix(2) == ["\(items[0].text) 1 of 2", "\(items[1].text) 2 of 2"])
     }
 
     @Test func noItemsSaysSo() {
@@ -157,7 +174,7 @@ struct PlayerTests {
         p.toggleDetails(gesture: "Double tap")
         #expect(p.playing == nil)
         #expect(voice.said == ["No details are turned on."])
-        #expect(!p.step(forward: true, gesture: "Three-finger swipe up"))
+        #expect(!p.step(forward: true, gesture: "Two-finger swipe up"))
     }
 
     @Test func speakingColumn() {
@@ -166,7 +183,7 @@ struct PlayerTests {
         p.playAnnouncement(gesture: "Map opened", repeated: false)
         #expect(p.speaking == "Announcement")
         p.toggleDetails(gesture: "Double tap")
-        p.step(forward: true, gesture: "Three-finger swipe up")
+        p.step(forward: true, gesture: "Two-finger swipe up")
         #expect(p.speaking == "Item 2, Traffic direction")
     }
 }

@@ -16,19 +16,16 @@ import UIKit
 @MainActor
 final class GestureRecorder: TactileCanvasDelegate {
     var finishes: [String] = []
-    var items: [(forward: Bool, gesture: String, voiceOverScroll: Bool)] = []
+    var items: [(forward: Bool, gesture: String)] = []
     var twoFingerDoubleTaps: [String] = []
-    var itemAnswer = true
 
     func canvas(_ canvas: TactileCanvasView, touch phase: CanvasTouchPhase, mm: CGPoint, screen: CGPoint) {}
     func canvas(_ canvas: TactileCanvasView, singleTapAt mm: CGPoint, screen: CGPoint) {}
     func canvas(_ canvas: TactileCanvasView, doubleTapAt mm: CGPoint, screen: CGPoint) {}
     func canvasTwoFingerDoubleTap(_ canvas: TactileCanvasView, gesture: String) { twoFingerDoubleTaps.append(gesture) }
     func canvasRequestsFinish(_ canvas: TactileCanvasView, gesture: String) { finishes.append(gesture) }
-    func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
-                            voiceOverScroll: Bool) -> Bool {
-        items.append((forward, gesture, voiceOverScroll))
-        return itemAnswer
+    func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String) {
+        items.append((forward, gesture))
     }
 }
 
@@ -65,7 +62,7 @@ struct RobustnessTests {
         }
         controller.canvasTwoFingerDoubleTap(canvas, gesture: "Test")
         for forward in [true, true, false, true, true, true, true, true, true] {
-            _ = controller.canvasRequestsItem(canvas, forward: forward, gesture: "Test", voiceOverScroll: !forward)
+            controller.canvasRequestsItem(canvas, forward: forward, gesture: "Test")
         }
         controller.canvasTwoFingerDoubleTap(canvas, gesture: "Test")
     }
@@ -151,26 +148,41 @@ struct RobustnessTests {
         #expect(canvas.accessibilityHint == nil)
     }
 
+    /// VoiceOver's own gestures that still mean something on the map. The
+    /// items are stepped through with two-finger swipes, which the direct
+    /// touch area hands to the map as touches, so a VoiceOver three-finger
+    /// scroll up or down does nothing there.
     @Test func voiceOverGesturesReachTheMap() async throws {
         let canvas = TactileCanvasView(frame: screen)
         let recorder = GestureRecorder()
         canvas.delegate = recorder
 
-        #expect(canvas.accessibilityScroll(.up))
-        try await Task.sleep(nanoseconds: 600_000_000)
-        recorder.itemAnswer = false
-        #expect(!canvas.accessibilityScroll(.down), "the boundary must reach VoiceOver")
-        try await Task.sleep(nanoseconds: 600_000_000)
+        #expect(!canvas.accessibilityScroll(.up))
+        #expect(!canvas.accessibilityScroll(.down))
         #expect(canvas.accessibilityScroll(.right))
         #expect(!canvas.accessibilityScroll(.left))
         try await Task.sleep(nanoseconds: 600_000_000)
         #expect(canvas.accessibilityPerformEscape())
         #expect(canvas.accessibilityPerformMagicTap())
 
-        #expect(recorder.items.map(\.forward) == [true, false])
-        #expect(recorder.items.allSatisfy { $0.voiceOverScroll })
+        #expect(recorder.items.isEmpty)
         #expect(recorder.finishes == ["VoiceOver three-finger swipe right", "VoiceOver escape"])
         #expect(recorder.twoFingerDoubleTaps == ["VoiceOver magic tap"])
+    }
+
+    /// Two fingers up or down step through the items, three to the right
+    /// finish; anything else, or too short a swipe, means nothing.
+    @Test func swipesAreReadByFingersAndDirection() {
+        let far = TactileCanvasView.swipeDistance + 10
+        #expect(TactileCanvasView.swipe(fingers: 2, dx: 5, dy: -far) == .next)
+        #expect(TactileCanvasView.swipe(fingers: 2, dx: -5, dy: far) == .previous)
+        #expect(TactileCanvasView.swipe(fingers: 2, dx: 0, dy: -30) == nil, "too short")
+        #expect(TactileCanvasView.swipe(fingers: 2, dx: far, dy: 0) == nil)
+        #expect(TactileCanvasView.swipe(fingers: 2, dx: far, dy: -far) == nil, "diagonal")
+        #expect(TactileCanvasView.swipe(fingers: 3, dx: far, dy: 5) == .finish)
+        #expect(TactileCanvasView.swipe(fingers: 3, dx: 0, dy: -far) == nil, "three fingers up no longer steps")
+        #expect(TactileCanvasView.swipe(fingers: 3, dx: -far, dy: 0) == nil)
+        #expect(TactileCanvasView.swipe(fingers: 4, dx: 0, dy: -far) == nil)
     }
 
     /// A magic tap with VoiceOver focus on the top bar ends at the app
@@ -206,9 +218,9 @@ struct RobustnessTests {
         let canvas = TactileCanvasView(frame: screen)
         let recorder = GestureRecorder()
         canvas.delegate = recorder
-        #expect(canvas.accessibilityScroll(.up))
-        #expect(canvas.accessibilityScroll(.up))
-        #expect(recorder.items.count == 1)
+        #expect(canvas.accessibilityScroll(.right))
+        #expect(canvas.accessibilityPerformEscape())
+        #expect(recorder.finishes.count == 1)
         #expect(canvas.accessibilityPerformMagicTap())
         #expect(canvas.accessibilityPerformMagicTap())
         #expect(recorder.twoFingerDoubleTaps.count == 1)

@@ -4,7 +4,10 @@
 // Feedback is a single mode at a time. Setting a new mode stops everything
 // the old one started (haptic loop, ding timer, click timer) before the new
 // one begins, so moving between elements never leaves a stray vibration or
-// sound running. Setting the mode that is already playing does nothing.
+// sound running. A vibration the new mode shares with the old one carries on
+// unbroken instead, so the route feels the same all along, over crosswalks,
+// turns and crosswalk ends. Setting the mode that is already playing does
+// nothing.
 //
 // Speech is separate. A map name cuts off the name before it; the
 // intersection descriptions are spoken through `speakTracked`, which says
@@ -32,14 +35,30 @@ final class FeedbackManager {
         case crosswalk(overRoad: Bool)
         /// Route along a crosswalk: route pulse and crosswalk clicks.
         case routeOverCrosswalk
-        /// Route turn dot: ding and a tap every 0.4 s.
+        /// Route turn dot: route pulse and a ding every 0.4 s.
         case turn
-        /// Crosswalk end dot: one ding, nothing else.
-        case crosswalkEnd
-        /// Centre of the intersection: its own two-note chime, and no vibration.
+        /// Crosswalk end dot: one ding, with the route pulse when the dot is
+        /// on the route.
+        case crosswalkEnd(onRoute: Bool)
+        /// Centre of the intersection: the road's buzz and its own two-note chime.
         case center
         /// Median: fast, sharp pulses.
         case median
+
+        /// The vibration the mode plays, if any.
+        var haptic: HapticService.Pattern? {
+            switch self {
+            case .none: return nil
+            case .road, .center: return .road
+            case .sidewalk: return .sidewalk
+            case .intersection: return .intersection
+            case .endpoint: return .endpoint
+            case .route, .routeOverCrosswalk, .turn: return .route
+            case .crosswalk(let overRoad): return overRoad ? .road : nil
+            case .crosswalkEnd(let onRoute): return onRoute ? .route : nil
+            case .median: return .median
+            }
+        }
     }
 
     private(set) var mode: Mode = .none
@@ -83,45 +102,35 @@ final class FeedbackManager {
 
     func set(_ newMode: Mode) {
         guard newMode != mode else { return }
-        stopCurrentMode()
+        stopTimers()
         mode = newMode
+        // The haptic service keeps a pattern that is already playing running,
+        // and stops the old one before starting a different one.
+        if let pattern = newMode.haptic {
+            haptics.play(pattern)
+        } else {
+            haptics.stop()
+        }
         switch newMode {
-        case .none:
+        case .none, .road, .sidewalk, .endpoint, .route, .median:
             break
-        case .road:
-            haptics.play(.road)
-        case .sidewalk:
-            haptics.play(.sidewalk)
-        case .intersection:
-            haptics.play(.intersection)
+        case .intersection, .turn:
             audio.ding()
             dingTimer = repeating(0.4) { $0.audio.ding() }
-        case .endpoint:
-            haptics.play(.endpoint)
-        case .route:
-            haptics.play(.route)
-        case .crosswalk(let overRoad):
-            if overRoad { haptics.play(.road) }
+        case .crosswalk, .routeOverCrosswalk:
             startClicks()
-        case .routeOverCrosswalk:
-            haptics.play(.route)
-            startClicks()
-        case .turn:
-            turnDing()
-            dingTimer = repeating(0.4) { $0.turnDing() }
         case .crosswalkEnd:
             audio.ding()
         case .center:
             audio.chime()
             dingTimer = repeating(0.7) { $0.audio.chime() }
-        case .median:
-            haptics.play(.median)
         }
     }
 
     /// Stops all vibration and sound. Speech already under way is left to finish.
     func stopAll() {
-        stopCurrentMode()
+        stopTimers()
+        haptics.stop()
         mode = .none
     }
 
@@ -184,12 +193,11 @@ final class FeedbackManager {
         haptics.restart()
     }
 
-    private func stopCurrentMode() {
+    private func stopTimers() {
         dingTimer?.invalidate()
         dingTimer = nil
         clickTimer?.invalidate()
         clickTimer = nil
-        haptics.stop()
     }
 
     private func startClicks() {

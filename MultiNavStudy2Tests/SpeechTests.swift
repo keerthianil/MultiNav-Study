@@ -108,23 +108,25 @@ final class SpeechTests {
     @Test func itemsPlayOneAtATimeAndStopCleanly() async throws {
         let items = InfoCategory.allCases.map { InfoItem(category: $0, text: "About \($0.title).") }
         let player = DescriptionPlayer(announcement: "You are here.", items: items, speaker: ServiceSpeaker(service))
+        let spoken = items.indices.map { player.spoken($0) }
+        #expect(spoken.last == "About Truncated domes and curb cuts. 6 of 6")
         player.toggleDetails(gesture: "Double tap")
-        for (n, item) in items.enumerated() {
-            #expect(posted.last == item.text)
+        for n in items.indices {
+            #expect(posted.last == spoken[n])
             #expect(posted.count == n + 1, "the next item is posted only after this one finishes")
-            try await voiceOverFinished(item.text, true)
+            try await voiceOverFinished(spoken[n], true)
         }
         #expect(player.playing == nil)
 
         posted.removeAll()
         player.toggleDetails(gesture: "Double tap")
-        try await voiceOverFinished(items[0].text, true)
-        #expect(posted == [items[0].text, items[1].text])
+        try await voiceOverFinished(spoken[0], true)
+        #expect(posted == [spoken[0], spoken[1]])
         player.toggleDetails(gesture: "Double tap")      // stop while item 2 plays
         #expect(posted.last == "Stopped.")
-        try await voiceOverFinished(items[1].text, false)
+        try await voiceOverFinished(spoken[1], false)
         try await voiceOverFinished("Stopped.", true)
         #expect(player.playing == nil)
-        #expect(posted == [items[0].text, items[1].text, "Stopped."], "nothing follows a stop")
+        #expect(posted == [spoken[0], spoken[1], "Stopped."], "nothing follows a stop")
     }
 }

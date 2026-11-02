@@ -21,18 +21,18 @@
     "coordinates": [
      [
       -6.91,
-      -23.91
+      -15.91
      ],
      [
       41.84,
-      -31.97
+      -23.97
      ]
     ]
    },
    "properties": {
     "name": "Union Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -44,7 +44,7 @@
     "coordinates": [
      [
       -6.91,
-      -23.91
+      -15.91
      ],
      [
       -6.91,
@@ -55,7 +55,7 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -67,18 +67,18 @@
     "coordinates": [
      [
       -6.91,
-      -23.91
+      -15.91
      ],
      [
       -41.98,
-      -21.62
+      -13.62
      ]
     ]
    },
    "properties": {
     "name": "Union Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -90,10 +90,10 @@
     "coordinates": [
      [
       -6.91,
-      -23.91
+      -15.91
      ],
      [
-      -8.19,
+      -8.41,
       -70.0
      ]
     ]
@@ -101,7 +101,7 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -112,7 +112,7 @@
     "type": "Point",
     "coordinates": [
      -6.91,
-     -23.91
+     -15.91
     ]
    },
    "properties": {
@@ -130,16 +130,16 @@
     "coordinates": [
      [
       28.0,
-      -16.4
+      -8.4
      ],
      [
       6.19,
-      -12.8
+      -4.8
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Union Street"
+    "name": "Union Street sidewalk"
    }
   },
   {
@@ -150,7 +150,7 @@
     "coordinates": [
      [
       6.19,
-      -12.8
+      -4.8
      ],
      [
       6.19,
@@ -159,7 +159,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -174,12 +174,12 @@
      ],
      [
       -20.01,
-      -9.93
+      -1.93
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -190,16 +190,16 @@
     "coordinates": [
      [
       -20.01,
-      -9.93
+      -1.93
      ],
      [
       -28.0,
-      -9.41
+      -1.41
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Union Street"
+    "name": "Union Street sidewalk"
    }
   },
   {
@@ -210,16 +210,16 @@
     "coordinates": [
      [
       -28.0,
-      -35.66
+      -27.66
      ],
      [
       -20.35,
-      -36.16
+      -28.16
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Union Street"
+    "name": "Union Street sidewalk"
    }
   },
   {
@@ -230,16 +230,16 @@
     "coordinates": [
      [
       -20.35,
-      -36.16
+      -28.16
      ],
      [
-      -20.9,
+      -21.13,
       -56.0
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -249,17 +249,17 @@
     "type": "LineString",
     "coordinates": [
      [
-      5.31,
+      5.08,
       -56.0
      ],
      [
       5.77,
-      -39.28
+      -31.28
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -270,16 +270,16 @@
     "coordinates": [
      [
       5.77,
-      -39.28
+      -31.28
      ],
      [
       28.0,
-      -42.96
+      -34.96
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Union Street"
+    "name": "Union Street sidewalk"
    }
   },
   {
@@ -290,18 +290,19 @@
     "coordinates": [
      [
       5.77,
-      -39.28
+      -31.28
      ],
      [
       6.19,
-      -12.8
+      -4.8
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Union Street",
+    "name": "Union Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Union Street",
      "endpoints": "both"
     }
    }
@@ -314,18 +315,19 @@
     "coordinates": [
      [
       6.19,
-      -12.8
+      -4.8
      ],
      [
       -20.01,
-      -0.93
+      7.07
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Fore Street",
+    "name": "Fore Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Fore Street",
      "endpoints": "both"
     }
    }
@@ -338,18 +340,19 @@
     "coordinates": [
      [
       -20.01,
-      -9.93
+      -1.93
      ],
      [
       -20.35,
-      -36.16
+      -28.16
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Union Street",
+    "name": "Union Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Union Street",
      "endpoints": "both"
     }
    }
@@ -362,18 +365,19 @@
     "coordinates": [
      [
       -20.35,
-      -36.16
+      -28.16
      ],
      [
       5.77,
-      -39.28
+      -31.28
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Fore Street",
+    "name": "Fore Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Fore Street",
      "endpoints": "both"
     }
    }
@@ -386,19 +390,15 @@
     "coordinates": [
      [
       -20.01,
-      15.07
-     ],
-     [
-      -20.01,
-      -0.93
+      7.07
      ],
      [
       6.19,
-      -12.8
+      -4.8
      ],
      [
       20.0,
-      -15.08
+      -7.08
      ]
     ]
    },
@@ -411,27 +411,13 @@
    }
   },
   {
-   "id": "turn_0",
-   "type": "turn",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -20.01,
-     -0.93
-    ]
-   },
-   "properties": {
-    "name": "Turn"
-   }
-  },
-  {
    "id": "crosswalk_end_0",
    "type": "crosswalk_end",
    "geometry": {
     "type": "Point",
     "coordinates": [
      5.77,
-     -39.28
+     -31.28
     ]
    },
    "properties": {
@@ -445,7 +431,7 @@
     "type": "Point",
     "coordinates": [
      6.19,
-     -12.8
+     -4.8
     ]
    },
    "properties": {
@@ -459,7 +445,7 @@
     "type": "Point",
     "coordinates": [
      -20.01,
-     -9.93
+     -1.93
     ]
    },
    "properties": {
@@ -473,7 +459,7 @@
     "type": "Point",
     "coordinates": [
      -20.35,
-     -36.16
+     -28.16
     ]
    },
    "properties": {

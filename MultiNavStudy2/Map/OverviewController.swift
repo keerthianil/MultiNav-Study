@@ -7,7 +7,8 @@
 //                                or "End of route: Your destination, ..."
 //   intersection (red square)    slow pulse and a ding, "Intersection 1: 4-way
 //                                intersection of ..."
-//   route (cyan)                 rhythmic pulse, "Route"
+//   route (cyan)                 rhythmic pulse, the street it runs along:
+//                                "Route on Fore Street"
 //   street (blue)                steady heavy buzz, street name
 // The route overview plays when the map opens. A double tap or a two-finger
 // double tap plays it again, or stops it while it plays. Three-finger swipe
@@ -37,7 +38,8 @@ final class OverviewController: StudyMapController {
         case none
         case endpoint(Int)
         case node(Int)
-        case route
+        /// The route, with the street it runs along there.
+        case route(String)
         case street(Int)
     }
 
@@ -118,7 +120,7 @@ final class OverviewController: StudyMapController {
         }
         if let bestNode { return .node(bestNode.index) }
         if MapGeometry.polylineDistance(p, map.route) <= h.route + slack {
-            return .route
+            return .route(map.routeStreet(near: p))
         }
         var bestStreet: (index: Int, distance: CGFloat)?
         for (i, street) in map.streets.enumerated() {
@@ -136,8 +138,8 @@ final class OverviewController: StudyMapController {
         switch hit {
         case .street(let i):
             return MapGeometry.polylineDistance(p, map.streets[i].points) <= MapStyle.Hit.overviewRoad + slack
-        case .route:
-            return MapGeometry.polylineDistance(p, map.route) <= MapStyle.Hit.route + slack
+        case .route(let street):
+            return map.routeDistance(p, on: street) <= MapStyle.Hit.route + slack
         default:
             return false
         }
@@ -160,7 +162,7 @@ final class OverviewController: StudyMapController {
         case .none: return nil
         case .endpoint(let i): return map.endpoints[i].announcement
         case .node(let i): return map.nodes[i].cue
-        case .route: return "Route"
+        case .route(let street): return street.isEmpty ? "Route" : "Route on \(street)"
         case .street(let i): return map.streets[i].name
         }
     }
@@ -189,7 +191,7 @@ final class OverviewController: StudyMapController {
         case .none: return "Background"
         case .endpoint(let i): return map.endpoints[i].kind == .start ? "Route Start" : "Route End"
         case .node(let i): return map.nodes[i].name
-        case .route: return "Route"
+        case .route(let street): return street.isEmpty ? "Route" : "Route on \(street)"
         case .street(let i): return map.streets[i].name
         }
     }
@@ -246,11 +248,9 @@ final class OverviewController: StudyMapController {
         player.toggleAnnouncement(gesture: gesture)
     }
 
-    func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
-                            voiceOverScroll: Bool) -> Bool {
+    func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String) {
         log.event(.gesture, gesture, detail: "No information items on an overview")
-        if !voiceOverScroll { feedback.boundary() }
-        return false
+        feedback.boundary()
     }
 
     func canvasRequestsFinish(_ canvas: TactileCanvasView, gesture: String) {

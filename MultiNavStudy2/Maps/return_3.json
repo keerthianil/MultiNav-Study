@@ -21,18 +21,18 @@
     "coordinates": [
      [
       6.93,
-      -23.05
+      -16.01
      ],
      [
       41.79,
-      -29.59
+      -22.55
      ]
     ]
    },
    "properties": {
     "name": "Commercial Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -44,7 +44,7 @@
     "coordinates": [
      [
       6.93,
-      -23.05
+      -16.01
      ],
      [
       6.93,
@@ -55,7 +55,7 @@
    "properties": {
     "name": "Union Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -67,18 +67,18 @@
     "coordinates": [
      [
       6.93,
-      -23.05
+      -16.01
      ],
      [
       -41.89,
-      -16.27
+      -9.23
      ]
     ]
    },
    "properties": {
     "name": "Commercial Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -90,10 +90,10 @@
     "coordinates": [
      [
       6.93,
-      -23.05
+      -16.01
      ],
      [
-      6.23,
+      6.13,
       -70.0
      ]
     ]
@@ -101,7 +101,7 @@
    "properties": {
     "name": "Union Wharf",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -112,7 +112,7 @@
     "type": "Point",
     "coordinates": [
      6.93,
-     -23.05
+     -16.01
     ]
    },
    "properties": {
@@ -130,16 +130,16 @@
     "coordinates": [
      [
       28.0,
-      -13.67
+      -6.63
      ],
      [
       20.03,
-      -12.18
+      -5.14
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Commercial Street"
+    "name": "Commercial Street sidewalk"
    }
   },
   {
@@ -150,7 +150,7 @@
     "coordinates": [
      [
       20.03,
-      -12.18
+      -5.14
      ],
      [
       20.03,
@@ -159,7 +159,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Union Street"
+    "name": "Union Street sidewalk"
    }
   },
   {
@@ -174,12 +174,12 @@
      ],
      [
       -6.17,
-      -8.0
+      -0.96
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Union Street"
+    "name": "Union Street sidewalk"
    }
   },
   {
@@ -190,16 +190,16 @@
     "coordinates": [
      [
       -6.17,
-      -8.0
+      -0.96
      ],
      [
       -28.0,
-      -4.97
+      2.07
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Commercial Street"
+    "name": "Commercial Street sidewalk"
    }
   },
   {
@@ -210,16 +210,16 @@
     "coordinates": [
      [
       -28.0,
-      -31.42
+      -24.38
      ],
      [
       -6.34,
-      -34.43
+      -27.39
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Commercial Street"
+    "name": "Commercial Street sidewalk"
    }
   },
   {
@@ -230,16 +230,16 @@
     "coordinates": [
      [
       -6.34,
-      -34.43
+      -27.39
      ],
      [
-      -6.66,
+      -6.77,
       -56.0
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Union Wharf"
+    "name": "Union Wharf sidewalk"
    }
   },
   {
@@ -249,17 +249,17 @@
     "type": "LineString",
     "coordinates": [
      [
-      19.54,
+      19.44,
       -56.0
      ],
      [
       19.8,
-      -38.79
+      -31.75
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Union Wharf"
+    "name": "Union Wharf sidewalk"
    }
   },
   {
@@ -270,16 +270,16 @@
     "coordinates": [
      [
       19.8,
-      -38.79
+      -31.75
      ],
      [
       28.0,
-      -40.33
+      -33.29
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Commercial Street"
+    "name": "Commercial Street sidewalk"
    }
   },
   {
@@ -290,18 +290,19 @@
     "coordinates": [
      [
       19.8,
-      -38.79
+      -31.75
      ],
      [
       20.03,
-      -12.18
+      -5.14
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Commercial Street",
+    "name": "Commercial Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Commercial Street",
      "endpoints": "both"
     }
    }
@@ -314,18 +315,19 @@
     "coordinates": [
      [
       20.03,
-      -8.0
+      -0.96
      ],
      [
       -6.17,
-      -8.0
+      -0.96
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Union Street",
+    "name": "Union Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Union Street",
      "endpoints": "both"
     }
    }
@@ -338,18 +340,19 @@
     "coordinates": [
      [
       -6.17,
-      -8.0
+      -0.96
      ],
      [
       -6.34,
-      -34.43
+      -27.39
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Commercial Street",
+    "name": "Commercial Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Commercial Street",
      "endpoints": "both"
     }
    }
@@ -362,18 +365,19 @@
     "coordinates": [
      [
       -6.34,
-      -34.43
+      -27.39
      ],
      [
       19.8,
-      -38.79
+      -31.75
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Union Wharf",
+    "name": "Union Wharf crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Union Wharf",
      "endpoints": "both"
     }
    }
@@ -386,19 +390,15 @@
     "coordinates": [
      [
       20.03,
-      8.0
-     ],
-     [
-      20.03,
-      -8.0
+      -0.96
      ],
      [
       -6.17,
-      -8.0
+      -0.96
      ],
      [
       -20.04,
-      -6.08
+      0.96
      ]
     ]
    },
@@ -411,27 +411,13 @@
    }
   },
   {
-   "id": "turn_0",
-   "type": "turn",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     20.03,
-     -8.0
-    ]
-   },
-   "properties": {
-    "name": "Turn"
-   }
-  },
-  {
    "id": "crosswalk_end_0",
    "type": "crosswalk_end",
    "geometry": {
     "type": "Point",
     "coordinates": [
      19.8,
-     -38.79
+     -31.75
     ]
    },
    "properties": {
@@ -445,7 +431,7 @@
     "type": "Point",
     "coordinates": [
      -6.17,
-     -8.0
+     -0.96
     ]
    },
    "properties": {
@@ -459,7 +445,7 @@
     "type": "Point",
     "coordinates": [
      -6.34,
-     -34.43
+     -27.39
     ]
    },
    "properties": {

@@ -209,6 +209,46 @@
     "coordinates": [
      [
       17.5,
+      73.5
+     ],
+     [
+      8.5,
+      73.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Long Wharf"
+   }
+  },
+  {
+   "id": "cross_4",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.5,
+      73.5
+     ],
+     [
+      17.5,
+      82.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Commercial Street"
+   }
+  },
+  {
+   "id": "cross_5",
+   "type": "corridor",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      17.5,
       47.0
      ],
      [
@@ -222,7 +262,7 @@
    }
   },
   {
-   "id": "cross_4",
+   "id": "cross_6",
    "type": "corridor",
    "geometry": {
     "type": "LineString",
@@ -242,7 +282,7 @@
    }
   },
   {
-   "id": "cross_5",
+   "id": "cross_7",
    "type": "corridor",
    "geometry": {
     "type": "LineString",
@@ -262,7 +302,7 @@
    }
   },
   {
-   "id": "cross_6",
+   "id": "cross_8",
    "type": "corridor",
    "geometry": {
     "type": "LineString",
@@ -282,7 +322,7 @@
    }
   },
   {
-   "id": "cross_7",
+   "id": "cross_9",
    "type": "corridor",
    "geometry": {
     "type": "LineString",
@@ -306,7 +346,7 @@
    }
   },
   {
-   "id": "cross_8",
+   "id": "cross_10",
    "type": "corridor",
    "geometry": {
     "type": "LineString",
@@ -362,6 +402,23 @@
    }
   },
   {
+   "id": "node_commercial_street_and_moulton_street",
+   "type": "intersection",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.5,
+     73.5
+    ]
+   },
+   "properties": {
+    "name": "Commercial Street and Moulton Street",
+    "custom": {
+     "cue": "4-way intersection of Commercial Street, Moulton Street, and Long Wharf."
+    }
+   }
+  },
+  {
    "id": "node_3",
    "type": "intersection",
    "geometry": {
@@ -410,7 +467,7 @@
    "properties": {
     "name": "Intersection 5",
     "custom": {
-     "cue": "Intersection 5: 5-way intersection of Fore Street, Center Street, and York Street.",
+     "cue": "Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street.",
      "number": "5"
     }
    }
@@ -459,7 +516,8 @@
     "name": "Route overview",
     "custom": {
      "start_text": "Start of route: You are here, at Dock Fore, 336 Fore Street.",
-     "end_text": "End of route: Your destination, Gorham's Corner."
+     "end_text": "End of route: Your destination, Gorham's Corner.",
+     "streets": "Fore Street|Fore Street|Moulton Street|Commercial Street|Union Street|Fore Street|York Street"
     }
    }
   },

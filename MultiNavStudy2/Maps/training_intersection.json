@@ -32,7 +32,7 @@
    "properties": {
     "name": "Pear Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -55,7 +55,7 @@
    "properties": {
     "name": "Apple Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -78,7 +78,7 @@
    "properties": {
     "name": "Pear Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -101,7 +101,7 @@
    "properties": {
     "name": "Apple Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -139,7 +139,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Pear Street"
+    "name": "Pear Street sidewalk"
    }
   },
   {
@@ -159,7 +159,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Apple Street"
+    "name": "Apple Street sidewalk"
    }
   },
   {
@@ -179,7 +179,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Apple Street"
+    "name": "Apple Street sidewalk"
    }
   },
   {
@@ -199,7 +199,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Pear Street"
+    "name": "Pear Street sidewalk"
    }
   },
   {
@@ -219,7 +219,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Pear Street"
+    "name": "Pear Street sidewalk"
    }
   },
   {
@@ -239,7 +239,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Apple Street"
+    "name": "Apple Street sidewalk"
    }
   },
   {
@@ -259,7 +259,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Apple Street"
+    "name": "Apple Street sidewalk"
    }
   },
   {
@@ -279,7 +279,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Pear Street"
+    "name": "Pear Street sidewalk"
    }
   },
   {
@@ -299,9 +299,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Pear Street",
+    "name": "Pear Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Pear Street",
      "endpoints": "both"
     }
    }
@@ -323,9 +324,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Apple Street",
+    "name": "Apple Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Apple Street",
      "endpoints": "both"
     }
    }
@@ -347,9 +349,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Pear Street",
+    "name": "Pear Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Pear Street",
      "endpoints": "both"
     }
    }
@@ -371,9 +374,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Apple Street",
+    "name": "Apple Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Apple Street",
      "endpoints": "both"
     }
    }
@@ -386,7 +390,7 @@
     "coordinates": [
      [
       13.1,
-      29.1
+      13.1
      ],
      [
       13.1,
@@ -432,20 +436,6 @@
   },
   {
    "id": "crosswalk_end_2",
-   "type": "crosswalk_end",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     13.1,
-     13.1
-    ]
-   },
-   "properties": {
-    "name": "Crosswalk end"
-   }
-  },
-  {
-   "id": "crosswalk_end_3",
    "type": "crosswalk_end",
    "geometry": {
     "type": "Point",

@@ -32,7 +32,7 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -55,7 +55,7 @@
    "properties": {
     "name": "Silver Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -78,7 +78,7 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -101,7 +101,7 @@
    "properties": {
     "name": "Silver Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -185,7 +185,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -205,7 +205,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Silver Street"
+    "name": "Silver Street sidewalk"
    }
   },
   {
@@ -225,7 +225,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Silver Street"
+    "name": "Silver Street sidewalk"
    }
   },
   {
@@ -245,7 +245,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -265,7 +265,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -285,7 +285,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Silver Street"
+    "name": "Silver Street sidewalk"
    }
   },
   {
@@ -305,7 +305,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Silver Street"
+    "name": "Silver Street sidewalk"
    }
   },
   {
@@ -325,7 +325,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -345,9 +345,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Fore Street",
+    "name": "Fore Street crosswalk",
     "custom": {
      "marking": "unmarked",
+     "street": "Fore Street",
      "endpoints": "start"
     }
    }
@@ -369,9 +370,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Fore Street",
+    "name": "Fore Street crosswalk",
     "custom": {
      "marking": "unmarked",
+     "street": "Fore Street",
      "endpoints": "end"
     }
    }
@@ -393,9 +395,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Silver Street",
+    "name": "Silver Street crosswalk",
     "custom": {
      "marking": "unmarked",
+     "street": "Silver Street",
      "endpoints": "both"
     }
    }
@@ -417,9 +420,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Fore Street",
+    "name": "Fore Street crosswalk",
     "custom": {
      "marking": "unmarked",
+     "street": "Fore Street",
      "endpoints": "start"
     }
    }
@@ -441,9 +445,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Fore Street",
+    "name": "Fore Street crosswalk",
     "custom": {
      "marking": "unmarked",
+     "street": "Fore Street",
      "endpoints": "end"
     }
    }
@@ -465,9 +470,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Silver Street",
+    "name": "Silver Street crosswalk",
     "custom": {
      "marking": "unmarked",
+     "street": "Silver Street",
      "endpoints": "both"
     }
    }
@@ -478,10 +484,6 @@
    "geometry": {
     "type": "LineString",
     "coordinates": [
-     [
-      -13.1,
-      28.76
-     ],
      [
       -13.1,
       12.76
@@ -518,26 +520,12 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -13.1,
-     12.76
-    ]
-   },
-   "properties": {
-    "name": "Turn"
-   }
-  },
-  {
-   "id": "turn_1",
-   "type": "turn",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      16.83,
      13.27
     ]
    },
    "properties": {
-    "name": "Turn"
+    "name": "Turn left"
    }
   },
   {

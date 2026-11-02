@@ -3,22 +3,23 @@
 // the participant walks in is up, with the walking path through it.
 //
 // Under the finger, in priority order:
-//   turn (orange dot)           repeating ding and tap, "Turn"
-//   crosswalk end (pink dot)    one ding
+//   turn (orange dot)           route pulse and a repeating ding, "Turn left" / "Turn right"
+//   crosswalk end (pink dot)    one ding, with the route pulse when on the route
 //   route start / end (yellow)  fast pulse, "You are here" / "End of intersection route"
 //   median (green)              fast, sharp pulses, "Median", also where the
 //                               route crosses it, between the two stages
-//   route on a crosswalk        route pulse and crosswalk clicks, "Crosswalk across ..."
+//   route on a crosswalk        route pulse and crosswalk clicks, "Route crossing ..."
 //   route (cyan)                rhythmic pulse, "Route"
-//   centre of the intersection  two-note chime and no vibration, "Center"
-//   crosswalk (white)           clicks, with the road buzz under them, "Crosswalk across ..."
-//   sidewalk (grey)             softer steady buzz, "Sidewalk along ..."
+//   centre of the intersection  the road's buzz and a two-note chime, "Center"
+//   crosswalk (white)           clicks, with the road buzz under them, "... crosswalk"
+//   sidewalk (grey)             softer steady buzz, "... sidewalk"
 //   road (blue)                 heavy buzz, street name
-// The centre and the median always work, whatever information items the
-// researcher has switched off.
+// The route keeps one vibration from start to end except at its two ends
+// and the median. The centre and the median always work, whatever
+// information items the researcher has switched off.
 //
 // Gestures: double tap plays or stops the information items, two-finger
-// double tap plays the announcement again or stops it, three-finger swipe up
+// double tap plays the announcement again or stops it, two-finger swipe up
 // and down move between items, and three-finger swipe right (or the
 // VoiceOver escape) tells the app the participant is ready to cross.
 // While the announcement or an item plays, map names are held back so they
@@ -116,11 +117,11 @@ final class IntersectionController: StudyMapController {
             context.strokeEllipse(in: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r))
         }
         for end in map.crosswalkEnds {
-            MapDrawing.dot(at: t.point(end), diameter: t.length(style.crosswalkEndDiameter),
+            MapDrawing.dot(at: t.point(end.position), diameter: t.length(style.crosswalkEndDiameter),
                            border: t.length(style.dotBorder), color: MapStyle.crosswalkEndPink, in: context)
         }
         for turn in map.turns {
-            MapDrawing.dot(at: t.point(turn), diameter: t.length(style.turnDiameter),
+            MapDrawing.dot(at: t.point(turn.position), diameter: t.length(style.turnDiameter),
                            border: t.length(style.dotBorder), color: MapStyle.turnOrange, in: context)
         }
         for endpoint in map.endpoints {
@@ -142,10 +143,12 @@ final class IntersectionController: StudyMapController {
 
     private func rawHit(at p: CGPoint, slack: CGFloat = 0) -> Hit {
         let h = MapStyle.Hit.self
-        if let i = map.turns.firstIndex(where: { MapGeometry.distance(p, $0) <= h.turn + slack }) {
+        if let i = map.turns.firstIndex(where: { MapGeometry.distance(p, $0.position) <= h.turn + slack }) {
             return .turn(i)
         }
-        if let i = map.crosswalkEnds.firstIndex(where: { MapGeometry.distance(p, $0) <= h.crosswalkEnd + slack }) {
+        if let i = map.crosswalkEnds.firstIndex(where: {
+            MapGeometry.distance(p, $0.position) <= h.crosswalkEnd + slack
+        }) {
             return .crosswalkEnd(i)
         }
         if let i = map.endpoints.firstIndex(where: { MapGeometry.distance(p, $0.position) <= h.endpoint + slack }) {
@@ -220,7 +223,7 @@ final class IntersectionController: StudyMapController {
         switch hit {
         case .none: feedback.set(.none)
         case .turn: feedback.set(.turn)
-        case .crosswalkEnd: feedback.set(.crosswalkEnd)
+        case .crosswalkEnd(let i): feedback.set(.crosswalkEnd(onRoute: map.crosswalkEnds[i].onRoute))
         case .endpoint(let i):
             feedback.set(.endpoint)
             if map.endpoints[i].kind == .end { announcedEnd = true }
@@ -248,9 +251,9 @@ final class IntersectionController: StudyMapController {
     private func name(of hit: Hit) -> String? {
         switch hit {
         case .none, .crosswalkEnd: return nil
-        case .turn: return "Turn"
+        case .turn(let i): return map.turns[i].cue
         case .endpoint(let i): return map.endpoints[i].announcement
-        case .routeOnCrosswalk(let i): return map.crosswalks[i].name
+        case .routeOnCrosswalk(let i): return "Route crossing \(map.crosswalks[i].street)"
         case .route: return "Route"
         case .center: return "Center"
         case .crosswalk(let i, _): return map.crosswalks[i].name
@@ -338,10 +341,9 @@ final class IntersectionController: StudyMapController {
         player.toggleAnnouncement(gesture: gesture)
     }
 
-    func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String,
-                            voiceOverScroll: Bool) -> Bool {
+    func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String) {
         log.event(.gesture, gesture)
-        return player.step(forward: forward, gesture: gesture, voiceOverScroll: voiceOverScroll)
+        player.step(forward: forward, gesture: gesture)
     }
 
     func canvasRequestsFinish(_ canvas: TactileCanvasView, gesture: String) {

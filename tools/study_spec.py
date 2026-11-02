@@ -45,6 +45,9 @@ AREA = {"osm": "osm/old_port_area.json", "origin": (43.6560, -70.2540)}
 START_TEXT = "You are here"
 END_TEXT = "End of intersection route"
 
+# What a turn dot says, by the way the route turns there (team, 10/30).
+TURN_TEXT = {"left": "Turn left", "right": "Turn right"}
+
 
 def items(*texts):
     """The six information items, in category order."""
@@ -56,9 +59,11 @@ def items(*texts):
 #
 # Schematic maps, not to scale, laid out like the team's mockups. Each walk is
 # a list of legs from the start: a screen direction (degrees clockwise from
-# up) and a length in mm, ending at a node. Nodes are intersections (a red
-# square with a spoken cue), plain corners, or the end. Stubs are the streets
-# the walk does not follow, each with a direction and a name.
+# up) and a length in mm along a street, ending at a node. The route says
+# which street it is on ("Route on Fore Street"). Nodes are intersections (a
+# red square with a spoken cue, numbered when it is one of the study's), plain
+# corners, or the end. Stubs are the streets the walk does not follow, each
+# with a direction and a name.
 
 TRAINING_OVERVIEW = {
     "id": "training_overview",
@@ -97,8 +102,7 @@ ROUTE_OVERVIEW = {
     "title": "Route overview",
     "subtitle": "Dock Fore to Gorham's Corner",
     "description": ("Your route to Gorham's Corner is approximately 0.5 miles away, primarily travelling "
-                    "Southwest. There are 5 intersections along the route, with 7 turns and 6 total "
-                    "street crossings."),
+                    "Southwest. There are 5 intersection crossings along the route."),
     "start": {"at": (42.0, 106.0), "text": "Start of route: You are here, at Dock Fore, 336 Fore Street.",
               "label": "Start of Route", "label_side": "left"},
     # Drawn with southwest at the top, the way the walk goes.
@@ -111,7 +115,12 @@ ROUTE_OVERVIEW = {
             "kind": "intersection", "number": 2,
             "text": "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street.",
             "stubs": [(0, 9.0, "Fore Street"), (90, 9.0, "Exchange Street")]}},
-        {"dir": 270, "len": 24.5, "street": "Moulton Street", "node": {"kind": "corner"}},
+        # Not one of the study's intersections, so no number. Long Wharf
+        # leaves Commercial Street opposite Moulton Street.
+        {"dir": 270, "len": 24.5, "street": "Moulton Street", "node": {
+            "kind": "intersection", "name": "Commercial Street and Moulton Street",
+            "text": "4-way intersection of Commercial Street, Moulton Street, and Long Wharf.",
+            "stubs": [(270, 9.0, "Long Wharf"), (180, 9.0, "Commercial Street")]}},
         {"dir": 0, "len": 26.5, "street": "Commercial Street", "node": {
             "kind": "intersection", "number": 3,
             "text": "Intersection 3: 4-way intersection of Commercial Street and Union Street.",
@@ -122,7 +131,8 @@ ROUTE_OVERVIEW = {
             "stubs": [(90, 9.0, "Union Street"), (180, 9.0, "Fore Street")]}},
         {"dir": 0, "len": 24.0, "street": "Fore Street", "node": {
             "kind": "intersection", "number": 5,
-            "text": "Intersection 5: 5-way intersection of Fore Street, Center Street, and York Street.",
+            "text": ("Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and "
+                     "Pleasant Street."),
             "stubs": [(270, 9.0, "Center Street"), (90, 9.0, "Center Street"), (0, 9.0, "Pleasant Street")]}},
         {"dir": 315, "len": 21.0, "street": "York Street", "node": {"kind": "end"}},
     ],
@@ -223,12 +233,16 @@ TRAINING_JUNCTION = {
 # ================================================================ stops
 #
 # in / out  the arm walked in along and out along, with the side of the
-#           street; "via" picks the way round when both are the same length
+#           street; "via" picks the way round when both are the same length.
+#           The walk starts at the corner, where its first crosswalk begins,
+#           since participants are lined up there before they get the map.
 # up        the map is turned so the way the participant walks in is up;
 #           "heading": "first_crossing" faces the first crossing instead,
 #           for the return, which starts at Gorham's Corner
 # path      the offset intersection: "near_to_far" crosses from the Exchange
 #           Street side to the Moulton Street side, "far_to_near" back
+# turns     the way the walk turns at each turn dot, in order; the build
+#           stops if the drawn walk turns differently
 
 STOPS = [
     {
@@ -268,6 +282,7 @@ STOPS = [
         "title": "Intersection 1", "subtitle": "Fore Street and Silver Street",
         "junction": "silver",
         "in": ("Fore Street@47", "southeast"), "out": ("Fore Street@242", "northwest"), "via": "ccw",
+        "turns": ["left"],
         "announcement": ("You are at the 4-way intersection of Fore Street and Silver Street. Your route first "
                          "crosses Fore Street and then turns left to cross Silver Street, then continues along "
                          "the other side of Fore Street."),
@@ -303,6 +318,7 @@ STOPS = [
         "title": "Intersection 3", "subtitle": "Commercial Street and Union Street",
         "junction": "commercial_union",
         "in": ("Commercial Street@47", "northwest"), "out": ("Union Street@325", "southwest"),
+        "turns": ["right"],
         "announcement": ("You are at the 4-way intersection of Commercial Street and Union Street. Your route "
                          "crosses Union Street, then continues right along Union Street."),
         "items": items(
@@ -319,6 +335,7 @@ STOPS = [
         "title": "Intersection 4", "subtitle": "Union Street and Fore Street",
         "junction": "union_fore",
         "in": ("Union Street@144", "southwest"), "out": ("Fore Street@243", "northwest"),
+        "turns": ["left"],
         "announcement": ("You are at the 4-way intersection of Union Street and Fore Street. Your route crosses "
                          "Fore Street, then continues left along the other side of Fore Street."),
         "items": items(
@@ -338,9 +355,10 @@ STOPS = [
         "title": "Intersection 5", "subtitle": "Fore Street, Center Street and York Street",
         "junction": "gorhams_corner",
         "in": ("Fore Street@55", "northwest"), "out": ("York Street@191", "east"), "end_gap": 6.0,
-        "announcement": ("You are at the 5-way intersection of Fore Street, Center Street, and York Street. Your "
-                         "route first crosses Fore Street, then turns right to cross Center Street, and continues "
-                         "along York Street to your destination."),
+        "turns": ["right"],
+        "announcement": ("You are at the 5-way intersection of Fore Street, Center Street, York Street, and "
+                         "Pleasant Street. Your route first crosses Fore Street, then turns right to cross Center "
+                         "Street, and continues along York Street to your destination."),
         "items": items(
             "This intersection has 5 legs, with York Street intersecting Fore Street and Center Street at a "
             "45-degree angle.",
@@ -356,8 +374,9 @@ STOPS = [
     {
         "id": "return_5", "phase": "trial2", "log_id": "Reversed intersection 5",
         "title": "Reversed intersection 5", "subtitle": "Center Street, Fore Street and York Street",
-        "junction": "gorhams_corner", "heading": "first_crossing", "start_gap": 6.0,
+        "junction": "gorhams_corner", "heading": "first_crossing",
         "in": ("York Street@191", "east"), "out": ("Fore Street@55", "northwest"),
+        "turns": ["left", "right"],
         "announcement": ("You are at the 5-way intersection of Center Street, Fore Street, and York Street. Your "
                          "route first crosses Center Street, then turns left to cross Fore Street, and continues "
                          "along Fore Street."),
@@ -412,6 +431,7 @@ STOPS = [
         "title": "Reversed intersection 2", "subtitle": "Moulton Street, Fore Street and Exchange Street",
         "junction": "exchange_moulton",
         "path": "far_to_near",
+        "turns": ["right"],
         "announcement": ("You are at the 4-way intersection of Moulton Street, Fore Street, and Exchange Street. "
                          "Your route crosses Fore Street, then continues right along Fore Street."),
         "items": items(
@@ -429,6 +449,7 @@ STOPS = [
         "title": "Reversed intersection 1", "subtitle": "Fore Street and Silver Street",
         "junction": "silver",
         "in": ("Fore Street@242", "northwest"), "out": ("Fore Street@47", "southeast"), "via": "cw",
+        "turns": ["right", "left"],
         "announcement": ("You are at the 4-way intersection of Fore Street and Silver Street. Your route first "
                          "crosses Silver Street and then turns right to cross Fore Street."),
         "items": items(
@@ -448,10 +469,15 @@ TEAM_NOTES = [
     "The requirements list seven optional items, including Intersection features (medians, bike lanes, "
     "islands). The 10/28 descriptions give text for six, so the app has six switches; the median at Fore "
     "and Silver is described in items 1 and 5.",
-    "The route overview says 6 total street crossings. The five intersection descriptions add up to 7 "
-    "(Fore and Silver at 1, Fore at 2, Union at 3, Fore at 4, Fore and Center at 5). Between them the walk "
-    "also crosses Market Street (between 1 and 2), Wharf Street (on Moulton Street and on Union Street), and "
-    "Cross Street and Cotton Street (between 4 and 5).",
+    "Route overview: the square added at Commercial Street and Moulton Street has no number and says \"4-way "
+    "intersection of Commercial Street, Moulton Street, and Long Wharf.\" Its legs are Long Wharf, opposite "
+    "Moulton Street, and Commercial Street.",
+    "Turn dots: intersections 3 and 4 were not in the 10/30 list but each keeps its turn after the crossing. "
+    "They say \"Turn right\" at 3 and \"Turn left\" at 4, as their announcements continue right and left.",
+    "Reversed intersection 5: the announcement still names three streets; the 10/30 update added Pleasant "
+    "Street to intersection 5 only.",
+    "In Trial 2 the count after each item covers only the items switched on, for example \"1 of 5\" with one "
+    "item off.",
     "Pearl Street: the Fore Street leg toward Silver Street is split by the tip of the Boothby Square island, "
     "crossed on paving stones. The practice map shows it as a median; the description calls the "
     "intersection plus-shaped.",

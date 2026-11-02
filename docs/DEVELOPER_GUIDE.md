@@ -35,7 +35,7 @@ docs/                         this guide, STUDY.md, map previews
 | `Screens/MapScreen.swift` | a map full screen, with Done, the title and (Trial 2) the information items sheet |
 | `Screens/MapVisit.swift` | one visit: starts the session if needed, plays the announcement when the map opens, times the visit, counts plays, writes the visit row when it ends |
 | `Map/DescriptionPlayer.swift` | the announcement and the information items: play, stop, start over, step forward and back, carry on to the next item |
-| `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps, double taps, two-finger double taps and three-finger swipes, VoiceOver direct touch, magic tap, scroll and escape |
+| `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps, double taps, two-finger double taps, two-finger swipes up and down and the three-finger swipe right, VoiceOver direct touch, magic tap, scroll and escape |
 | `Map/OverviewController.swift` | route overviews: drawing, hit-testing, feedback, gestures |
 | `Map/IntersectionController.swift` | intersection maps: drawing, hit-testing, feedback, gestures |
 | `Map/StudyMapController.swift` | what the map screen needs from either controller |
@@ -54,7 +54,7 @@ docs/                         this guide, STUDY.md, map previews
 ## Coordinates
 
 Everything on a map is in **millimetres on the glass**. `MapTransform` turns millimetres into points with
-`PhysicalDimensions.mmToPoints`, so a 12 mm road is 12 mm wide on every iPhone.
+`PhysicalDimensions.mmToPoints`, so an 18 mm road is 18 mm wide on every iPhone.
 
 * Overviews have their origin at the top left, y down, inside a 60 by 116 mm reference area (a 6.1 inch iPhone
   below the navigation bar).
@@ -81,31 +81,35 @@ touch, or if a route end falls off the screen.
 
 ### Overviews
 
-Each overview is a list of legs from the start, each a screen direction and a length in mm ending at an
-intersection (red square with its spoken cue), a plain corner or the end. Stubs are the streets the walk does
-not follow. The layouts follow the team's mockups and are not to scale.
+Each overview is a list of legs from the start, each a screen direction and a length in mm along a street,
+ending at an intersection (red square with its spoken cue, numbered when it is one of the study's), a plain
+corner or the end. The route carries the street of each leg (`streets`), so touching it says "Route on Fore
+Street". Stubs are the streets the walk does not follow. The layouts follow the team's mockups and are not to
+scale.
 
 ### Intersection maps
 
 * **Arms** come from OpenStreetMap at their true bearings, with the names the team uses (`rename`).
 * **Orientation**: the map is turned so the arm walked in on points down and the walk goes up. The return at
   Gorham's Corner, which starts at the corner, faces its first crossing instead (`"heading": "first_crossing"`).
-* **Roads** are 12 mm wide and run off the screen. Sidewalk centre lines run 13.1 mm from each road's centre
-  and meet at the corners.
+* **Roads** are 18 mm wide and run off the screen. Sidewalk centre lines run 13.1 mm from each road's centre
+  and meet at the corners, leaving about 2 mm between road and sidewalk.
 * **Crosswalks** run corner to corner on the legs listed in the spec. `straight` squares one up when its ends
   are more than 2 mm uneven; `skew` moves one end further out along its arm, for the crosswalks the team
   describes as angled. A leg with a `median` gets a green strip from just inside its crosswalk outwards, and
   its crosswalk is split in two around it.
 * **The walk** follows the chosen side of the arm walked in on, crosses arms corner to corner (the shorter way
-  round unless `via` says otherwise) and leaves along the chosen side of the arm walked out on. It starts 16 mm
-  before its first crosswalk and ends 14 mm after its last, unless the spec or the screen edge says otherwise.
-  Jogs shorter than 1.5 mm are smoothed out.
+  round unless `via` says otherwise) and leaves along the chosen side of the arm walked out on. It starts at
+  the corner where its first crosswalk begins, where participants are lined up before they get the map, and
+  ends 14 mm after its last crosswalk, unless the spec or the screen edge says otherwise. Jogs shorter than
+  1.5 mm are smoothed out.
 * **The offset intersection** (Exchange Street and Moulton Street) has its own builder, `build_offset`: Fore
   Street straight through two junction points `offset_mm` apart, Exchange Street on one side and Moulton
   Street on the other, and the angled crosswalk between their corners.
-* **Dots** are placed by the generator: an orange turn dot where the walk bends more than 40 degrees, a pink
-  dot at each crosswalk end, and the two yellow route ends. A route end wins over a turn, and a turn over a
-  crosswalk end; dots that would touch, or that the screen edge would cut, are left out.
+* **Dots** are placed by the generator: an orange turn dot where the walk bends more than 40 degrees, named
+  "Turn left" or "Turn right" by the way the walk turns (the build stops unless they match the stop's `turns`
+  in the spec), a pink dot at each crosswalk end, and the two yellow route ends. A route end wins over a turn,
+  and a turn over a crosswalk end; dots that would touch, or that the screen edge would cut, are left out.
 * **Tidying**: sidewalks, crosswalks and medians shorter than 1.5 mm or wholly off screen are left out.
 
 Zebra bars are painted only where a crossing lies over the road: up to three, one centred in each equal share
@@ -126,9 +130,11 @@ VoiceOver reads only its short name when the map opens.
   sends a magic tap to the focused element and up the responder chain, which ends at SwiftUI's own app
   delegate; `AppDelegate` adds a handler to that class at launch, so with focus on the top bar the gesture
   still reaches the open map (`MapVisit.current`). With no map open it is left to the system.
-* Three-finger swipes are seen by a gesture recogniser and by a raw-touch check, and by VoiceOver as scrolls;
-  each is acted on once. Up and down step through the information items (returning false at either end so
-  VoiceOver plays its boundary sound); right, and the VoiceOver escape gesture, mean ready to cross.
+* Two-finger swipes up and down, and the three-finger swipe right, are seen by a gesture recogniser and by a
+  raw-touch check (`TactileCanvasView.swipe`); each is acted on once per touch, so quick swipes in a row all
+  count. Up and down step through the information items, with the map's boundary sound past either end. Inside the direct-touch area VoiceOver passes these
+  swipes to the app as touches, so a two-finger swipe does not start VoiceOver's read-all there. Right, and
+  VoiceOver's scroll right and escape gestures, mean ready to cross.
 * A second finger stops exploring, so multi-finger gestures do not buzz.
 
 Each controller hit-tests in millimetres in a fixed priority order (see the tables in the README). On an
@@ -150,13 +156,15 @@ VoiceOver path with simulated announcement-finished notifications, since the sim
 
 `DescriptionPlayer` keeps one thing playing at a time. Starting anything cuts off what was playing; a stop by
 the participant says "Stopped."; an item that finishes starts the next; a token makes sure a late report from
-an older phrase is ignored. Controllers ask `player.isPlaying` before saying a map name, so names never cut
-the description off. `MapVisit` counts what the player reports for the visits log.
+an older phrase is ignored. Each item is read with its place among the items played (`spoken`): "2 of 6", or
+"2 of 4" in Trial 2 with two items off. Controllers ask `player.isPlaying` before saying a map name, so names
+never cut the description off. `MapVisit` counts what the player reports for the visits log.
 
 ## Feedback
 
-`FeedbackManager.set(_:)` takes one mode. A new mode stops the old one's haptic loop and timers first, so
-nothing is left running.
+`FeedbackManager.set(_:)` takes one mode. A new mode stops the old one's timers and haptic loop first, so
+nothing is left running, except a vibration both modes share (`Mode.haptic`), which carries on unbroken: the
+route's pulse runs on through crosswalks, turn dots and the crosswalk ends on it.
 
 | Mode | Haptic | Sound |
 |---|---|---|
@@ -167,9 +175,9 @@ nothing is left running.
 | route | 0.12 s pulse every 0.2 s, 1.0, 0.85 | |
 | crosswalk | road buzz when over a road | click every 0.17 s |
 | routeOverCrosswalk | route pulse | click every 0.17 s |
-| turn | medium impact with each ding | ding every 0.4 s |
-| crosswalkEnd | | one ding |
-| center | none | two-note chime (784 then 523 Hz) every 0.7 s |
+| turn | route pulse | ding every 0.4 s |
+| crosswalkEnd | route pulse when on the route, otherwise none | one ding |
+| center | road buzz | two-note chime (784 then 523 Hz) every 0.7 s |
 | median | sharp taps every 0.08 s, 1.0, 0.9 | |
 
 The ding is a 1120 Hz tone with an 8 ms attack and fast decay; the click is a 12 ms tick; the boundary thud is a
@@ -182,7 +190,7 @@ switch off and alongside VoiceOver.
 |---|---|
 | Words spoken on any map | `tools/study_spec.py` (`STOPS`, `TRAINING_OVERVIEW`, `ROUTE_OVERVIEW`), then rebuild |
 | Which legs have crosswalks, markings, angles, medians | `JUNCTIONS` and `OFFSET_JUNCTIONS` in `tools/study_spec.py` |
-| The walk through an intersection, start and end gaps | `in`, `out`, `via`, `start_gap`, `end_gap` on the stop in `tools/study_spec.py` |
+| The walk through an intersection, its end gap and its turns | `in`, `out`, `via`, `end_gap`, `turns` on the stop in `tools/study_spec.py` |
 | Overview layout | `legs` in `TRAINING_OVERVIEW` or `ROUTE_OVERVIEW` |
 | Colours, line widths, dot sizes, touch radii | `Map/MapStyle.swift` (keep `tools/build_maps.py` and `tools/preview.py` in step) |
 | Haptic strengths and timings | `Feedback/HapticService.swift`, `Feedback/FeedbackManager.swift` |

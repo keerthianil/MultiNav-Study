@@ -48,15 +48,14 @@ OV_SQUARE_HALF = 3.0
 OV_DOT_R = 3.0
 
 # Intersection map sizes, mm.
-ROAD_HALF = 6.0
-SIDEWALK_OFFSET = 13.1     # road half 6 + crosswalk 2.8 + kerb gap 1 + sidewalk half 2 + 1.3
+ROAD_HALF = 9.0
+SIDEWALK_OFFSET = 13.1     # road half 9 + a 2.1 mm gap + sidewalk half 2
 CENTER_R = 5.0
 MIN_CROSS_T = 7.0          # nearer than this a crosswalk would lie on the other road
 MEDIAN_W = 3.0
 MEDIAN_NOSE = 2.0          # how far the median reaches in past the crosswalk's centre
 SQUARE_UP_MIN = 2.0        # a crosswalk straighter than this (mm) is left as it is
-START_GAP = 16.0           # route drawn before the first crosswalk
-END_GAP = 14.0             # and after the last one
+END_GAP = 14.0             # route drawn after the last crosswalk
 ROUTE_INSET = 5.5          # route ends kept this far inside the screen edge
 
 ONE_DECIMAL = 2  # coordinates are written with this many decimals
@@ -177,9 +176,10 @@ def build_overview(ov):
     """A schematic route map from the legs in study_spec."""
     pos = ov["start"]["at"]
     route = [pos]
+    route_streets = []  # the street under each leg of the route
     runs = []          # (street, points) for the streets under the route
     stubs = []         # (name, centre, end, direction)
-    nodes = []         # (number, position, text)
+    nodes = []         # (number or None, name, position, text)
     for leg in ov["legs"]:
         nxt = add(pos, unit(leg["dir"]), leg["len"])
         if runs and runs[-1][0] == leg["street"] and abs(om.angle_diff(runs[-1][2], leg["dir"])) < 1:
@@ -188,11 +188,15 @@ def build_overview(ov):
             runs.append([leg["street"], [pos, nxt], leg["dir"]])
         pos = nxt
         route.append(pos)
+        route_streets.append(leg["street"])
+        check_spoken("Route on %s" % leg["street"], ov["id"])
         node = leg["node"]
         if node["kind"] == "intersection":
             for d, length, name in node["stubs"]:
                 stubs.append((name, pos, add(pos, unit(d), length), d))
-            nodes.append((node["number"], pos, check_spoken(node["text"], ov["id"])))
+            number = node.get("number")
+            nodes.append((number, node.get("name") or "Intersection %d" % number, pos,
+                          check_spoken(node["text"], ov["id"])))
 
     features = []
     for n, (street, pts, _) in enumerate(runs):
@@ -213,17 +217,20 @@ def build_overview(ov):
             pts = [centre, end]
         features.append(feature("cross_%d" % n, "corridor", line_geom(pts), name))
         n += 1
-    for number, p, text in nodes:
-        features.append(feature("node_%d" % number, "intersection", point_geom(p), "Intersection %d" % number,
-                                custom={"cue": text, "number": number}))
+    for number, name, p, text in nodes:
+        fid = "node_%d" % number if number else "node_" + name.lower().replace(" ", "_")
+        features.append(feature(fid, "intersection", point_geom(p), name, custom={"cue": text, "number": number}))
     features.append(feature("route", "route", line_geom(route), ov["title"], custom={
         "start_text": check_spoken(ov["start"]["text"], ov["id"]),
-        "end_text": check_spoken(ov["end"]["text"], ov["id"])}))
+        "end_text": check_spoken(ov["end"]["text"], ov["id"]),
+        "streets": "|".join(route_streets)}))
 
     # Labels printed on the map for the researcher and sighted viewers, as in
     # the mockups: intersection numbers, the two ends, street names.
     lines = [pts for _, pts, _ in runs] + [[s[1], s[2]] for s in stubs]
-    for number, p, _ in nodes:
+    for number, _, p, _ in nodes:
+        if not number:
+            continue
         features.append(feature("label_%d" % number, "label", point_geom(label_spot(p, lines)), str(number),
                                 custom={"size_mm": 3.6, "weight": "bold"}))
     for which, p in (("start", route[0]), ("end", route[-1])):
@@ -445,13 +452,15 @@ class Geometry:
 
 
 def sidewalk_feature(index, points, street):
-    return feature("sidewalk_%d" % index, "sidewalk", line_geom(points), "Sidewalk along %s" % street)
+    return feature("sidewalk_%d" % index, "sidewalk", line_geom(points), "%s sidewalk" % street)
 
 
 def crosswalk_features(fid, a, b, arm_name, marking, uses_median, mid=None, normal=None):
-    """One crosswalk, or two halves either side of a median."""
-    name = "Crosswalk across %s" % arm_name
-    common = {"marking": marking}
+    """One crosswalk, or two halves either side of a median. The app names a
+    crosswalk "Fore Street crosswalk", and the route over it "Route crossing
+    Fore Street"."""
+    name = "%s crosswalk" % arm_name
+    common = {"marking": marking, "street": arm_name}
     if not uses_median:
         return [feature(fid, "crosswalk", line_geom([a, b]), name, custom=dict(common, endpoints="both"))]
     gap = MEDIAN_W / 2 + 0.3
@@ -535,7 +544,7 @@ def build_intersection(stop):
         "start_text": spec.START_TEXT, "end_text": spec.END_TEXT}))
     shift_features(features, FRAME)
     tidy(features)
-    place_dots(features, stop["id"])
+    place_dots(features, stop["id"], stop.get("turns", []))
     doc = document(stop["subtitle"], features, "center")
     FRAME[:] = [0.0, 0.0]
     facts = {
@@ -547,7 +556,10 @@ def build_intersection(stop):
 
 
 def walking_path(geo, stop, with_via=False, capped=True):
-    """The walk through the junction: corner to corner across each arm."""
+    """The walk through the junction: from the corner where its first
+    crosswalk begins, corner to corner across each arm, then out along the
+    arm it leaves on. Participants are lined up at that corner before they
+    get the map, so the walk does not start further back."""
     j = geo.j
     n = len(geo.arms)
     in_arm = j.arm(stop["in"][0])
@@ -560,22 +572,21 @@ def walking_path(geo, stop, with_via=False, capped=True):
     cw_steps = (target - start_corner) % n
     ccw_steps = (start_corner - target) % n
     via = stop.get("via") or ("cw" if cw_steps <= ccw_steps else "ccw")
+    steps = cw_steps if via == "cw" else ccw_steps
+    if not steps:
+        raise SystemExit("%s: the walk crosses nothing" % stop["id"])
 
-    start_gap = stop.get("start_gap", START_GAP)
-    start_t = geo.cross_t(in_arm, in_side) + start_gap
-    if capped:
-        start_t = max(geo.cross_t(in_arm, in_side), min(start_t, geo.far(in_arm, ROUTE_INSET, in_side)))
-    points = [geo.side_point(in_arm, in_side, start_t), geo.cross_end(in_arm, in_side)]
+    points = []
     current = in_arm
     crossed = []
     c = start_corner
-    for _ in range(cw_steps if via == "cw" else ccw_steps):
+    for _ in range(steps):
         nxt = geo.arms[(c + 1) % n] if via == "cw" else geo.arms[c]
         crossed.append(nxt)
         near, far_side = ("ccw", "cw") if via == "cw" else ("cw", "ccw")
-        if current is not nxt:
+        if points and current is not nxt:
             points += ordered_corner(geo, c, current)
-            points.append(geo.cross_end(nxt, near))
+        points.append(geo.cross_end(nxt, near))
         points.append(geo.cross_end(nxt, far_side))
         current = nxt
         c = (c + 1) % n if via == "cw" else (c - 1) % n
@@ -629,13 +640,16 @@ TURN_THRESHOLD = 40.0      # path bends sharper than this get an orange turn dot
 
 
 def route_bends(points):
+    """Bends sharper than TURN_THRESHOLD, each with the way the walk turns."""
     out = []
     for i in range(1, len(points) - 1):
         a, b, c = points[i - 1], points[i], points[i + 1]
         h1 = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
         h2 = math.degrees(math.atan2(c[1] - b[1], c[0] - b[0]))
-        if abs(om.angle_diff(h2, h1)) > TURN_THRESHOLD:
-            out.append(b)
+        d = om.angle_diff(h2, h1)
+        if abs(d) > TURN_THRESHOLD:
+            # Screen y runs down, so a clockwise change of heading is a right turn.
+            out.append((b, "right" if d > 0 else "left"))
     return out
 
 
@@ -667,12 +681,13 @@ def tidy(features):
     return features
 
 
-def place_dots(features, where):
+def place_dots(features, where, expected_turns):
     """Turn dots and crosswalk end dots, placed so no two dots touch.
 
     The route's ends win over turns, and turns over crosswalk ends, as on
     the earlier maps where a turn and a crosswalk end at one corner show the
-    turn. Crosswalk ends that would touch become one dot."""
+    turn. Crosswalk ends that would touch become one dot. Each turn dot says
+    which way the walk turns; they must be the turns the spec lists."""
     route = next(f for f in features if f["type"] == "route")["geometry"]["coordinates"]
     ends = [(route[0], END_R), (route[-1], END_R)]
     placed = list(ends)
@@ -688,10 +703,13 @@ def place_dots(features, where):
             raise SystemExit("%s: route end at %s is cut by the screen edge" % (where, rnd(p)))
 
     turns = []
-    for p in route_bends(route):
+    for p, way in route_bends(route):
         if clear(p, TURN_R) and on_screen(p, TURN_R):
-            turns.append(p)
+            turns.append((p, way))
             placed.append((p, TURN_R))
+    if [way for _, way in turns] != list(expected_turns):
+        raise SystemExit("%s: the walk turns %s, the spec says %s" % (
+            where, [way for _, way in turns] or "nowhere", list(expected_turns) or "nowhere"))
     pinks = []
     for f in features:
         if f["type"] != "crosswalk":
@@ -714,8 +732,8 @@ def place_dots(features, where):
             crosswalks = [g["geometry"]["coordinates"] for g in features if g["type"] == "crosswalk"]
             if any(seg_distance(c, cw[0], cw[-1]) < 3.0 for cw in crosswalks):
                 f["properties"].setdefault("custom", {})["mark"] = "no"
-    for k, p in enumerate(turns):
-        features.append(feature("turn_%d" % k, "turn", point_geom(p), "Turn"))
+    for k, (p, way) in enumerate(turns):
+        features.append(feature("turn_%d" % k, "turn", point_geom(p), check_spoken(spec.TURN_TEXT[way], where)))
     for k, p in enumerate(pinks):
         features.append(feature("crosswalk_end_%d" % k, "crosswalk_end", point_geom(p), "Crosswalk end"))
     for i, (p, r) in enumerate(placed):
@@ -723,6 +741,11 @@ def place_dots(features, where):
             if om.dist(p, q) < r + qr + DOT_CLEARANCE - 0.01:
                 raise SystemExit("%s: dots at %s and %s overlap" % (where, rnd(p), rnd(q)))
     return features
+
+
+def turn_cues(doc):
+    """What the turn dots on an intersection map say, in order along the walk."""
+    return [f["properties"]["name"] for f in doc["features"] if f["type"] == "turn"]
 
 
 # ================================================================ the offset intersection
@@ -773,16 +796,15 @@ def build_offset(stop):
         b_back, t_b_back = corner_at(B, th_far, th_back)
         b_fwd, t_b_fwd = corner_at(B, th_fwd, th_far)
 
-    # The walk: along the main street to the near corner, across on the
-    # diagonal, and on along the far side street (or the reverse).
+    # The walk: from the near corner across on the diagonal, and on along the
+    # far side street (or the reverse). It starts at the corner, where the
+    # participant is lined up before getting the map.
     def walk(capped):
         def reach(origin, theta, gap):
             return add(origin, unit(theta), min(gap, line_limit(origin, theta, ROUTE_INSET)) if capped else gap)
         if stop["path"] == "near_to_far":
-            return [reach(a_fwd, th_fwd, stop.get("start_gap", START_GAP)), a_fwd, b_back,
-                    reach(b_back, th_far, stop.get("end_gap", END_GAP))]
-        return [reach(b_back, th_far, stop.get("start_gap", START_GAP)), b_back, a_fwd,
-                reach(a_fwd, th_fwd, stop.get("end_gap", END_GAP))]
+            return [a_fwd, b_back, reach(b_back, th_far, stop.get("end_gap", END_GAP))]
+        return [b_back, a_fwd, reach(a_fwd, th_fwd, stop.get("end_gap", END_GAP))]
 
     FRAME[:] = [0.0, 0.0]
     FRAME[:] = frame_for(walk(capped=False))
@@ -834,7 +856,7 @@ def build_offset(stop):
     shift_features(features, FRAME)
     FRAME[:] = [0.0, 0.0]
     tidy(features)
-    place_dots(features, stop["id"])
+    place_dots(features, stop["id"], stop.get("turns", []))
     doc = document(stop["subtitle"], features, "center")
     drawn = set(conf["crosswalks"])
     facts = {
@@ -889,6 +911,7 @@ def build_all(preview=False):
                 doc, facts[map_id] = build_offset(stop)
             else:
                 doc, facts[map_id] = build_intersection(stop)
+            facts[map_id]["turns"] = turn_cues(doc)
             for item in stop["items"]:
                 check_spoken(item["text"], map_id)
             entry = {"id": map_id, "kind": "intersection", "phase": stop["phase"], "log_id": stop["log_id"],
@@ -918,7 +941,8 @@ def write_study_sheet(study, facts, overviews):
     lines = ["# Study maps and wording", "",
              "Generated by `tools/build_maps.py` from `tools/study_spec.py`. Do not edit by hand.", "",
              "Everything the app says on each map, in study order. The announcement plays when a map opens;",
-             "the information items play with a double tap and are stepped through with three-finger swipes.",
+             "the information items play with a double tap and are stepped through with two-finger swipes up",
+             "and down. Each item ends with its place among the items played, for example \"2 of 6\".",
              "In Trial 2 the researcher can switch each item off; the announcement always plays.", "",
              "## Points for the team to confirm", ""]
     lines += ["- %s" % note for note in spec.TEAM_NOTES]
@@ -933,11 +957,19 @@ def write_study_sheet(study, facts, overviews):
                       "What each point says when touched:", "",
                       "- Start dot: \"%s\"" % ov["start"]["text"]]
             for leg in ov["legs"]:
-                if leg["node"]["kind"] == "intersection":
-                    stubs = join_names(sorted({s[2] for s in leg["node"]["stubs"]}))
-                    lines.append("- Square %d: \"%s\" Cross streets drawn: %s." % (
-                        leg["node"]["number"], leg["node"]["text"], stubs))
-            lines += ["- End dot: \"%s\"" % ov["end"]["text"], ""]
+                node = leg["node"]
+                if node["kind"] == "intersection":
+                    stubs = join_names(sorted({s[2] for s in node["stubs"]}))
+                    which = ("Square %d" % node["number"]) if node.get("number") else \
+                        "Square at %s, no number" % node["name"]
+                    lines.append("- %s: \"%s\" Cross streets drawn: %s." % (which, node["text"], stubs))
+            streets = []
+            for leg in ov["legs"]:
+                if leg["street"] not in streets:
+                    streets.append(leg["street"])
+            lines += ["- End dot: \"%s\"" % ov["end"]["text"],
+                      "- Route, by the street it runs along: %s" % ", ".join(
+                          "\"Route on %s\"" % s for s in streets), ""]
         else:
             lines += ["**Announcement:** %s" % m["announcement"], ""]
             for n, item in enumerate(m["items"], 1):
@@ -950,7 +982,10 @@ def write_study_sheet(study, facts, overviews):
                         name, toward, ("%s crosswalk" % crossing) if crossing else "no crosswalk drawn",
                         ", median" if median else ""))
                 lines.append("")
-                lines.append("The route crosses: %s." % join_names(f["crossed"]))
+                lines.append("The route starts at the corner and crosses: %s." % join_names(f["crossed"]))
+                lines.append("")
+                lines.append("Turn dots: %s." % (", then ".join("\"%s\"" % t for t in f["turns"])
+                                                 if f["turns"] else "none"))
             lines.append("")
     with open(os.path.join(REPO, "docs", "STUDY.md"), "w") as handle:
         handle.write("\n".join(lines))

@@ -99,7 +99,7 @@
    "title": "Route overview",
    "subtitle": "Dock Fore to Gorham's Corner",
    "file": "route_overview",
-   "announcement": "Your route to Gorham's Corner is approximately 0.5 miles away, primarily travelling Southwest. There are 5 intersections along the route, with 7 turns and 6 total street crossings.",
+   "announcement": "Your route to Gorham's Corner is approximately 0.5 miles away, primarily travelling Southwest. There are 5 intersection crossings along the route.",
    "items": []
   },
   {
@@ -290,7 +290,7 @@
    "title": "Intersection 5",
    "subtitle": "Fore Street, Center Street and York Street",
    "file": "intersection_5",
-   "announcement": "You are at the 5-way intersection of Fore Street, Center Street, and York Street. Your route first crosses Fore Street, then turns right to cross Center Street, and continues along York Street to your destination.",
+   "announcement": "You are at the 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street. Your route first crosses Fore Street, then turns right to cross Center Street, and continues along York Street to your destination.",
    "items": [
     {
      "category": "geometry",

@@ -45,6 +45,7 @@ struct MapLabel {
 
 struct OverviewNode {
     let id: String
+    /// 1 to 5 for the study's intersections, 0 for any other.
     let number: Int
     let name: String
     /// Spoken when the finger reaches the node, e.g. "Intersection 1: 4-way
@@ -59,8 +60,31 @@ struct OverviewMap {
     let streets: [MapLine]
     let nodes: [OverviewNode]
     let route: [CGPoint]
+    /// The street under each segment of the route, in order, for "Route on
+    /// Fore Street". Empty when the map does not say.
+    let routeStreets: [String]
     let endpoints: [RouteEndpoint]
     let labels: [MapLabel]
+
+    /// The street the route runs along nearest `p`, or "" when not known.
+    func routeStreet(near p: CGPoint) -> String {
+        var best: (street: String, distance: CGFloat) = ("", .infinity)
+        for (i, street) in routeStreets.enumerated() where i + 1 < route.count {
+            let d = MapGeometry.segmentDistance(p, route[i], route[i + 1]).distance
+            if d < best.distance { best = (street, d) }
+        }
+        return best.street
+    }
+
+    /// Distance from `p` to the route where it runs along `street`.
+    func routeDistance(_ p: CGPoint, on street: String) -> CGFloat {
+        guard !street.isEmpty else { return MapGeometry.polylineDistance(p, route) }
+        var best = CGFloat.infinity
+        for (i, name) in routeStreets.enumerated() where name == street && i + 1 < route.count {
+            best = min(best, MapGeometry.segmentDistance(p, route[i], route[i + 1]).distance)
+        }
+        return best
+    }
 }
 
 // MARK: - Intersection maps
@@ -69,7 +93,10 @@ struct Crosswalk {
     enum Ends { case both, start, end }
     enum Marking { case zebra, unmarked }
     let id: String
+    /// "Fore Street crosswalk".
     let name: String
+    /// The street it crosses, for "Route crossing Fore Street".
+    let street: String
     let start: CGPoint
     let end: CGPoint
     let ends: Ends
@@ -77,6 +104,20 @@ struct Crosswalk {
     /// The part of the crossing that lies over the roadway, where it is painted.
     var paintStart: CGPoint
     var paintEnd: CGPoint
+}
+
+/// An orange dot where the walking route turns, and what it says.
+struct TurnDot {
+    let position: CGPoint
+    /// "Turn left" or "Turn right".
+    let cue: String
+}
+
+/// A pink dot at a crosswalk end. One on the walking route keeps the route's
+/// vibration, so following the route never goes quiet.
+struct CrosswalkEndDot {
+    let position: CGPoint
+    let onRoute: Bool
 }
 
 struct IntersectionMap {
@@ -94,9 +135,9 @@ struct IntersectionMap {
     let endpoints: [RouteEndpoint]
     /// Crosswalk ends drawn as pink dots, placed by the map generator so no
     /// two dots overlap.
-    let crosswalkEnds: [CGPoint]
+    let crosswalkEnds: [CrosswalkEndDot]
     /// Bends on the walking path drawn as orange turn dots.
-    let turns: [CGPoint]
+    let turns: [TurnDot]
 }
 
 // MARK: - Loading
@@ -117,6 +158,7 @@ enum MapLoader {
         var streets: [MapLine] = []
         var nodes: [OverviewNode] = []
         var route: [CGPoint] = []
+        var routeStreets: [String] = []
         var startText = ""
         var endText = ""
         var labels: [MapLabel] = []
@@ -136,6 +178,7 @@ enum MapLoader {
                     position: element.points.first ?? .zero))
             case .route:
                 route = element.points
+                routeStreets = (custom["streets"] ?? "").split(separator: "|").map(String.init)
                 startText = custom["start_text"] ?? "Start of route"
                 endText = custom["end_text"] ?? "End of route"
             case .mapLabel:
@@ -145,10 +188,11 @@ enum MapLoader {
             }
         }
         guard route.count > 1 else { throw MapLoadError.missing(file, "route") }
+        if routeStreets.count != route.count - 1 { routeStreets = [] }
         return OverviewMap(
             title: document.metadata?.name ?? file,
             size: CGSize(width: document.bounds.width, height: document.bounds.height),
-            streets: streets, nodes: nodes, route: route,
+            streets: streets, nodes: nodes, route: route, routeStreets: routeStreets,
             endpoints: [
                 RouteEndpoint(kind: .start, position: route[0], announcement: startText),
                 RouteEndpoint(kind: .end, position: route[route.count - 1], announcement: endText),
@@ -168,8 +212,8 @@ enum MapLoader {
         var route: [CGPoint] = []
         var startText = ""
         var endText = ""
-        var crosswalkEnds: [CGPoint] = []
-        var turns: [CGPoint] = []
+        var crosswalkEndPoints: [CGPoint] = []
+        var turns: [TurnDot] = []
 
         for element in document.features {
             let custom = element.properties.custom
@@ -192,8 +236,8 @@ enum MapLoader {
                 case "end": ends = .end
                 default: ends = .both
                 }
-                crosswalks.append(Crosswalk(id: element.id, name: name, start: points[0],
-                                            end: points[points.count - 1], ends: ends,
+                crosswalks.append(Crosswalk(id: element.id, name: name, street: custom["street"] ?? name,
+                                            start: points[0], end: points[points.count - 1], ends: ends,
                                             marking: custom["marking"] == "unmarked" ? .unmarked : .zebra,
                                             paintStart: points[0], paintEnd: points[points.count - 1]))
             case .junctionCenter:
@@ -205,14 +249,17 @@ enum MapLoader {
                 startText = custom["start_text"] ?? "You are here"
                 endText = custom["end_text"] ?? "End of intersection route"
             case .turn:
-                if let p = element.points.first { turns.append(p) }
+                if let p = element.points.first { turns.append(TurnDot(position: p, cue: name)) }
             case .crosswalkEnd:
-                if let p = element.points.first { crosswalkEnds.append(p) }
+                if let p = element.points.first { crosswalkEndPoints.append(p) }
             default:
                 break
             }
         }
         guard route.count > 1 else { throw MapLoadError.missing(file, "walking route") }
+        let crosswalkEnds = crosswalkEndPoints.map {
+            CrosswalkEndDot(position: $0, onRoute: MapGeometry.polylineDistance($0, route) < 0.5)
+        }
 
         // Stripes and markings are painted only over the roadway.
         func isOnRoadway(_ p: CGPoint) -> Bool {

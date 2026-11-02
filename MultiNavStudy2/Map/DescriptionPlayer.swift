@@ -5,10 +5,12 @@
 //   overview the route overview) plays when the map opens. A two-finger
 //   double tap plays it again; the same gesture while it plays stops it.
 //
-//   The information items play with a double tap, one after another. A
-//   three-finger swipe up skips to the next item and down goes back one,
-//   and playing carries on from there. A double tap while they play stops
-//   them; the next double tap starts over from the first item.
+//   The information items play with a double tap, one after another, each
+//   followed by its place among the items played ("2 of 6"; in Trial 2 only
+//   the items switched on are counted). A two-finger swipe up skips to the
+//   next item and down goes back one, and playing carries on from there. A
+//   double tap while they play stops them; the next double tap starts over
+//   from the first item.
 //
 // Stopping says "Stopped." That is how a VoiceOver announcement is cut
 // off, and it tells the participant the gesture worked. The map stays live
@@ -128,21 +130,21 @@ final class DescriptionPlayer {
         play(item: 0, gesture: gesture)
     }
 
-    /// A three-finger swipe: the next or previous item, then on through the
-    /// rest. Returns false when there is no item that way. With VoiceOver,
-    /// VoiceOver plays its own boundary sound then; otherwise the map does.
+    /// A two-finger swipe: the next or previous item, then on through the
+    /// rest. Returns false, after the boundary sound, when there is no item
+    /// that way.
     @discardableResult
-    func step(forward: Bool, gesture: String, voiceOverScroll: Bool = false) -> Bool {
+    func step(forward: Bool, gesture: String) -> Bool {
         guard !items.isEmpty else {
             log.event(.description, "No items to play", detail: gesture)
-            if !voiceOverScroll { feedback.boundary() }
+            feedback.boundary()
             if !isPlaying { feedback.speak("No details are turned on.", queued: false) }
             return false
         }
         var target = position.map { $0 + (forward ? 1 : -1) } ?? 0
         if target >= items.count {
             log.event(.description, "No next item", detail: gesture)
-            if !voiceOverScroll { feedback.boundary() }
+            feedback.boundary()
             if !isPlaying { feedback.speak("End of details.", queued: false) }
             return false
         }
@@ -150,7 +152,7 @@ final class DescriptionPlayer {
             // Back from the first item: hear it again, unless it is playing now.
             if playing == .item(0) {
                 log.event(.description, "No previous item", detail: gesture)
-                if !voiceOverScroll { feedback.boundary() }
+                feedback.boundary()
                 return false
             }
             target = 0
@@ -169,7 +171,7 @@ final class DescriptionPlayer {
         let item = items[index]
         log.event(.description, "Item \(item.category.number) started", detail: "\(item.category.title), \(gesture)")
         onItem?(item)
-        feedback.speakTracked(item.text, queued: false) { [weak self] finished in
+        feedback.speakTracked(spoken(index), queued: false) { [weak self] finished in
             guard let self, self.token == mine else { return }
             let name = "Item \(item.category.number)"
             if finished {
@@ -185,6 +187,12 @@ final class DescriptionPlayer {
                 self.log.event(.description, "\(name) cut off", detail: item.category.title)
             }
         }
+    }
+
+    /// An item as it is read: the team's words, then its place among the
+    /// items played, "This is a four-way, plus-shaped intersection. 1 of 6".
+    func spoken(_ index: Int) -> String {
+        "\(items[index].text) \(index + 1) of \(items.count)"
     }
 
     // MARK: Stopping

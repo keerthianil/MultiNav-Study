@@ -61,57 +61,62 @@ then turns left to cross Silver Street, then continues along the other side of F
 | Drag one finger | explore; works the whole time, even while something is being read |
 | Two-finger double tap | play the announcement again; while it plays, stop it |
 | Double tap | play the information items, one after another; while they play, stop them. The next double tap starts over from the first |
-| Three-finger swipe up / down | next / previous information item, carrying on from there |
+| Two-finger swipe up / down | next / previous information item, carrying on from there |
 | Three-finger swipe right | ready to cross: records the end time and closes the map (the VoiceOver escape gesture does the same) |
 | Single tap | a pulse, and the name of what is under the finger if it was not just said |
 
 The information items, in order: intersection geometry, traffic direction, traffic control, pedestrian
-signals, crosswalks, truncated domes and curb cuts. Stopping says "Stopped." While the announcement or an item
-plays, the map keeps vibrating and sounding but holds back names, so the description is heard to the end. On
-an overview, a double tap also plays the overview again.
+signals, crosswalks, truncated domes and curb cuts. Each ends with its place, "1 of 6" to "6 of 6"; in Trial 2
+only the items switched on are counted. Stopping says "Stopped." Past the first or last item the map plays a
+low boundary sound. While the announcement or an item plays, the map keeps vibrating and sounding but holds
+back names, so the description is heard to the end. On an overview, a double tap also plays the overview
+again.
 
 ### Route overviews
 
-Laid out like the team's mockups, not to scale, with the start near the bottom.
+Laid out like the team's mockups, not to scale, with the start near the bottom. The square without a number
+is the corner of Commercial Street and Moulton Street, where the route turns.
 
 | Under the finger | Looks like | Vibration | Sound | Speech |
 |---|---|---|---|---|
 | Start or end | yellow dot | fast pulse | | "Start of route: You are here, at Dock Fore, 336 Fore Street." |
 | Intersection | red square | slow pulse | ding every 0.4 s | "Intersection 1: 4-way intersection of Fore Street and Silver Street." |
-| Route | cyan line | rhythmic pulse | | "Route" |
+| Route | cyan line | rhythmic pulse | | the street it runs along: "Route on Fore Street" |
 | Cross street | blue line | steady heavy buzz | | street name |
 
 ### Intersection maps
 
 Each junction at its true angles from OpenStreetMap, turned so the way the participant walks in is up, with
-the walking path from "You are here" to "End of intersection route". The return maps are turned for the
-return approach. Crosswalks follow the team's descriptions (zebra or unmarked, straight or angled) and the
-aerial photos.
+the walking path from "You are here", at the corner where the participant is lined up, to "End of
+intersection route". The return maps are turned for the return approach. Crosswalks follow the team's
+descriptions (zebra or unmarked, straight or angled) and the aerial photos.
 
 | Under the finger | Looks like | Vibration | Sound | Speech |
 |---|---|---|---|---|
-| Turn | orange dot | tap with each ding | ding every 0.4 s | "Turn" |
-| Crosswalk end | pink dot | | one ding | |
+| Turn | orange dot | rhythmic pulse, as on the path | ding every 0.4 s | "Turn left" or "Turn right" |
+| Crosswalk end | pink dot | rhythmic pulse where the path runs through it | one ding | |
 | Start or end of the path | yellow dot | fast pulse | | "You are here" or "End of intersection route" |
 | Median | green | fast, sharp pulses, also where the path crosses it | | "Median" |
-| Path over a crosswalk | cyan on stripes | rhythmic pulse | clicks | "Crosswalk across Fore Street" |
+| Path over a crosswalk | cyan on stripes | rhythmic pulse | clicks | "Route crossing Fore Street" |
 | Path | cyan line | rhythmic pulse | | "Route" |
-| Centre of the intersection | small white ring | **none** | two-note chime | "Center" |
-| Crosswalk | white bars, or dashed lines when unmarked | road buzz under it | clicks | "Crosswalk across Silver Street" |
-| Sidewalk | grey line | softer steady buzz | | "Sidewalk along Fore Street" |
+| Centre of the intersection | small white ring | steady heavy buzz, as on a road | two-note chime | "Center" |
+| Crosswalk | white bars, or dashed lines when unmarked | road buzz under it | clicks | "Silver Street crosswalk" |
+| Sidewalk | grey line | softer steady buzz | | "Fore Street sidewalk" |
 | Road | blue | steady heavy buzz | | street name |
 
-The centre and the median work the same whatever information items are switched off, as do all other map
-sounds and vibration.
+The path keeps one pulse from end to end, over crosswalks, turns and crosswalk ends, so it can be followed
+without a break; only its two ends and the median feel different. The centre and the median work the same
+whatever information items are switched off, as do all other map sounds and vibration.
 
 ## VoiceOver
 
-The map is a VoiceOver direct-touch area that stays silent on touch, so every finger movement reaches the map.
-With VoiceOver on, everything is spoken as VoiceOver announcements in the listener's own voice and rate; the
-app follows when each announcement ends to read the next item. A two-finger double tap arrives as the magic
-tap, the three-finger swipes as scrolls (VoiceOver plays its boundary sound past the first or last item) and
-the three-finger swipe right also as the escape gesture. When a map opens, VoiceOver moves onto it and reads
-its name ("Intersection map"), then the announcement follows.
+The map is a VoiceOver direct-touch area that stays silent on touch, so every finger movement reaches the map,
+and VoiceOver hands the map's gestures to the app instead of acting on them itself: a two-finger swipe up or
+down steps through the items rather than reading the screen. With VoiceOver on, everything is spoken as
+VoiceOver announcements in the listener's own voice and rate; the app follows when each announcement ends to
+read the next item. The two-finger double tap also works as VoiceOver's magic tap, and the three-finger swipe
+right as its scroll and escape gestures. When a map opens, VoiceOver moves onto it and reads its name
+("Intersection map"), then the announcement follows.
 
 The two-finger double tap works even when VoiceOver focus has moved to the top bar. Closing a map, opening the
 Trial 2 sheet or switching VoiceOver on or off stops whatever is being read, and nothing carries on after it.

@@ -8,7 +8,8 @@
 //   endpoint    fast pulse 0.08 s every 0.12 s, intensity 1.0, sharpness 0.7
 //   route       rhythmic pulse 0.12 s every 0.2 s, intensity 1.0, sharpness 0.85
 //   median      fast, sharp taps, one every 0.08 s, intensity 1.0, sharpness 0.9
-// The centre of an intersection has no vibration at all.
+// The centre of an intersection buzzes like the road, and the turn and
+// crosswalk end dots on the route pulse like the route.
 
 import CoreHaptics
 import UIKit

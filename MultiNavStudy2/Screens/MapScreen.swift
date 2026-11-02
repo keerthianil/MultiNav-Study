@@ -79,6 +79,10 @@ struct MapScreen: View {
                     Text(map.title).font(.headline)
                     Text(map.subtitle).font(.caption).foregroundStyle(.secondary)
                 }
+                // Long street names shrink to fit beside the buttons rather
+                // than being cut off.
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
                 .accessibilityElement(children: .combine)
             }
             if map.phase.usesCustomInfo {

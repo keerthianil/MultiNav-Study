@@ -247,7 +247,8 @@
     "name": "Training route overview",
     "custom": {
      "start_text": "Start of route: You are here, at Home.",
-     "end_text": "End of route: Your destination, Nick's Bakery."
+     "end_text": "End of route: Your destination, Nick's Bakery.",
+     "streets": "Pear Street|Pear Street|Orange Road|Banana Lane"
     }
    }
   },

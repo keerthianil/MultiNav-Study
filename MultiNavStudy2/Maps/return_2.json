@@ -32,7 +32,7 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -55,7 +55,7 @@
    "properties": {
     "name": "Exchange Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -78,7 +78,7 @@
    "properties": {
     "name": "Moulton Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -117,7 +117,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -137,7 +137,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Exchange Street"
+    "name": "Exchange Street sidewalk"
    }
   },
   {
@@ -157,7 +157,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -177,7 +177,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Moulton Street"
+    "name": "Moulton Street sidewalk"
    }
   },
   {
@@ -197,9 +197,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Fore Street",
+    "name": "Fore Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Fore Street",
      "endpoints": "both"
     }
    }
@@ -221,9 +222,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Exchange Street",
+    "name": "Exchange Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Exchange Street",
      "endpoints": "both"
     }
    }
@@ -245,9 +247,10 @@
     ]
    },
    "properties": {
-    "name": "Crosswalk across Moulton Street",
+    "name": "Moulton Street crosswalk",
     "custom": {
      "marking": "unmarked",
+     "street": "Moulton Street",
      "endpoints": "both"
     }
    }
@@ -258,10 +261,6 @@
    "geometry": {
     "type": "LineString",
     "coordinates": [
-     [
-      2.98,
-      30.12
-     ],
      [
       2.98,
       14.12
@@ -295,21 +294,7 @@
     ]
    },
    "properties": {
-    "name": "Turn"
-   }
-  },
-  {
-   "id": "crosswalk_end_0",
-   "type": "crosswalk_end",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     2.98,
-     14.12
-    ]
-   },
-   "properties": {
-    "name": "Crosswalk end"
+    "name": "Turn right"
    }
   }
  ]

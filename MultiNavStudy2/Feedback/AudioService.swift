@@ -3,7 +3,7 @@
 //   ding      1120 Hz bell, 0.16 s, for intersections, turns and crosswalk ends
 //   click     short soft click, 12 ms, repeated over crosswalks
 //   chime     two soft notes falling a fifth (784 then 523 Hz), 0.32 s,
-//             repeated at the centre of an intersection, which has no vibration
+//             repeated at the centre of an intersection
 //   boundary  a low 330 Hz thud, 0.09 s, when there is no item further that way
 // The session uses the playback category so both are heard with the ringer
 // switch off, and mixes with VoiceOver and other audio.

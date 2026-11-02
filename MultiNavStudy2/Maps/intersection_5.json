@@ -21,10 +21,10 @@
     "coordinates": [
      [
       10.93,
-      -5.24
+      1.8
      ],
      [
-      13.49,
+      13.76,
       -69.99
      ]
     ]
@@ -32,7 +32,7 @@
    "properties": {
     "name": "Pleasant Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -44,18 +44,18 @@
     "coordinates": [
      [
       10.93,
-      -5.24
+      1.8
      ],
      [
       41.96,
-      -7.64
+      -0.6
      ]
     ]
    },
    "properties": {
     "name": "Center Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -67,7 +67,7 @@
     "coordinates": [
      [
       10.93,
-      -5.24
+      1.8
      ],
      [
       10.93,
@@ -78,7 +78,7 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -90,18 +90,18 @@
     "coordinates": [
      [
       10.93,
-      -5.24
+      1.8
      ],
      [
       -41.97,
-      -1.55
+      5.49
      ]
     ]
    },
    "properties": {
     "name": "Center Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -113,18 +113,18 @@
     "coordinates": [
      [
       10.93,
-      -5.24
+      1.8
      ],
      [
       -38.29,
-      -56.8
+      -49.76
      ]
     ]
    },
    "properties": {
     "name": "York Street",
     "custom": {
-     "width_mm": "12.0"
+     "width_mm": "18.0"
     }
    }
   },
@@ -135,7 +135,7 @@
     "type": "Point",
     "coordinates": [
      10.93,
-     -5.24
+     1.8
     ]
    },
    "properties": {
@@ -152,17 +152,17 @@
     "type": "LineString",
     "coordinates": [
      [
-      26.04,
+      26.32,
       -56.0
      ],
      [
       24.6,
-      -19.44
+      -12.4
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Pleasant Street"
+    "name": "Pleasant Street sidewalk"
    }
   },
   {
@@ -173,16 +173,16 @@
     "coordinates": [
      [
       24.6,
-      -19.44
+      -12.4
      ],
      [
       28.0,
-      -19.7
+      -12.66
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Center Street"
+    "name": "Center Street sidewalk"
    }
   },
   {
@@ -193,16 +193,16 @@
     "coordinates": [
      [
       28.0,
-      6.58
+      13.62
      ],
      [
       24.03,
-      6.89
+      13.93
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Center Street"
+    "name": "Center Street sidewalk"
    }
   },
   {
@@ -213,7 +213,7 @@
     "coordinates": [
      [
       24.03,
-      6.89
+      13.93
      ],
      [
       24.03,
@@ -222,7 +222,7 @@
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -237,12 +237,12 @@
      ],
      [
       -2.17,
-      8.81
+      15.85
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Fore Street"
+    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -253,16 +253,16 @@
     "coordinates": [
      [
       -2.17,
-      8.81
+      15.85
      ],
      [
       -28.0,
-      10.61
+      17.65
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Center Street"
+    "name": "Center Street sidewalk"
    }
   },
   {
@@ -273,16 +273,16 @@
     "coordinates": [
      [
       -28.0,
-      -15.66
+      -8.62
      ],
      [
       -17.8,
-      -16.37
+      -9.33
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Center Street"
+    "name": "Center Street sidewalk"
    }
   },
   {
@@ -293,16 +293,16 @@
     "coordinates": [
      [
       -17.8,
-      -16.37
+      -9.33
      ],
      [
       -28.0,
-      -27.05
+      -20.01
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along York Street"
+    "name": "York Street sidewalk"
    }
   },
   {
@@ -312,17 +312,17 @@
     "type": "LineString",
     "coordinates": [
      [
-      -19.42,
+      -26.14,
       -56.0
      ],
      [
       -0.94,
-      -36.65
+      -29.61
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along York Street"
+    "name": "York Street sidewalk"
    }
   },
   {
@@ -333,16 +333,16 @@
     "coordinates": [
      [
       -0.94,
-      -36.65
+      -29.61
      ],
      [
-      -0.18,
+      0.1,
       -56.0
      ]
     ]
    },
    "properties": {
-    "name": "Sidewalk along Pleasant Street"
+    "name": "Pleasant Street sidewalk"
    }
   },
   {
@@ -353,18 +353,19 @@
     "coordinates": [
      [
       -0.94,
-      -36.65
+      -29.61
      ],
      [
       25.24,
-      -35.61
+      -28.57
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Pleasant Street",
+    "name": "Pleasant Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Pleasant Street",
      "endpoints": "both"
     }
    }
@@ -377,18 +378,19 @@
     "coordinates": [
      [
       24.6,
-      -19.44
+      -12.4
      ],
      [
       24.03,
-      6.89
+      13.93
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Center Street",
+    "name": "Center Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Center Street",
      "endpoints": "both"
     }
    }
@@ -401,18 +403,19 @@
     "coordinates": [
      [
       24.03,
-      6.89
+      13.93
      ],
      [
       -2.17,
-      8.81
+      15.85
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Fore Street",
+    "name": "Fore Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Fore Street",
      "endpoints": "both"
     }
    }
@@ -425,18 +428,19 @@
     "coordinates": [
      [
       -2.17,
-      8.81
+      15.85
      ],
      [
       -17.8,
-      -16.37
+      -9.33
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across Center Street",
+    "name": "Center Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "Center Street",
      "endpoints": "both"
     }
    }
@@ -449,18 +453,19 @@
     "coordinates": [
      [
       -19.89,
-      -18.55
+      -11.51
      ],
      [
       -0.94,
-      -36.65
+      -29.61
      ]
     ]
    },
    "properties": {
-    "name": "Crosswalk across York Street",
+    "name": "York Street crosswalk",
     "custom": {
      "marking": "zebra",
+     "street": "York Street",
      "endpoints": "both"
     }
    }
@@ -473,23 +478,19 @@
     "coordinates": [
      [
       24.03,
-      22.89
-     ],
-     [
-      24.03,
-      6.89
+      13.93
      ],
      [
       -2.17,
-      8.81
+      15.85
      ],
      [
       -17.8,
-      -16.37
+      -9.33
      ],
      [
       -24.03,
-      -22.89
+      -15.85
      ]
     ]
    },
@@ -507,26 +508,12 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     24.03,
-     6.89
-    ]
-   },
-   "properties": {
-    "name": "Turn"
-   }
-  },
-  {
-   "id": "turn_1",
-   "type": "turn",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      -2.17,
-     8.81
+     15.85
     ]
    },
    "properties": {
-    "name": "Turn"
+    "name": "Turn right"
    }
   },
   {
@@ -536,7 +523,7 @@
     "type": "Point",
     "coordinates": [
      -0.94,
-     -36.65
+     -29.61
     ]
    },
    "properties": {
@@ -550,7 +537,7 @@
     "type": "Point",
     "coordinates": [
      25.24,
-     -35.61
+     -28.57
     ]
    },
    "properties": {
@@ -564,7 +551,7 @@
     "type": "Point",
     "coordinates": [
      24.6,
-     -19.44
+     -12.4
     ]
    },
    "properties": {
@@ -578,7 +565,7 @@
     "type": "Point",
     "coordinates": [
      -17.8,
-     -16.37
+     -9.33
     ]
    },
    "properties": {
