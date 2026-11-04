@@ -92,6 +92,9 @@ scale.
 * **Arms** come from OpenStreetMap at their true bearings, with the names the team uses (`rename`).
 * **Orientation**: the map is turned so the arm walked in on points down and the walk goes up. The return at
   Gorham's Corner, which starts at the corner, faces its first crossing instead (`"heading": "first_crossing"`).
+  Walks that start by crossing to the side are then turned a quarter turn (`rotate`, degrees clockwise, as the
+  team gave them on 11/03: 1, R4 counterclockwise; 2, 5, R3 clockwise), so every map faces the way the
+  participant stands at the corner and the first crossing points up.
 * **Roads** are 18 mm wide and run off the screen. Sidewalk centre lines run 13.1 mm from each road's centre
   and meet at the corners, leaving about 2 mm between road and sidewalk.
 * **Crosswalks** run corner to corner on the legs listed in the spec. `straight` squares one up when its ends
@@ -190,7 +193,7 @@ switch off and alongside VoiceOver.
 |---|---|
 | Words spoken on any map | `tools/study_spec.py` (`STOPS`, `TRAINING_OVERVIEW`, `ROUTE_OVERVIEW`), then rebuild |
 | Which legs have crosswalks, markings, angles, medians | `JUNCTIONS` and `OFFSET_JUNCTIONS` in `tools/study_spec.py` |
-| The walk through an intersection, its end gap and its turns | `in`, `out`, `via`, `end_gap`, `turns` on the stop in `tools/study_spec.py` |
+| The walk through an intersection, its end gap, its turns and the map's turn | `in`, `out`, `via`, `end_gap`, `turns`, `rotate` on the stop in `tools/study_spec.py` |
 | Overview layout | `legs` in `TRAINING_OVERVIEW` or `ROUTE_OVERVIEW` |
 | Colours, line widths, dot sizes, touch radii | `Map/MapStyle.swift` (keep `tools/build_maps.py` and `tools/preview.py` in step) |
 | Haptic strengths and timings | `Feedback/HapticService.swift`, `Feedback/FeedbackManager.swift` |

@@ -159,6 +159,21 @@ struct StudyContentTests {
         }
     }
 
+    /// Participants are lined up at the corner facing their first crossing,
+    /// so on every intersection map the walk sets off up the screen; the
+    /// five maps that start by crossing to the side are turned a quarter
+    /// turn for it (team, 11/03). Angled crosswalks lean up to about 30
+    /// degrees.
+    @Test func everyWalkSetsOffUpTheScreen() throws {
+        for map in maps where map.kind == .intersection {
+            let m = try MapLoader.intersection(named: map.file)
+            let a = m.route[0]
+            let b = m.route[1]
+            let degrees = atan2(b.x - a.x, a.y - b.y) * 180 / .pi
+            #expect(abs(degrees) < 35, "\(map.id): the first crossing is \(degrees) degrees from up")
+        }
+    }
+
     /// Each turn dot says which way the walk turns (team, 10/30). The first
     /// turns on 1, 2, 5 and the reversed 3 and 4 went when the walks started
     /// at the corner.

@@ -240,6 +240,10 @@ TRAINING_JUNCTION = {
 # up        the map is turned so the way the participant walks in is up;
 #           "heading": "first_crossing" faces the first crossing instead,
 #           for the return, which starts at Gorham's Corner
+# rotate    degrees the map is then turned clockwise, negative for
+#           counterclockwise: the walks that start by crossing to the side
+#           are turned so the map faces the way the participant stands at
+#           the corner (team, 11/03)
 # path      the offset intersection: "near_to_far" crosses from the Exchange
 #           Street side to the Moulton Street side, "far_to_near" back
 # turns     the way the walk turns at each turn dot, in order; the build
@@ -283,6 +287,7 @@ STOPS = [
         "title": "Intersection 1", "subtitle": "Fore Street and Silver Street",
         "junction": "silver",
         "in": ("Fore Street@47", "southeast"), "out": ("Fore Street@242", "northwest"), "via": "ccw",
+        "rotate": -90,
         "turns": ["left"],
         "announcement": ("You are at the 4-way intersection of Fore Street and Silver Street. Your route first "
                          "crosses Fore Street and then turns left to cross Silver Street, then continues along "
@@ -302,6 +307,7 @@ STOPS = [
         "title": "Intersection 2", "subtitle": "Fore Street, Moulton Street and Exchange Street",
         "junction": "exchange_moulton",
         "path": "near_to_far",
+        "rotate": 90,
         "announcement": ("You are at the 4-way intersection of Fore Street, Moulton Street, and Exchange Street. "
                          "Your route crosses Fore Street, then continues left along Moulton Street."),
         "items": items(
@@ -356,6 +362,7 @@ STOPS = [
         "title": "Intersection 5", "subtitle": "Fore Street, Center Street and York Street",
         "junction": "gorhams_corner",
         "in": ("Fore Street@55", "northwest"), "out": ("York Street@191", "east"), "end_gap": 6.0,
+        "rotate": 90,
         "turns": ["right"],
         "announcement": ("You are at the 5-way intersection of Fore Street, Center Street, York Street, and "
                          "Pleasant Street. Your route first crosses Fore Street, then turns right to cross Center "
@@ -398,6 +405,7 @@ STOPS = [
         "title": "Reversed intersection 4", "subtitle": "Fore Street and Union Street",
         "junction": "union_fore",
         "in": ("Fore Street@243", "northwest"), "out": ("Union Street@144", "southwest"),
+        "rotate": -90,
         "announcement": ("You are at the 4-way intersection of Fore Street and Union Street. Your route crosses "
                          "Fore Street, then continues along Union Street."),
         "items": items(
@@ -417,6 +425,7 @@ STOPS = [
         "title": "Reversed intersection 3", "subtitle": "Union Street and Commercial Street",
         "junction": "commercial_union",
         "in": ("Union Street@325", "southwest"), "out": ("Commercial Street@47", "northwest"),
+        "rotate": 90,
         "announcement": ("You are at the 4-way intersection of Union Street and Commercial Street. Your route "
                          "crosses Union Street, then continues along Commercial Street."),
         "items": items(

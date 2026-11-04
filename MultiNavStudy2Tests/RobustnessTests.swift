@@ -170,6 +170,35 @@ struct RobustnessTests {
         #expect(recorder.twoFingerDoubleTaps == ["VoiceOver magic tap"])
     }
 
+    /// One finger for the announcement and two for the items, on every map
+    /// (team, 11/03). An overview has no items, so its two-finger double tap
+    /// plays nothing.
+    @Test func doubleTapsMeanTheSameOnEveryMap() throws {
+        let canvas = TactileCanvasView(frame: screen)
+        let stop = try #require(StudyContent.map(id: "intersection_1"))
+        let player = DescriptionPlayer(announcement: stop.announcement, items: stop.items, speaker: FakeSpeaker())
+        let intersection = IntersectionController(map: try MapLoader.intersection(named: stop.file), player: player,
+                                                  label: "Intersection map")
+        intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
+        #expect(player.playing == .announcement)
+        intersection.canvasTwoFingerDoubleTap(canvas, gesture: "Two-finger double tap")
+        #expect(player.playing == .item(0))
+        intersection.canvasTwoFingerDoubleTap(canvas, gesture: "Two-finger double tap")
+        #expect(player.playing == nil, "the same gesture stops the items")
+        intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
+        intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
+        #expect(player.playing == nil, "the same gesture stops the announcement")
+
+        let route = try #require(StudyContent.map(id: "route_overview"))
+        let overviewPlayer = DescriptionPlayer(announcement: route.announcement, items: [], speaker: FakeSpeaker())
+        let overview = OverviewController(map: try MapLoader.overview(named: route.file), player: overviewPlayer,
+                                          label: "Route overview")
+        overview.canvasTwoFingerDoubleTap(canvas, gesture: "Two-finger double tap")
+        #expect(overviewPlayer.playing == nil)
+        overview.canvas(canvas, doubleTapAt: .zero, screen: .zero)
+        #expect(overviewPlayer.playing == .announcement)
+    }
+
     /// Two fingers up or down step through the items, three to the right
     /// finish; anything else, or too short a swipe, means nothing.
     @Test func swipesAreReadByFingersAndDirection() {

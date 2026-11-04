@@ -18,10 +18,11 @@
 // and the median. The centre and the median always work, whatever
 // information items the researcher has switched off.
 //
-// Gestures: double tap plays or stops the information items, two-finger
-// double tap plays the announcement again or stops it, two-finger swipe up
-// and down move between items, and three-finger swipe right (or the
-// VoiceOver escape) tells the app the participant is ready to cross.
+// Gestures, the same on every map (team, 11/03): double tap plays the
+// announcement again or stops it; two fingers are for the information items:
+// a two-finger double tap plays or stops them and two-finger swipes up and
+// down move between them. Three-finger swipe right (or the VoiceOver escape)
+// tells the app the participant is ready to cross.
 // While the announcement or an item plays, map names are held back so they
 // do not cut it off; vibration and sounds carry on.
 
@@ -333,12 +334,12 @@ final class IntersectionController: StudyMapController {
     func canvas(_ canvas: TactileCanvasView, doubleTapAt mm: CGPoint, screen: CGPoint) {
         log.event(.gesture, "Double tap", detail: logName(for: rawHit(at: mm)))
         feedback.pulse()
-        player.toggleDetails(gesture: "Double tap")
+        player.toggleAnnouncement(gesture: "Double tap")
     }
 
     func canvasTwoFingerDoubleTap(_ canvas: TactileCanvasView, gesture: String) {
         log.event(.gesture, gesture)
-        player.toggleAnnouncement(gesture: gesture)
+        player.toggleDetails(gesture: gesture)
     }
 
     func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String) {

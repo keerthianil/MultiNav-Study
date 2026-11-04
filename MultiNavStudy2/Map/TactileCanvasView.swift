@@ -8,8 +8,8 @@
 // including the two-finger swipes VoiceOver would otherwise take for itself.
 //
 // Gestures, each recognised once however it arrives:
-//   double tap                      the information items: play or stop
-//   two-finger double tap           the announcement: play again or stop
+//   double tap                      the announcement: play again or stop
+//   two-finger double tap           the information items: play or stop
 //                                   (VoiceOver: the magic tap)
 //   two-finger swipe up / down      next / previous information item
 //   three-finger swipe right        finished exploring

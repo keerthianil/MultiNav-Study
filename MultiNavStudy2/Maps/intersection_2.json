@@ -20,12 +20,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      6.82,
-      -70.0
+      42.0,
+      -0.0
      ],
      [
-      6.82,
-      70.0
+      -42.0,
+      0.0
      ]
     ]
    },
@@ -43,12 +43,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      6.82,
-      -17.75
+      16.5,
+      -0.0
      ],
      [
-      42.0,
-      -28.03
+      36.96,
+      70.0
      ]
     ]
    },
@@ -66,12 +66,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      6.82,
-      15.25
+      -16.5,
+      0.0
      ],
      [
-      -42.0,
-      26.44
+      -32.54,
+      -70.0
      ]
     ]
    },
@@ -88,8 +88,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     6.82,
-     -1.25
+     0.0,
+     0.0
     ]
    },
    "properties": {
@@ -107,12 +107,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      19.92,
-      56.0
+      -28.0,
+      13.1
      ],
      [
-      19.92,
-      -7.93
+      6.68,
+      13.1
      ]
     ]
    },
@@ -127,57 +127,17 @@
     "type": "LineString",
     "coordinates": [
      [
-      19.92,
-      -7.93
+      6.68,
+      13.1
      ],
      [
-      28.0,
-      -10.29
+      19.22,
+      56.0
      ]
     ]
    },
    "properties": {
     "name": "Exchange Street sidewalk"
-   }
-  },
-  {
-   "id": "sidewalk_2",
-   "type": "sidewalk",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      28.0,
-      -37.59
-     ],
-     [
-      19.92,
-      -35.23
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Exchange Street sidewalk"
-   }
-  },
-  {
-   "id": "sidewalk_3",
-   "type": "sidewalk",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      19.92,
-      -35.23
-     ],
-     [
-      19.92,
-      -56.0
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -187,12 +147,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      -6.28,
-      -56.0
+      28.0,
+      -13.1
      ],
      [
-      -6.28,
-      4.81
+      -6.06,
+      -13.1
      ]
     ]
    },
@@ -207,57 +167,17 @@
     "type": "LineString",
     "coordinates": [
      [
-      -6.28,
-      4.81
+      -6.06,
+      -13.1
      ],
      [
-      -28.0,
-      9.79
+      -15.89,
+      -56.0
      ]
     ]
    },
    "properties": {
     "name": "Moulton Street sidewalk"
-   }
-  },
-  {
-   "id": "sidewalk_6",
-   "type": "sidewalk",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -28.0,
-      36.67
-     ],
-     [
-      -6.28,
-      31.69
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Moulton Street sidewalk"
-   }
-  },
-  {
-   "id": "sidewalk_7",
-   "type": "sidewalk",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -6.28,
-      31.69
-     ],
-     [
-      -6.28,
-      56.0
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Fore Street sidewalk"
    }
   },
   {
@@ -267,12 +187,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      19.92,
-      -7.93
+      6.68,
+      13.1
      ],
      [
-      -6.28,
-      4.81
+      -6.06,
+      -13.1
      ]
     ]
    },
@@ -292,12 +212,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      19.92,
-      -7.93
+      6.68,
+      13.1
      ],
      [
-      19.92,
-      -35.23
+      33.98,
+      13.1
      ]
     ]
    },
@@ -311,43 +231,18 @@
    }
   },
   {
-   "id": "crosswalk_near_main",
-   "type": "crosswalk",
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      19.92,
-      -35.23
-     ],
-     [
-      -6.28,
-      -35.23
-     ]
-    ]
-   },
-   "properties": {
-    "name": "Fore Street crosswalk",
-    "custom": {
-     "marking": "zebra",
-     "street": "Fore Street",
-     "endpoints": "both"
-    }
-   }
-  },
-  {
    "id": "crosswalk_far_arm",
    "type": "crosswalk",
    "geometry": {
     "type": "LineString",
     "coordinates": [
      [
-      -6.28,
-      4.81
+      -6.06,
+      -13.1
      ],
      [
-      -6.28,
-      31.69
+      -32.94,
+      -13.1
      ]
     ]
    },
@@ -367,16 +262,16 @@
     "type": "LineString",
     "coordinates": [
      [
-      19.92,
-      -7.93
+      6.68,
+      13.1
      ],
      [
-      -6.28,
-      4.81
+      -6.06,
+      -13.1
      ],
      [
-      -19.93,
-      7.94
+      -9.19,
+      -26.75
      ]
     ]
    },
@@ -394,50 +289,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -6.28,
-     4.81
-    ]
-   },
-   "properties": {
-    "name": "Crosswalk end"
-   }
-  },
-  {
-   "id": "crosswalk_end_1",
-   "type": "crosswalk_end",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     19.92,
-     -35.23
-    ]
-   },
-   "properties": {
-    "name": "Crosswalk end"
-   }
-  },
-  {
-   "id": "crosswalk_end_2",
-   "type": "crosswalk_end",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -6.28,
-     -35.23
-    ]
-   },
-   "properties": {
-    "name": "Crosswalk end"
-   }
-  },
-  {
-   "id": "crosswalk_end_3",
-   "type": "crosswalk_end",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -6.28,
-     31.69
+     -6.06,
+     -13.1
     ]
    },
    "properties": {

@@ -59,8 +59,8 @@ then turns left to cross Silver Street, then continues along the other side of F
 | Gesture | What it does |
 |---|---|
 | Drag one finger | explore; works the whole time, even while something is being read |
-| Two-finger double tap | play the announcement again; while it plays, stop it |
-| Double tap | play the information items, one after another; while they play, stop them. The next double tap starts over from the first |
+| Double tap | play the announcement (on an overview, the route overview) again; while it plays, stop it |
+| Two-finger double tap | play the information items, one after another; while they play, stop them. The next one starts over from the first |
 | Two-finger swipe up / down | next / previous information item, carrying on from there |
 | Three-finger swipe right | ready to cross: records the end time and closes the map (the VoiceOver escape gesture does the same) |
 | Single tap | a pulse, and the name of what is under the finger if it was not just said |
@@ -69,8 +69,9 @@ The information items, in order: intersection geometry, traffic direction, traff
 signals, crosswalks, truncated domes and curb cuts. Each ends with its place, "1 of 6" to "6 of 6"; in Trial 2
 only the items switched on are counted. Stopping says "Stopped." Past the first or last item the map plays a
 low boundary sound. While the announcement or an item plays, the map keeps vibrating and sounding but holds
-back names, so the description is heard to the end. On an overview, a double tap also plays the overview
-again.
+back names, so the description is heard to the end. The gestures are the same on every map: one finger for
+the map and its announcement, two fingers for the information items. An overview has no items, so there the
+two-finger gestures give the boundary sound.
 
 ### Route overviews
 
@@ -129,7 +130,7 @@ named by participant and start time:
 
 | File | Contents |
 |---|---|
-| `P07_20261028_142512_visits.csv` | one row per map visit: opened, first touch, ended and how (Done or the gesture), seconds from opening and from the first touch, announcement plays and repeats, double tap activations, plays of each item and replays, the items switched on when the map opened and at the end, settings changes during the visit, touches |
+| `P07_20261028_142512_visits.csv` | one row per map visit: opened, first touch, ended and how (Done or the gesture), seconds from opening and from the first touch, announcement plays and repeats, detail activations (two-finger double taps), plays of each item and replays, the items switched on when the map opened and at the end, settings changes during the visit, touches |
 | `P07_20261028_142512_events.csv` | everything in order: maps opened and closed, every announcement and item started, finished, stopped or cut off, gestures, each change to the information items and when, what the map said, VoiceOver changes, errors |
 | `P07_20261028_142512_touches.csv` | every touch down, move (10 per second) and up: what was under the finger, in points and mm, and what was being read at the time |
 | `MultiNav_app_log.csv` | across all sessions: app launches, background and foreground, sessions and every error |

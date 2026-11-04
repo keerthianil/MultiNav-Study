@@ -2,15 +2,15 @@
 // Plays what a map says about itself, the way the research team asked:
 //
 //   The announcement (the intersection and the route's crossings, or on an
-//   overview the route overview) plays when the map opens. A two-finger
-//   double tap plays it again; the same gesture while it plays stops it.
+//   overview the route overview) plays when the map opens. A double tap
+//   plays it again; the same gesture while it plays stops it.
 //
-//   The information items play with a double tap, one after another, each
-//   followed by its place among the items played ("2 of 6"; in Trial 2 only
-//   the items switched on are counted). A two-finger swipe up skips to the
-//   next item and down goes back one, and playing carries on from there. A
-//   double tap while they play stops them; the next double tap starts over
-//   from the first item.
+//   The information items play with a two-finger double tap, one after
+//   another, each followed by its place among the items played ("2 of 6";
+//   in Trial 2 only the items switched on are counted). A two-finger swipe
+//   up skips to the next item and down goes back one, and playing carries on
+//   from there. A two-finger double tap while they play stops them; the
+//   next one starts over from the first item.
 //
 // Stopping says "Stopped." That is how a VoiceOver announcement is cut
 // off, and it tells the participant the gesture worked. The map stays live
@@ -48,7 +48,7 @@ final class DescriptionPlayer {
     /// Called each time the announcement starts; `repeated` is false for
     /// the play when the map opens.
     var onAnnouncement: ((_ repeated: Bool) -> Void)?
-    /// Called when a double tap starts the items from the first.
+    /// Called when a two-finger double tap starts the items from the first.
     var onDetailsStarted: (() -> Void)?
     var onItem: ((InfoItem) -> Void)?
 
@@ -74,7 +74,7 @@ final class DescriptionPlayer {
     }
 
     /// New items after the researcher changes the settings. Anything playing
-    /// stops, and the next double tap starts from the first item.
+    /// stops, and the next two-finger double tap starts from the first item.
     func setItems(_ newItems: [InfoItem]) {
         guard newItems != items else { return }
         if case .item = playing { stop(reason: "Settings changed") }
@@ -100,8 +100,8 @@ final class DescriptionPlayer {
         }
     }
 
-    /// The two-finger double tap: stops the announcement while it plays,
-    /// otherwise plays it again from the start.
+    /// The double tap: stops the announcement while it plays, otherwise
+    /// plays it again from the start.
     func toggleAnnouncement(gesture: String) {
         if playing == .announcement {
             stopWithWord(gesture: gesture)
@@ -112,15 +112,15 @@ final class DescriptionPlayer {
 
     // MARK: The information items
 
-    /// The double tap: stops the items while they play, otherwise plays them
-    /// all from the first.
+    /// The two-finger double tap: stops the items while they play, otherwise
+    /// plays them all from the first.
     func toggleDetails(gesture: String) {
         if case .item = playing {
             stopWithWord(gesture: gesture)
             return
         }
         guard !items.isEmpty else {
-            cutOffCurrent(by: "a double tap")
+            cutOffCurrent(by: gesture)
             log.event(.description, "No items to play", detail: gesture)
             feedback.speak("No details are turned on.", queued: false)
             return

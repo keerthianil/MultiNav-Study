@@ -10,9 +10,11 @@
 //   route (cyan)                 rhythmic pulse, the street it runs along:
 //                                "Route on Fore Street"
 //   street (blue)                steady heavy buzz, street name
-// The route overview plays when the map opens. A double tap or a two-finger
-// double tap plays it again, or stops it while it plays. Three-finger swipe
-// right (or the VoiceOver escape) finishes with the map.
+// The route overview plays when the map opens. A double tap plays it again,
+// or stops it while it plays, as on the intersection maps. The two-finger
+// gestures are for information items, which an overview does not have: they
+// give the boundary sound. Three-finger swipe right (or the VoiceOver
+// escape) finishes with the map.
 
 import UIKit
 
@@ -244,8 +246,8 @@ final class OverviewController: StudyMapController {
     }
 
     func canvasTwoFingerDoubleTap(_ canvas: TactileCanvasView, gesture: String) {
-        log.event(.gesture, gesture)
-        player.toggleAnnouncement(gesture: gesture)
+        log.event(.gesture, gesture, detail: "No information items on an overview")
+        feedback.boundary()
     }
 
     func canvasRequestsItem(_ canvas: TactileCanvasView, forward: Bool, gesture: String) {
