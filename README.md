@@ -87,10 +87,11 @@ is the corner of Commercial Street and Moulton Street, where the route turns.
 
 ### Intersection maps
 
-Each junction at its true angles from OpenStreetMap, turned so the way the participant walks in is up, with
-the walking path from "You are here", at the corner where the participant is lined up, to "End of
-intersection route". The return maps are turned for the return approach. Crosswalks follow the team's
-descriptions (zebra or unmarked, straight or angled) and the aerial photos.
+Each junction at its true angles from OpenStreetMap, with the walking path from "You are here", at the
+corner where the participant is lined up, to "End of intersection route". Every map is turned the way the
+participant faces there, so the first crossing points up; the return maps are turned for the return
+approach. Crosswalks follow the team's descriptions (zebra or unmarked, straight or angled) and the aerial
+photos.
 
 | Under the finger | Looks like | Vibration | Sound | Speech |
 |---|---|---|---|---|
