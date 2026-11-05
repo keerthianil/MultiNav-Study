@@ -192,7 +192,7 @@
    "properties": {
     "name": "Intersection 2",
     "custom": {
-     "cue": "Intersection 2: 3-way intersection of Pear Street and Orange Road.",
+     "cue": "Intersection 2: 3-way intersection of Pear Street and Orange Road. Turn.",
      "number": "2"
     }
    }
@@ -210,7 +210,7 @@
    "properties": {
     "name": "Intersection 3",
     "custom": {
-     "cue": "Intersection 3: 4-way intersection of Orange Road and Banana Lane.",
+     "cue": "Intersection 3: 4-way intersection of Orange Road and Banana Lane. Turn.",
      "number": "3"
     }
    }
@@ -258,8 +258,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     21.0,
-     71.0
+     22.0,
+     70.0
     ]
    },
    "properties": {
@@ -276,8 +276,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     21.0,
-     35.0
+     22.0,
+     34.0
     ]
    },
    "properties": {
@@ -294,8 +294,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     51.0,
-     35.0
+     52.0,
+     34.0
     ]
    },
    "properties": {

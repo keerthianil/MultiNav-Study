@@ -66,24 +66,79 @@ struct StudyContentTests {
                 + "cross Fore Street, and continues along Fore Street.")
         let training = try #require(StudyContent.map(id: "training_intersection"))
         #expect(training.items[2].text == "The intersection is controlled by stop signs in all directions.")
+        // Intersection 2 continues straight now that its map is turned (team, 11/05).
+        let offset = try #require(StudyContent.map(id: "intersection_2"))
+        #expect(offset.announcement == "You are at the 4-way intersection of Fore Street, Moulton Street, and "
+                + "Exchange Street. Your route crosses Fore Street, then continues straight along Moulton Street.")
     }
 
     @Test func overviewCuesAreTheTeamsWords() throws {
         let overview = try MapLoader.overview(named: "route_overview")
         #expect(overview.endpoints[0].announcement == "Start of route: You are here, at Dock Fore, 336 Fore Street.")
         #expect(overview.endpoints[1].announcement == "End of route: Your destination, Gorham's Corner.")
+        // "Turn." where the route turns, and the wharves opposite Moulton
+        // Street and Union Street named (team, 11/05).
         #expect(overview.nodes.map(\.cue) == [
             "Intersection 1: 4-way intersection of Fore Street and Silver Street.",
-            "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street.",
-            "4-way intersection of Commercial Street and Moulton Street.",
-            "Intersection 3: 4-way intersection of Commercial Street and Union Street.",
-            "Intersection 4: 4-way intersection of Union Street and Fore Street.",
-            "Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street.",
+            "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street. Turn.",
+            "4-way intersection of Commercial Street, Moulton Street, and Long Wharf. Turn.",
+            "Intersection 3: 4-way intersection of Commercial Street, Union Street, and Union Wharf. Turn.",
+            "Intersection 4: 4-way intersection of Union Street and Fore Street. Turn.",
+            "Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street. "
+                + "Turn.",
         ])
         #expect(overview.nodes.map(\.number) == [1, 2, 0, 3, 4, 5], "the added square has no number")
         let training = try MapLoader.overview(named: "training_overview")
-        #expect(training.nodes.count == 3)
+        #expect(training.nodes.map(\.cue) == [
+            "Intersection 1: 4-way intersection of Pear Street and Apple Street.",
+            "Intersection 2: 3-way intersection of Pear Street and Orange Road. Turn.",
+            "Intersection 3: 4-way intersection of Orange Road and Banana Lane. Turn.",
+        ])
         #expect(training.endpoints[1].announcement == "End of route: Your destination, Nick's Bakery.")
+    }
+
+    /// A square says "Turn." exactly where the route leaves it in another
+    /// direction.
+    @Test func overviewSaysTurnWhereTheRouteTurns() throws {
+        for file in ["route_overview", "training_overview"] {
+            let overview = try MapLoader.overview(named: file)
+            for node in overview.nodes {
+                guard let i = overview.route.firstIndex(where: { MapGeometry.distance($0, node.position) < 0.1 }),
+                      i > 0, i + 1 < overview.route.count else {
+                    Issue.record("\(file): \(node.name) is not on the route")
+                    continue
+                }
+                let a = overview.route[i - 1], b = overview.route[i], c = overview.route[i + 1]
+                let turnsHere = abs((b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x)) > 0.5
+                #expect(node.cue.hasSuffix(" Turn.") == turnsHere, "\(file): \(node.cue)")
+            }
+        }
+    }
+
+    /// Cross street stubs on the route overview are half again as long as
+    /// the first 9 mm (team, 11/05), except the two Fore Street stubs that
+    /// face each other between intersections 2 and 4.
+    @Test func overviewStubsAreLonger() throws {
+        let overview = try MapLoader.overview(named: "route_overview")
+        let two = try #require(overview.nodes.first { $0.number == 2 }).position
+        let four = try #require(overview.nodes.first { $0.number == 4 }).position
+        var stubs = 0
+        for street in overview.streets where street.id.hasPrefix("cross_") {
+            guard let node = overview.nodes.first(where: { n in street.points.contains { MapGeometry.distance($0, n.position) < 0.1 } })
+            else {
+                Issue.record("\(street.name) stub has no square")
+                continue
+            }
+            for end in street.points where MapGeometry.distance(end, node.position) > 0.1 {
+                let length = MapGeometry.distance(end, node.position)
+                let facing = street.name == "Fore Street" && (node.position == two || node.position == four)
+                #expect(abs(length - (facing ? 9 : 13.5)) < 0.05, "\(street.name) at \(node.name) is \(length) mm")
+                stubs += 1
+            }
+        }
+        #expect(stubs == 13, "every stub end on the route overview")
+        #expect(MapStyle.Overview.intersectionSide == 8, "squares are larger than the first 6 mm")
+        #expect(MapStyle.Hit.intersection > MapStyle.Overview.intersectionSide / 2)
     }
 
     /// The square at Commercial Street and Moulton Street has its two other
@@ -159,6 +214,29 @@ struct StudyContentTests {
         }
     }
 
+    /// Sidewalk centre lines run 12.2 mm from the road's centre line, leaving
+    /// a 1.2 mm gap between the road and the 4 mm sidewalk (team, 11/05), so
+    /// the band where nothing is felt is under 1 mm.
+    @Test func sidewalksSitCloseToTheRoad() throws {
+        for map in maps where map.kind == .intersection {
+            let m = try MapLoader.intersection(named: map.file)
+            var nearest = CGFloat.infinity
+            for sidewalk in m.sidewalks {
+                for (a, b) in zip(sidewalk.points, sidewalk.points.dropFirst()) {
+                    for k in 0...20 {
+                        let t = CGFloat(k) / 20
+                        let p = CGPoint(x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t)
+                        for road in m.roads { nearest = min(nearest, MapGeometry.polylineDistance(p, road.points)) }
+                    }
+                }
+            }
+            let gap = nearest - 9 - MapStyle.Intersection.sidewalkWidth / 2
+            #expect(abs(gap - 1.2) < 0.05, "\(map.id): the gap is \(gap) mm")
+            let untouched = nearest - MapStyle.Hit.sidewalk - 9
+            #expect(untouched < 1, "\(map.id): \(untouched) mm between road and sidewalk is not felt")
+        }
+    }
+
     /// Participants are lined up at the corner facing their first crossing,
     /// so on every intersection map the walk sets off up the screen; the
     /// five maps that start by crossing to the side are turned a quarter
@@ -206,9 +284,13 @@ struct StudyContentTests {
             #expect(mode.haptic == .route, "\(mode)")
         }
         #expect(Mode.center.haptic == Mode.road.haptic)
-        #expect(Mode.crosswalkEnd(onRoute: false).haptic == nil)
         #expect(Mode.median.haptic == .median)
         #expect(Mode.endpoint.haptic == .endpoint)
+        // A corner never goes still: its pink dot and the end of a crosswalk
+        // off the road buzz like the sidewalk (team, 11/05).
+        #expect(Mode.crosswalkEnd(onRoute: false).haptic == .sidewalk)
+        #expect(Mode.crosswalk(overRoad: false).haptic == .sidewalk)
+        #expect(Mode.crosswalk(overRoad: true).haptic == .road)
         var onRoute = 0
         for map in maps where map.kind == .intersection {
             let m = try MapLoader.intersection(named: map.file)
@@ -218,6 +300,24 @@ struct StudyContentTests {
             }
         }
         #expect(onRoute > 0, "some crosswalk ends lie on a route")
+    }
+
+    /// Tones sound once as the finger arrives (team, 11/05); only a turn dot
+    /// repeats its ding. The clicks carry on between the two halves of a
+    /// crosswalk and the route over it, so they never restart at the road.
+    @Test func tonesSoundOnceAndClicksCarryOn() {
+        typealias Mode = FeedbackManager.Mode
+        #expect(Mode.intersection.tone == .ding && Mode.intersection.toneRepeat == nil)
+        #expect(Mode.center.tone == .chime && Mode.center.toneRepeat == nil)
+        #expect(Mode.crosswalkEnd(onRoute: false).tone == .ding && Mode.crosswalkEnd(onRoute: true).toneRepeat == nil)
+        #expect(Mode.turn.tone == .ding && Mode.turn.toneRepeat == 0.4)
+        for mode: Mode in [.crosswalk(overRoad: true), .crosswalk(overRoad: false), .routeOverCrosswalk] {
+            #expect(mode.clicks && mode.tone == nil, "\(mode)")
+        }
+        for mode: Mode in [.none, .road, .sidewalk, .intersection, .endpoint, .route, .turn,
+                           .crosswalkEnd(onRoute: true), .center, .median] {
+            #expect(!mode.clicks, "\(mode)")
+        }
     }
 
     /// No two dots on a map touch, so each can be found and felt on its own.
@@ -265,7 +365,7 @@ struct StudyContentTests {
     /// No dash or arrow in anything spoken: VoiceOver reads them out.
     @Test func spokenTextHasNoDashes() throws {
         var texts: [String] = ["Stopped.", "No details are turned on.", "End of details.",
-                               "Tell the researcher when you are ready."]
+                               "Tell the researcher when you are ready.", DescriptionPlayer.modeWords]
         for map in maps {
             texts.append(map.announcement)
             texts += map.items.map(\.text)

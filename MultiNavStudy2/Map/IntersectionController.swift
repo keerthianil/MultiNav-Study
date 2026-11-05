@@ -4,25 +4,30 @@
 //
 // Under the finger, in priority order:
 //   turn (orange dot)           route pulse and a repeating ding, "Turn left" / "Turn right"
-//   crosswalk end (pink dot)    one ding, with the route pulse when on the route
+//   crosswalk end (pink dot)    one ding, with the route pulse when on the route,
+//                               otherwise the sidewalk buzz
 //   route start / end (yellow)  fast pulse, "You are here" / "End of intersection route"
 //   median (green)              fast, sharp pulses, "Median", also where the
 //                               route crosses it, between the two stages
 //   route on a crosswalk        route pulse and crosswalk clicks, "Route crossing ..."
 //   route (cyan)                rhythmic pulse, "Route"
-//   centre of the intersection  the road's buzz and a two-note chime, "Center"
-//   crosswalk (white)           clicks, with the road buzz under them, "... crosswalk"
+//   centre of the intersection  the road's buzz and a two-note chime once, "Center"
+//   crosswalk (white)           steady clicks, with the road buzz under them over
+//                               the road and the sidewalk buzz near the corner,
+//                               "... crosswalk"
 //   sidewalk (grey)             softer steady buzz, "... sidewalk"
 //   road (blue)                 heavy buzz, street name
 // The route keeps one vibration from start to end except at its two ends
-// and the median. The centre and the median always work, whatever
-// information items the researcher has switched off.
+// and the median, and a corner never goes still (team, 11/05). The centre
+// and the median always work, whatever information items the researcher
+// has switched off.
 //
 // Gestures, the same on every map (team, 11/03): double tap plays the
 // announcement again or stops it; two fingers are for the information items:
-// a two-finger double tap plays or stops them and two-finger swipes up and
-// down move between them. Three-finger swipe right (or the VoiceOver escape)
-// tells the app the participant is ready to cross.
+// a two-finger double tap starts description mode (or stops an item being
+// read) and each two-finger swipe up or down reads one item, the next or the
+// one before (team, 11/05). Three-finger swipe right (or the VoiceOver
+// escape) tells the app the participant is ready to cross.
 // While the announcement or an item plays, map names are held back so they
 // do not cut it off; vibration and sounds carry on.
 
@@ -135,8 +140,14 @@ final class IntersectionController: StudyMapController {
 
     private func hit(at p: CGPoint) -> Hit {
         let found = rawHit(at: p)
-        if activeHit != .none, found != activeHit, priority(found) >= priority(activeHit),
-           rawHit(at: p, slack: MapStyle.Hit.hysteresis) == activeHit {
+        guard activeHit != .none, found != activeHit, priority(found) >= priority(activeHit) else { return found }
+        let slack = MapStyle.Hit.hysteresis
+        if rawHit(at: p, slack: slack) == activeHit { return activeHit }
+        // On a crosswalk the road's buzz holds a little past the road's edge,
+        // as the road's own does, even beside a corner's dot, so it does not
+        // flicker there.
+        if case .crosswalk(let i, false) = found, activeHit == .crosswalk(i, overRoad: true),
+           roadIndex(at: p, slack: slack) != nil {
             return activeHit
         }
         return found
@@ -220,7 +231,9 @@ final class IntersectionController: StudyMapController {
 
     // MARK: Feedback
 
-    private func begin(_ hit: Hit) {
+    /// Starts the feedback for `hit`, and says its name unless `announce` is
+    /// false.
+    private func begin(_ hit: Hit, announce: Bool = true) {
         switch hit {
         case .none: feedback.set(.none)
         case .turn: feedback.set(.turn)
@@ -236,9 +249,15 @@ final class IntersectionController: StudyMapController {
         case .sidewalk: feedback.set(.sidewalk)
         case .road: feedback.set(.road)
         }
-        if let text = name(of: hit) {
+        if announce, let text = name(of: hit) {
             say(text, for: hit)
         }
+    }
+
+    /// The crosswalk a hit is on, whether over the road or near the corner.
+    private func crosswalkIndex(_ hit: Hit) -> Int? {
+        if case .crosswalk(let i, _) = hit { return i }
+        return nil
     }
 
     /// A map name, unless a description is playing: then the map only
@@ -296,8 +315,11 @@ final class IntersectionController: StudyMapController {
         case .moved:
             let found = hit(at: mm)
             if found != activeHit {
+                // Crossing the road's edge on one crosswalk changes only its
+                // buzz: its name is not said again and its clicks carry on.
+                let sameCrosswalk = crosswalkIndex(found) != nil && crosswalkIndex(found) == crosswalkIndex(activeHit)
                 activeHit = found
-                begin(found)
+                begin(found, announce: !sameCrosswalk)
             }
             let now = CACurrentMediaTime()
             if now - lastMoveLog >= 0.1 {

@@ -88,7 +88,7 @@ def render_overview(doc, path):
         _line(draw, [P(p) for p in f["geometry"]["coordinates"]], CYAN, 3.5)
     for f in _features(doc, "intersection"):
         x, y = P(f["geometry"]["coordinates"])
-        h = 3.0 * PX_PER_MM
+        h = 4.0 * PX_PER_MM   # half of the 8 mm square
         draw.rectangle([x - h, y - h, x + h, y + h], fill=RED, outline=WHITE, width=int(0.5 * PX_PER_MM))
     for f in _features(doc, "route"):
         pts = f["geometry"]["coordinates"]

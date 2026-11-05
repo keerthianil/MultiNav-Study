@@ -34,7 +34,7 @@ docs/                         this guide, STUDY.md, map previews
 | `Study/StudyHomeView.swift` | the researcher's screen: participant, Open Next, the maps by phase, the Trial 2 information items row, Data Files; the Information Items screen and Settings (behind the gear) |
 | `Screens/MapScreen.swift` | a map full screen, with Done, the title and (Trial 2) the information items sheet |
 | `Screens/MapVisit.swift` | one visit: starts the session if needed, plays the announcement when the map opens, times the visit, counts plays, writes the visit row when it ends |
-| `Map/DescriptionPlayer.swift` | the announcement and the information items: play, stop, start over, step forward and back, carry on to the next item |
+| `Map/DescriptionPlayer.swift` | the announcement and the information items: description mode, one item per swipe with its place after a pause, stop, start over |
 | `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps, double taps, two-finger double taps, two-finger swipes up and down and the three-finger swipe right, VoiceOver direct touch, magic tap, scroll and escape |
 | `Map/OverviewController.swift` | route overviews: drawing, hit-testing, feedback, gestures |
 | `Map/IntersectionController.swift` | intersection maps: drawing, hit-testing, feedback, gestures |
@@ -84,8 +84,10 @@ touch, or if a route end falls off the screen.
 Each overview is a list of legs from the start, each a screen direction and a length in mm along a street,
 ending at an intersection (red square with its spoken cue, numbered when it is one of the study's), a plain
 corner or the end. The route carries the street of each leg (`streets`), so touching it says "Route on Fore
-Street". Stubs are the streets the walk does not follow. The layouts follow the team's mockups and are not to
-scale.
+Street". Where the next leg leaves an intersection in another direction, its cue ends with "Turn."
+(`OVERVIEW_TURN_TEXT`, added by `overview_cue`). Stubs are the streets the walk does not follow, each with its
+own length: 13.5 mm on the route overview, except the two Fore Street stubs that face each other between
+intersections 2 and 4. The layouts follow the team's mockups and are not to scale.
 
 ### Intersection maps
 
@@ -95,8 +97,9 @@ scale.
   Walks that start by crossing to the side are then turned a quarter turn (`rotate`, degrees clockwise, as the
   team gave them on 11/03: 1, R4 counterclockwise; 2, 5, R3 clockwise), so every map faces the way the
   participant stands at the corner and the first crossing points up.
-* **Roads** are 18 mm wide and run off the screen. Sidewalk centre lines run 13.1 mm from each road's centre
-  and meet at the corners, leaving about 2 mm between road and sidewalk.
+* **Roads** are 18 mm wide and run off the screen. Sidewalk centre lines run 12.2 mm from each road's centre
+  (`SIDEWALK_OFFSET`) and meet at the corners, leaving 1.2 mm between road and sidewalk. The README lists
+  every size and touch radius.
 * **Crosswalks** run corner to corner on the legs listed in the spec. `straight` squares one up when its ends
   are more than 2 mm uneven; `skew` moves one end further out along its arm, for the crosswalks the team
   describes as angled. A leg with a `median` gets a green strip from just inside its crosswalk outwards, and
@@ -158,33 +161,36 @@ ends every phrase waiting, so the player cannot get stuck holding map names back
 VoiceOver path with simulated announcement-finished notifications, since the simulator has no VoiceOver.
 
 `DescriptionPlayer` keeps one thing playing at a time. Starting anything cuts off what was playing; a stop by
-the participant says "Stopped."; an item that finishes starts the next; a token makes sure a late report from
-an older phrase is ignored. Each item is read with its place among the items played (`spoken`): "2 of 6", or
-"2 of 4" in Trial 2 with two items off. Controllers ask `player.isPlaying` before saying a map name, so names
+the participant says "Stopped."; a token makes sure a late report from an older phrase is ignored. The
+two-finger double tap only says "Description mode." and sets the next swipe to the first item. Each swipe
+plays one item: its words, then after `placePause` (0.5 s) its place among the items played (`place`): "2 of
+6", or "2 of 4" in Trial 2 with two items off. Nothing follows until the next swipe. Controllers ask `player.isPlaying` before saying a map name, so names
 never cut the description off. `MapVisit` counts what the player reports for the visits log.
 
 ## Feedback
 
 `FeedbackManager.set(_:)` takes one mode. A new mode stops the old one's timers and haptic loop first, so
 nothing is left running, except a vibration both modes share (`Mode.haptic`), which carries on unbroken: the
-route's pulse runs on through crosswalks, turn dots and the crosswalk ends on it.
+route's pulse runs on through crosswalks, turn dots and the crosswalk ends on it. The crosswalk clicks carry on
+the same way (`Mode.clicks`), so they never restart at the road's edge. A mode's tone (`Mode.tone`) sounds once
+when it starts; only the turn dot repeats it (`Mode.toneRepeat`).
 
 | Mode | Haptic | Sound |
 |---|---|---|
 | road | continuous, intensity 1.0, sharpness 0.1 | |
 | sidewalk | continuous, 0.78, 0.78 | |
-| intersection | 0.15 s pulse every 0.25 s, 1.0, 0.5 | ding every 0.4 s |
+| intersection | 0.15 s pulse every 0.25 s, 1.0, 0.5 | one ding |
 | endpoint | 0.08 s pulse every 0.12 s, 1.0, 0.7 | |
 | route | 0.12 s pulse every 0.2 s, 1.0, 0.85 | |
-| crosswalk | road buzz when over a road | click every 0.17 s |
+| crosswalk | road buzz over the road, sidewalk buzz between the road and the corner | click every 0.17 s |
 | routeOverCrosswalk | route pulse | click every 0.17 s |
 | turn | route pulse | ding every 0.4 s |
-| crosswalkEnd | route pulse when on the route, otherwise none | one ding |
-| center | road buzz | two-note chime (784 then 523 Hz) every 0.7 s |
+| crosswalkEnd | route pulse when on the route, otherwise the sidewalk buzz | one ding |
+| center | road buzz | two-note chime (784 then 523 Hz), once |
 | median | sharp taps every 0.08 s, 1.0, 0.9 | |
 
-The ding is a 1120 Hz tone with an 8 ms attack and fast decay; the click is a 12 ms tick; the boundary thud is a
-90 ms 330 Hz tone. The audio session is playback mixed with others, so all of them are heard with the ringer
+The ding is a 1120 Hz tone with an 8 ms attack and fast decay; the click is a 12 ms tick, always at the same
+level; the boundary thud is a 90 ms 330 Hz tone. The audio session is playback mixed with others, so all of them are heard with the ringer
 switch off and alongside VoiceOver.
 
 ## Common changes

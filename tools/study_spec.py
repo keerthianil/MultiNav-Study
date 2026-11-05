@@ -48,6 +48,10 @@ END_TEXT = "End of intersection route"
 # What a turn dot says, by the way the route turns there (team, 10/30).
 TURN_TEXT = {"left": "Turn left", "right": "Turn right"}
 
+# Added to an overview intersection's cue where the route turns there. No
+# direction: left and right on the map need not be the traveller's (team, 11/05).
+OVERVIEW_TURN_TEXT = "Turn."
+
 
 def items(*texts):
     """The six information items, in category order."""
@@ -62,8 +66,11 @@ def items(*texts):
 # up) and a length in mm along a street, ending at a node. The route says
 # which street it is on ("Route on Fore Street"). Nodes are intersections (a
 # red square with a spoken cue, numbered when it is one of the study's), plain
-# corners, or the end. Stubs are the streets the walk does not follow, each
-# with a direction and a name.
+# corners, or the end. Where the route turns at an intersection, its cue ends
+# with OVERVIEW_TURN_TEXT. Stubs are the streets the walk does not follow,
+# each with a direction, a length in mm from the square's centre and a name.
+# On the route overview they are 13.5 mm, half again as long as the first
+# 9 mm (team, 11/05).
 
 TRAINING_OVERVIEW = {
     "id": "training_overview",
@@ -106,35 +113,38 @@ ROUTE_OVERVIEW = {
     "start": {"at": (42.0, 106.0), "text": "Start of route: You are here, at Dock Fore, 336 Fore Street.",
               "label": "Start of Route", "label_side": "left"},
     # Drawn with southwest at the top, the way the walk goes.
+    # The two Fore Street stubs between intersections 2 and 4 face each other
+    # with the squares 26.5 mm apart, so they keep 9 mm and stay apart.
     "legs": [
         {"dir": 0, "len": 12.0, "street": "Fore Street", "node": {
             "kind": "intersection", "number": 1,
             "text": "Intersection 1: 4-way intersection of Fore Street and Silver Street.",
-            "stubs": [(270, 9.0, "Silver Street"), (90, 9.0, "Silver Street")]}},
+            "stubs": [(270, 13.5, "Silver Street"), (90, 13.5, "Silver Street")]}},
         {"dir": 0, "len": 20.5, "street": "Fore Street", "node": {
             "kind": "intersection", "number": 2,
             "text": "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street.",
-            "stubs": [(0, 9.0, "Fore Street"), (90, 9.0, "Exchange Street")]}},
+            "stubs": [(0, 9.0, "Fore Street"), (90, 13.5, "Exchange Street")]}},
         # Not one of the study's intersections, so no number. Long Wharf
-        # leaves Commercial Street opposite Moulton Street; like Union Wharf
-        # at intersection 3, it counts as a leg but is not named in the cue.
+        # leaves Commercial Street opposite Moulton Street, as Union Wharf
+        # does opposite Union Street at intersection 3; both cues name the
+        # wharf (team, 11/05).
         {"dir": 270, "len": 24.5, "street": "Moulton Street", "node": {
             "kind": "intersection", "name": "Commercial Street and Moulton Street",
-            "text": "4-way intersection of Commercial Street and Moulton Street.",
-            "stubs": [(270, 9.0, "Long Wharf"), (180, 9.0, "Commercial Street")]}},
+            "text": "4-way intersection of Commercial Street, Moulton Street, and Long Wharf.",
+            "stubs": [(270, 13.5, "Long Wharf"), (180, 13.5, "Commercial Street")]}},
         {"dir": 0, "len": 26.5, "street": "Commercial Street", "node": {
             "kind": "intersection", "number": 3,
-            "text": "Intersection 3: 4-way intersection of Commercial Street and Union Street.",
-            "stubs": [(0, 9.0, "Commercial Street"), (270, 9.0, "Union Wharf")]}},
+            "text": "Intersection 3: 4-way intersection of Commercial Street, Union Street, and Union Wharf.",
+            "stubs": [(0, 13.5, "Commercial Street"), (270, 13.5, "Union Wharf")]}},
         {"dir": 90, "len": 24.5, "street": "Union Street", "node": {
             "kind": "intersection", "number": 4,
             "text": "Intersection 4: 4-way intersection of Union Street and Fore Street.",
-            "stubs": [(90, 9.0, "Union Street"), (180, 9.0, "Fore Street")]}},
+            "stubs": [(90, 13.5, "Union Street"), (180, 9.0, "Fore Street")]}},
         {"dir": 0, "len": 24.0, "street": "Fore Street", "node": {
             "kind": "intersection", "number": 5,
             "text": ("Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and "
                      "Pleasant Street."),
-            "stubs": [(270, 9.0, "Center Street"), (90, 9.0, "Center Street"), (0, 9.0, "Pleasant Street")]}},
+            "stubs": [(270, 13.5, "Center Street"), (90, 13.5, "Center Street"), (0, 13.5, "Pleasant Street")]}},
         {"dir": 315, "len": 21.0, "street": "York Street", "node": {"kind": "end"}},
     ],
     "end": {"text": "End of route: Your destination, Gorham's Corner.", "label": "End of Route",
@@ -308,8 +318,9 @@ STOPS = [
         "junction": "exchange_moulton",
         "path": "near_to_far",
         "rotate": 90,
+        # Straight, not left, since the map was turned (team, 11/05).
         "announcement": ("You are at the 4-way intersection of Fore Street, Moulton Street, and Exchange Street. "
-                         "Your route crosses Fore Street, then continues left along Moulton Street."),
+                         "Your route crosses Fore Street, then continues straight along Moulton Street."),
         "items": items(
             "This is a 4-way, offset intersection.",
             "Fore Street has two-way traffic. Moulton Street has one-way traffic moving away from the "
@@ -495,6 +506,17 @@ TEAM_NOTES = [
     "mockup showed no cross street there.",
     "The crosswalks described as angled are drawn at their measured angles: about 24 degrees at Union and "
     "Fore, 26 at Exchange and Moulton, and 28 across Center Street, where York Street meets it at a sharp angle.",
+    "Route overview: the cross street stubs are 13.5 mm, half again as long as before, except the two Fore "
+    "Street stubs between intersections 2 and 4, which stay 9 mm: those squares are 26.5 mm apart, so longer "
+    "stubs would meet. The training overview's stubs were already 10 to 12 mm, as in the mockup, and reach "
+    "the screen edge, so they are unchanged.",
+    "Route overviews: where the route turns, the intersection's cue ends with \"Turn.\", for example "
+    "\"Intersection 4: 4-way intersection of Union Street and Fore Street. Turn.\"",
+    "Intersection maps: the pink dots at the corners, where a crosswalk begins, keep their one ding and now "
+    "vibrate like the sidewalk, as does the end of a crosswalk between the road and the corner, so a corner "
+    "has no dead spot. The dots can be left out if the team prefers.",
+    "Intersection maps: the orange turn dots still ding every 0.4 s while touched; they can ding once, like "
+    "the centre, if the team prefers.",
 ]
 
 # The order the researcher's screen lists the maps in, and the order "Next"

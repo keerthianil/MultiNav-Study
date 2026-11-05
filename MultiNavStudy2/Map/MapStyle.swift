@@ -23,7 +23,8 @@ enum MapStyle {
     enum Overview {
         static let roadWidth: CGFloat = 4.0
         static let routeWidth: CGFloat = 3.5
-        static let intersectionSide: CGFloat = 6.0
+        /// Larger than the first 6 mm, to be easier to find (team, 11/05).
+        static let intersectionSide: CGFloat = 8.0
         static let intersectionBorder: CGFloat = 0.5
         static let endpointDiameter: CGFloat = 6.0
         static let endpointBorder: CGFloat = 0.4
@@ -54,7 +55,8 @@ enum MapStyle {
     /// How close a fingertip must be, in mm, to count as touching.
     enum Hit {
         static let endpoint: CGFloat = 4.0
-        static let intersection: CGFloat = 3.65
+        /// Reaches 0.65 mm past the sides of the overview's 8 mm square.
+        static let intersection: CGFloat = 4.65
         static let route: CGFloat = 3.65
         static let overviewRoad: CGFloat = 2.0
         static let turn: CGFloat = 3.2

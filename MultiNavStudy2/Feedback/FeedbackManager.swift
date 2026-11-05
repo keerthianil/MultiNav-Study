@@ -6,8 +6,10 @@
 // one begins, so moving between elements never leaves a stray vibration or
 // sound running. A vibration the new mode shares with the old one carries on
 // unbroken instead, so the route feels the same all along, over crosswalks,
-// turns and crosswalk ends. Setting the mode that is already playing does
-// nothing.
+// turns and crosswalk ends; so do the crosswalk clicks, at one steady level
+// and pace over the whole crosswalk. Tones sound once, when the finger
+// reaches the element (team, 11/05); only the turn dots repeat theirs.
+// Setting the mode that is already playing does nothing.
 //
 // Speech is separate. A map name cuts off the name before it; the
 // intersection descriptions are spoken through `speakTracked`, which says
@@ -25,22 +27,25 @@ final class FeedbackManager {
         case road
         /// Sidewalks: softer steady buzz.
         case sidewalk
-        /// Overview intersections: slow pulse and a ding every 0.4 s.
+        /// Overview intersections: slow pulse and one ding.
         case intersection
         /// Route start or end: fast pulse.
         case endpoint
         /// Route line: rhythmic pulse.
         case route
-        /// Crosswalk: click every 0.17 s, with the road buzz when over a road.
+        /// Crosswalk: click every 0.17 s, with the road buzz over the road and
+        /// the sidewalk buzz between the road and the corner.
         case crosswalk(overRoad: Bool)
         /// Route along a crosswalk: route pulse and crosswalk clicks.
         case routeOverCrosswalk
         /// Route turn dot: route pulse and a ding every 0.4 s.
         case turn
-        /// Crosswalk end dot: one ding, with the route pulse when the dot is
-        /// on the route.
+        /// Crosswalk end dot at a corner: one ding, with the route pulse when
+        /// the dot is on the route and the sidewalk buzz otherwise, so the
+        /// corner never goes still.
         case crosswalkEnd(onRoute: Bool)
-        /// Centre of the intersection: the road's buzz and its own two-note chime.
+        /// Centre of the intersection: the road's buzz and its own two-note
+        /// chime, once.
         case center
         /// Median: fast, sharp pulses.
         case median
@@ -54,9 +59,34 @@ final class FeedbackManager {
             case .intersection: return .intersection
             case .endpoint: return .endpoint
             case .route, .routeOverCrosswalk, .turn: return .route
-            case .crosswalk(let overRoad): return overRoad ? .road : nil
-            case .crosswalkEnd(let onRoute): return onRoute ? .route : nil
+            case .crosswalk(let overRoad): return overRoad ? .road : .sidewalk
+            case .crosswalkEnd(let onRoute): return onRoute ? .route : .sidewalk
             case .median: return .median
+            }
+        }
+
+        enum Tone: Equatable { case ding, chime }
+
+        /// The tone the mode sounds when the finger reaches it, if any.
+        var tone: Tone? {
+            switch self {
+            case .intersection, .turn, .crosswalkEnd: return .ding
+            case .center: return .chime
+            case .none, .road, .sidewalk, .endpoint, .route, .crosswalk, .routeOverCrosswalk, .median: return nil
+            }
+        }
+
+        /// How often the tone repeats while the finger stays, or nil when it
+        /// sounds once. Only a turn dot repeats its ding.
+        var toneRepeat: TimeInterval? {
+            self == .turn ? 0.4 : nil
+        }
+
+        /// Whether the mode plays the crosswalk clicks.
+        var clicks: Bool {
+            switch self {
+            case .crosswalk, .routeOverCrosswalk: return true
+            default: return false
             }
         }
     }
@@ -102,7 +132,13 @@ final class FeedbackManager {
 
     func set(_ newMode: Mode) {
         guard newMode != mode else { return }
-        stopTimers()
+        let keepClicks = mode.clicks && newMode.clicks
+        dingTimer?.invalidate()
+        dingTimer = nil
+        if !keepClicks {
+            clickTimer?.invalidate()
+            clickTimer = nil
+        }
         mode = newMode
         // The haptic service keeps a pattern that is already playing running,
         // and stops the old one before starting a different one.
@@ -111,19 +147,24 @@ final class FeedbackManager {
         } else {
             haptics.stop()
         }
-        switch newMode {
-        case .none, .road, .sidewalk, .endpoint, .route, .median:
-            break
-        case .intersection, .turn:
-            audio.ding()
-            dingTimer = repeating(0.4) { $0.audio.ding() }
-        case .crosswalk, .routeOverCrosswalk:
+        if let tone = newMode.tone {
+            play(tone)
+            if let interval = newMode.toneRepeat {
+                dingTimer = repeating(interval) { $0.play(tone) }
+            }
+        }
+        // Clicks already running carry on at their own pace, so crossing from
+        // the corner onto the road, or onto the route over the crosswalk,
+        // never adds an extra click.
+        if newMode.clicks, !keepClicks {
             startClicks()
-        case .crosswalkEnd:
-            audio.ding()
-        case .center:
-            audio.chime()
-            dingTimer = repeating(0.7) { $0.audio.chime() }
+        }
+    }
+
+    private func play(_ tone: Mode.Tone) {
+        switch tone {
+        case .ding: audio.ding()
+        case .chime: audio.chime()
         }
     }
 

@@ -5,8 +5,9 @@
 // Under the finger, in priority order:
 //   start / end (yellow dot)     fast pulse, "Start of route: You are here, at ..."
 //                                or "End of route: Your destination, ..."
-//   intersection (red square)    slow pulse and a ding, "Intersection 1: 4-way
-//                                intersection of ..."
+//   intersection (red square)    slow pulse and one ding as the finger reaches
+//                                it, "Intersection 1: 4-way intersection of ...",
+//                                ending "Turn." where the route turns
 //   route (cyan)                 rhythmic pulse, the street it runs along:
 //                                "Route on Fore Street"
 //   street (blue)                steady heavy buzz, street name

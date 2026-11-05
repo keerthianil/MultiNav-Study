@@ -1,7 +1,8 @@
 // SpeechTests.swift
-// The VoiceOver side of speech, which the simulator cannot run: phrases are
-// posted one at a time, each item waits for VoiceOver to finish the last,
-// a phrase cut off never starts the next, and nothing is left waiting.
+// The VoiceOver side of speech, with VoiceOver's reports simulated: phrases
+// are posted one at a time, an item's place waits for VoiceOver to finish
+// its words, a phrase cut off never starts the next, and nothing is left
+// waiting.
 
 import Foundation
 import Testing
@@ -103,30 +104,36 @@ final class SpeechTests {
         #expect(result == false)
     }
 
-    /// The six items through VoiceOver: each posted only after the last one
-    /// finished, in order, and a stop leaves nothing to follow.
+    /// The items through VoiceOver: description mode reads none, each swipe
+    /// posts one item, its place is posted only after VoiceOver finishes its
+    /// words, nothing follows, and a stop leaves nothing to come.
     @Test func itemsPlayOneAtATimeAndStopCleanly() async throws {
         let items = InfoCategory.allCases.map { InfoItem(category: $0, text: "About \($0.title).") }
         let player = DescriptionPlayer(announcement: "You are here.", items: items, speaker: ServiceSpeaker(service))
-        let spoken = items.indices.map { player.spoken($0) }
-        #expect(spoken.last == "About Truncated domes and curb cuts. 6 of 6")
-        player.toggleDetails(gesture: "Double tap")
+        player.placePause = 0
+        player.toggleDetails(gesture: "Two-finger double tap")
+        #expect(posted == ["Description mode."])
+        try await voiceOverFinished("Description mode.", true)
+        #expect(posted.count == 1, "no item until a swipe")
         for n in items.indices {
-            #expect(posted.last == spoken[n])
-            #expect(posted.count == n + 1, "the next item is posted only after this one finishes")
-            try await voiceOverFinished(spoken[n], true)
+            player.step(forward: true, gesture: "Two-finger swipe up")
+            #expect(posted.last == items[n].text)
+            try await voiceOverFinished(items[n].text, true)
+            #expect(posted.last == "\(n + 1) of 6", "the place only after the words")
+            try await voiceOverFinished("\(n + 1) of 6", true)
+            #expect(player.playing == nil)
         }
-        #expect(player.playing == nil)
+        #expect(posted.count == 1 + 2 * items.count, "nothing more was posted")
 
         posted.removeAll()
-        player.toggleDetails(gesture: "Double tap")
-        try await voiceOverFinished(spoken[0], true)
-        #expect(posted == [spoken[0], spoken[1]])
-        player.toggleDetails(gesture: "Double tap")      // stop while item 2 plays
+        player.toggleDetails(gesture: "Two-finger double tap")
+        player.step(forward: true, gesture: "Two-finger swipe up")
+        #expect(posted == ["Description mode.", items[0].text])
+        player.toggleDetails(gesture: "Two-finger double tap")      // stop while item 1 plays
         #expect(posted.last == "Stopped.")
-        try await voiceOverFinished(spoken[1], false)
+        try await voiceOverFinished(items[0].text, false)
         try await voiceOverFinished("Stopped.", true)
         #expect(player.playing == nil)
-        #expect(posted == [spoken[0], spoken[1], "Stopped."], "nothing follows a stop")
+        #expect(posted == ["Description mode.", items[0].text, "Stopped."], "nothing follows a stop")
     }
 }

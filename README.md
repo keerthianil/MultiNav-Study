@@ -60,28 +60,31 @@ then turns left to cross Silver Street, then continues along the other side of F
 |---|---|
 | Drag one finger | explore; works the whole time, even while something is being read |
 | Double tap | play the announcement (on an overview, the route overview) again; while it plays, stop it |
-| Two-finger double tap | play the information items, one after another; while they play, stop them. The next one starts over from the first |
-| Two-finger swipe up / down | next / previous information item, carrying on from there |
+| Two-finger double tap | description mode: says "Description mode." and reads nothing more, so the next swipe starts from the first item; while an item is read, stop it |
+| Two-finger swipe up / down | read the next / previous information item, on its own |
 | Three-finger swipe right | ready to cross: records the end time and closes the map (the VoiceOver escape gesture does the same) |
 | Single tap | a pulse, and the name of what is under the finger if it was not just said |
 
 The information items, in order: intersection geometry, traffic direction, traffic control, pedestrian
-signals, crosswalks, truncated domes and curb cuts. Each ends with its place, "1 of 6" to "6 of 6"; in Trial 2
-only the items switched on are counted. Stopping says "Stopped." Past the first or last item the map plays a
-low boundary sound. While the announcement or an item plays, the map keeps vibrating and sounding but holds
-back names, so the description is heard to the end. The gestures are the same on every map: one finger for
-the map and its announcement, two fingers for the information items. An overview has no items, so there the
-two-finger gestures give the boundary sound.
+signals, crosswalks, truncated domes and curb cuts. Each swipe reads one item and nothing after it; half a
+second after its words comes its place, "1 of 6" to "6 of 6"; in Trial 2 only the items switched on are
+counted. Stopping says "Stopped." Past the first or last item the map plays a low boundary sound. While the
+announcement or an item plays, the map keeps vibrating and sounding but holds back names, so the description
+is heard to the end. The gestures are the same on every map: one finger for the map and its announcement, two
+fingers for the information items. An overview has no items, so there the two-finger gestures give the
+boundary sound.
 
 ### Route overviews
 
 Laid out like the team's mockups, not to scale, with the start near the bottom. The square without a number
-is the corner of Commercial Street and Moulton Street, where the route turns.
+is the corner of Commercial Street and Moulton Street, where the route turns. Where the route turns, the
+square's cue ends with "Turn."; it gives no direction, since left and right on the map need not be the
+traveller's.
 
 | Under the finger | Looks like | Vibration | Sound | Speech |
 |---|---|---|---|---|
 | Start or end | yellow dot | fast pulse | | "Start of route: You are here, at Dock Fore, 336 Fore Street." |
-| Intersection | red square | slow pulse | ding every 0.4 s | "Intersection 1: 4-way intersection of Fore Street and Silver Street." |
+| Intersection | red square | slow pulse | one ding as the finger arrives | "Intersection 4: 4-way intersection of Union Street and Fore Street. Turn." |
 | Route | cyan line | rhythmic pulse | | the street it runs along: "Route on Fore Street" |
 | Cross street | blue line | steady heavy buzz | | street name |
 
@@ -96,29 +99,61 @@ photos.
 | Under the finger | Looks like | Vibration | Sound | Speech |
 |---|---|---|---|---|
 | Turn | orange dot | rhythmic pulse, as on the path | ding every 0.4 s | "Turn left" or "Turn right" |
-| Crosswalk end | pink dot | rhythmic pulse where the path runs through it | one ding | |
+| Crosswalk end | pink dot at a corner | rhythmic pulse where the path runs through it, otherwise the sidewalk's buzz | one ding | |
 | Start or end of the path | yellow dot | fast pulse | | "You are here" or "End of intersection route" |
 | Median | green | fast, sharp pulses, also where the path crosses it | | "Median" |
 | Path over a crosswalk | cyan on stripes | rhythmic pulse | clicks | "Route crossing Fore Street" |
 | Path | cyan line | rhythmic pulse | | "Route" |
-| Centre of the intersection | small white ring | steady heavy buzz, as on a road | two-note chime | "Center" |
-| Crosswalk | white bars, or dashed lines when unmarked | road buzz under it | clicks | "Silver Street crosswalk" |
+| Centre of the intersection | small white ring | steady heavy buzz, as on a road | two-note chime, once | "Center" |
+| Crosswalk | white bars, or dashed lines when unmarked | road buzz over the road, the sidewalk's buzz between the road and the corner | steady clicks, one level all the way | "Silver Street crosswalk" |
 | Sidewalk | grey line | softer steady buzz | | "Fore Street sidewalk" |
 | Road | blue | steady heavy buzz | | street name |
 
 The path keeps one pulse from end to end, over crosswalks, turns and crosswalk ends, so it can be followed
-without a break; only its two ends and the median feel different. The centre and the median work the same
-whatever information items are switched off, as do all other map sounds and vibration.
+without a break; only its two ends and the median feel different. Nothing at a corner is still: the pink dot
+and the end of the crosswalk vibrate like the sidewalk they sit on. Tones sound once when the finger arrives,
+except the turn dot's ding. The centre and the median work the same whatever information items are switched
+off, as do all other map sounds and vibration.
+
+### Sizes and spacing
+
+All in millimetres on the glass. A map is drawn for a 60 by 116 mm area (a 6.1 inch iPhone below the top
+bar) and only shrinks on a smaller screen. "Touch" is how far from an element's centre or centre line the
+finger counts as on it; once on an element, the finger keeps it 0.8 mm further, so an edge does not
+flicker.
+
+| Route overviews | Drawn | Touch |
+|---|---|---|
+| Street (blue) | 4 wide | 2 from its line |
+| Cross street stub | 13.5 long from the square's centre; 9 for the two Fore Street stubs between intersections 2 and 4, which face each other 26.5 apart; 10 to 12 on the training overview | as a street |
+| Route (cyan) | 3.5 wide | 3.65 from its line |
+| Intersection (red square) | 8 square, 0.5 white edge | 4.65 from its centre |
+| Start or end (yellow dot) | 6 across, 0.4 white edge | 4 from its centre |
+| Distance between squares | 12 to 26.5 | |
+
+| Intersection maps | Drawn | Touch |
+|---|---|---|
+| Road (blue) | 18 wide | its width |
+| Sidewalk (grey) | 4 wide, centre line 12.2 from the road's centre line: 1.2 between road and sidewalk | 2.3 from its line, so 0.9 between road and sidewalk is not felt |
+| Route (cyan) | 4 wide with a 0.3 blue edge, along the sidewalk; ends at least 5.5 inside the screen | 3.65 from its line |
+| Crosswalk | corner to corner; zebra bars 1 along the crossing by 2.8 across, up to 3, at least 1 apart; unmarked: two dashed lines 0.35 wide, 1.4 either side of its line | 4 from its line |
+| Median (green) | 3 wide | 2.7 from its line |
+| Centre | white ring 2 across | 5 from the centre |
+| Turn (orange dot) | 6 across | 3.2 from its centre |
+| Crosswalk end (pink dot) | 5 across | 2.7 from its centre |
+| Start or end of the path (yellow dot) | 6 across | 4 from its centre |
+| Between any two dots | at least 1 clear | |
+| Path after its last crosswalk | 14 (6 at Gorham's Corner), or to the screen edge | |
 
 ## VoiceOver
 
 The map is a VoiceOver direct-touch area that stays silent on touch, so every finger movement reaches the map,
 and VoiceOver hands the map's gestures to the app instead of acting on them itself: a two-finger swipe up or
 down steps through the items rather than reading the screen. With VoiceOver on, everything is spoken as
-VoiceOver announcements in the listener's own voice and rate; the app follows when each announcement ends to
-read the next item. The two-finger double tap also works as VoiceOver's magic tap, and the three-finger swipe
-right as its scroll and escape gestures. When a map opens, VoiceOver moves onto it and reads its name
-("Intersection map"), then the announcement follows.
+VoiceOver announcements in the listener's own voice and rate; the app follows when each announcement ends, so
+an item's place comes only after its words. The two-finger double tap also works as VoiceOver's magic tap, and
+the three-finger swipe right as its scroll and escape gestures. When a map opens, VoiceOver moves onto it and
+reads its name ("Intersection map"), then the announcement follows.
 
 The two-finger double tap works even when VoiceOver focus has moved to the top bar. Closing a map, opening the
 Trial 2 sheet or switching VoiceOver on or off stops whatever is being read, and nothing carries on after it.

@@ -171,20 +171,26 @@ struct RobustnessTests {
     }
 
     /// One finger for the announcement and two for the items, on every map
-    /// (team, 11/03). An overview has no items, so its two-finger double tap
-    /// plays nothing.
+    /// (team, 11/03): a two-finger double tap starts description mode and
+    /// each two-finger swipe reads one item (team, 11/05). An overview has no
+    /// items, so its two-finger double tap plays nothing.
     @Test func doubleTapsMeanTheSameOnEveryMap() throws {
         let canvas = TactileCanvasView(frame: screen)
         let stop = try #require(StudyContent.map(id: "intersection_1"))
-        let player = DescriptionPlayer(announcement: stop.announcement, items: stop.items, speaker: FakeSpeaker())
+        let voice = FakeSpeaker()
+        let player = DescriptionPlayer(announcement: stop.announcement, items: stop.items, speaker: voice)
         let intersection = IntersectionController(map: try MapLoader.intersection(named: stop.file), player: player,
                                                   label: "Intersection map")
         intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
         #expect(player.playing == .announcement)
         intersection.canvasTwoFingerDoubleTap(canvas, gesture: "Two-finger double tap")
+        #expect(player.playing == nil, "description mode reads no item")
+        #expect(voice.said.last == "Description mode.")
+        intersection.canvasRequestsItem(canvas, forward: true, gesture: "Two-finger swipe up")
         #expect(player.playing == .item(0))
         intersection.canvasTwoFingerDoubleTap(canvas, gesture: "Two-finger double tap")
-        #expect(player.playing == nil, "the same gesture stops the items")
+        #expect(player.playing == nil, "the same gesture stops an item")
+        #expect(voice.said.last == "Stopped.")
         intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
         intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
         #expect(player.playing == nil, "the same gesture stops the announcement")
@@ -197,6 +203,87 @@ struct RobustnessTests {
         #expect(overviewPlayer.playing == nil)
         overview.canvas(canvas, doubleTapAt: .zero, screen: .zero)
         #expect(overviewPlayer.playing == .announcement)
+    }
+
+    /// Nothing at a corner is still (team, 11/05): anywhere within 4 mm of a
+    /// pink crosswalk end something vibrates, whether the dot itself, the
+    /// crosswalk, the sidewalk or the route.
+    @Test func cornersNeverGoStill() throws {
+        let canvas = TactileCanvasView(frame: screen)
+        let feedback = FeedbackManager.shared
+        for map in StudyContent.maps where map.kind == .intersection {
+            let m = try MapLoader.intersection(named: map.file)
+            let player = DescriptionPlayer(announcement: map.announcement, items: map.items, speaker: FakeSpeaker())
+            let controller = IntersectionController(map: m, player: player, label: "Intersection map")
+            for dot in m.crosswalkEnds {
+                for r in stride(from: CGFloat(0), through: 3.9, by: 0.65) {
+                    for degrees in stride(from: 0.0, to: 360.0, by: 30.0) {
+                        let a = CGFloat(degrees * .pi / 180)
+                        let p = CGPoint(x: dot.position.x + r * cos(a), y: dot.position.y + r * sin(a))
+                        controller.canvas(canvas, touch: .began, mm: p, screen: .zero)
+                        #expect(feedback.mode.haptic != nil, "\(map.id): nothing felt at \(p), \(feedback.mode)")
+                        controller.canvas(canvas, touch: .ended, mm: p, screen: .zero)
+                    }
+                }
+            }
+        }
+        feedback.silence()
+    }
+
+    /// Along a crosswalk the vibration never stops, and at the road's edge
+    /// only the buzz changes: the road's buzz holds 0.8 mm past the edge, as
+    /// on the road itself, so it does not flicker there. Walked along the
+    /// crosswalk and 3 mm beside it, out and back.
+    @Test func crosswalkBuzzHoldsAtTheRoadEdge() throws {
+        let canvas = TactileCanvasView(frame: screen)
+        let feedback = FeedbackManager.shared
+        let stop = try #require(StudyContent.map(id: "training_intersection"))
+        let m = try MapLoader.intersection(named: stop.file)
+        let controller = IntersectionController(map: m, player: DescriptionPlayer(
+            announcement: stop.announcement, items: stop.items, speaker: FakeSpeaker()), label: "Intersection map")
+        let crosswalk = try #require(m.crosswalks.first {
+            MapGeometry.polylineDistance($0.start, m.route) > 8 && MapGeometry.polylineDistance($0.end, m.route) > 8
+        }, "a crosswalk away from the route")
+        let center = try #require(m.center)
+        func overRoad(_ p: CGPoint, slack: CGFloat = 0) -> Bool {
+            m.roads.contains { MapGeometry.polylineDistance(p, $0.points) <= $0.width / 2 + slack }
+        }
+        // Beside the crosswalk means away from the centre of the intersection.
+        let dx = crosswalk.end.x - crosswalk.start.x, dy = crosswalk.end.y - crosswalk.start.y
+        let length = hypot(dx, dy)
+        var normal = CGPoint(x: -dy / length, y: dx / length)
+        let mid = CGPoint(x: (crosswalk.start.x + crosswalk.end.x) / 2, y: (crosswalk.start.y + crosswalk.end.y) / 2)
+        if (mid.x - center.x) * normal.x + (mid.y - center.y) * normal.y < 0 { normal = CGPoint(x: -normal.x, y: -normal.y) }
+        var flips = 0
+        for offset: CGFloat in [0, 3] {
+            var path = (0...200).map { k -> CGPoint in
+                let t = CGFloat(k) / 200
+                return CGPoint(x: crosswalk.start.x + dx * t + normal.x * offset,
+                               y: crosswalk.start.y + dy * t + normal.y * offset)
+            }
+            path += path.reversed()
+            controller.canvas(canvas, touch: .began, mm: path[0], screen: .zero)
+            var wasOverRoad = false
+            for p in path.dropFirst() {
+                controller.canvas(canvas, touch: .moved, mm: p, screen: .zero)
+                let mode = feedback.mode
+                #expect(mode.haptic != nil, "nothing felt by the crosswalk at \(p)")
+                if case .crosswalk(let onRoad) = mode {
+                    if overRoad(p) { #expect(onRoad, "the road's buzz over the road at \(p)") }
+                    if wasOverRoad, overRoad(p, slack: 0.7) { #expect(onRoad, "the road's buzz held at \(p)") }
+                    if !overRoad(p, slack: 0.9) { #expect(!onRoad, "the sidewalk's buzz by the corner at \(p)") }
+                    if onRoad != wasOverRoad { flips += 1 }
+                    wasOverRoad = onRoad
+                } else {
+                    #expect(mode == .crosswalkEnd(onRoute: false), "\(mode) at \(p)")
+                    wasOverRoad = false
+                }
+            }
+            controller.canvas(canvas, touch: .ended, mm: path[path.count - 1], screen: .zero)
+            #expect(feedback.mode == .none)
+        }
+        #expect(flips > 0 && flips <= 8, "the buzz changes once at each road edge, \(flips) times")
+        feedback.silence()
     }
 
     /// Two fingers up or down step through the items, three to the right

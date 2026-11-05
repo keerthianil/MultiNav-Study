@@ -9,9 +9,9 @@
 //
 // Gestures, each recognised once however it arrives:
 //   double tap                      the announcement: play again or stop
-//   two-finger double tap           the information items: play or stop
-//                                   (VoiceOver: the magic tap)
-//   two-finger swipe up / down      next / previous information item
+//   two-finger double tap           description mode, or stop the item being
+//                                   read (VoiceOver: the magic tap)
+//   two-finger swipe up / down      read the next / previous information item
 //   three-finger swipe right        finished exploring
 //                                   (VoiceOver: also the escape gesture)
 

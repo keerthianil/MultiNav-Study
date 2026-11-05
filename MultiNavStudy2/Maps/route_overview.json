@@ -144,7 +144,7 @@
     "type": "LineString",
     "coordinates": [
      [
-      51.0,
+      55.5,
       94.0
      ],
      [
@@ -152,7 +152,7 @@
       94.0
      ],
      [
-      33.0,
+      28.5,
       94.0
      ]
     ]
@@ -192,7 +192,7 @@
       73.5
      ],
      [
-      51.0,
+      55.5,
       73.5
      ]
     ]
@@ -212,7 +212,7 @@
       73.5
      ],
      [
-      8.5,
+      4.0,
       73.5
      ]
     ]
@@ -233,7 +233,7 @@
      ],
      [
       17.5,
-      82.5
+      87.0
      ]
     ]
    },
@@ -253,7 +253,7 @@
      ],
      [
       17.5,
-      38.0
+      33.5
      ]
     ]
    },
@@ -272,7 +272,7 @@
       47.0
      ],
      [
-      8.5,
+      4.0,
       47.0
      ]
     ]
@@ -292,7 +292,7 @@
       47.0
      ],
      [
-      51.0,
+      55.5,
       47.0
      ]
     ]
@@ -328,7 +328,7 @@
     "type": "LineString",
     "coordinates": [
      [
-      51.0,
+      55.5,
       23.0
      ],
      [
@@ -336,7 +336,7 @@
       23.0
      ],
      [
-      33.0,
+      28.5,
       23.0
      ]
     ]
@@ -357,7 +357,7 @@
      ],
      [
       42.0,
-      14.0
+      9.5
      ]
     ]
    },
@@ -396,7 +396,7 @@
    "properties": {
     "name": "Intersection 2",
     "custom": {
-     "cue": "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street.",
+     "cue": "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street. Turn.",
      "number": "2"
     }
    }
@@ -414,7 +414,7 @@
    "properties": {
     "name": "Commercial Street and Moulton Street",
     "custom": {
-     "cue": "4-way intersection of Commercial Street and Moulton Street."
+     "cue": "4-way intersection of Commercial Street, Moulton Street, and Long Wharf. Turn."
     }
    }
   },
@@ -431,7 +431,7 @@
    "properties": {
     "name": "Intersection 3",
     "custom": {
-     "cue": "Intersection 3: 4-way intersection of Commercial Street and Union Street.",
+     "cue": "Intersection 3: 4-way intersection of Commercial Street, Union Street, and Union Wharf. Turn.",
      "number": "3"
     }
    }
@@ -449,7 +449,7 @@
    "properties": {
     "name": "Intersection 4",
     "custom": {
-     "cue": "Intersection 4: 4-way intersection of Union Street and Fore Street.",
+     "cue": "Intersection 4: 4-way intersection of Union Street and Fore Street. Turn.",
      "number": "4"
     }
    }
@@ -467,7 +467,7 @@
    "properties": {
     "name": "Intersection 5",
     "custom": {
-     "cue": "Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street.",
+     "cue": "Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street. Turn.",
      "number": "5"
     }
    }
@@ -527,8 +527,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     47.0,
-     89.0
+     48.0,
+     88.0
     ]
    },
    "properties": {
@@ -545,8 +545,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     47.0,
-     68.5
+     48.0,
+     67.5
     ]
    },
    "properties": {
@@ -563,8 +563,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     22.5,
-     42.0
+     23.5,
+     41.0
     ]
    },
    "properties": {
@@ -581,8 +581,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     47.0,
-     42.0
+     48.0,
+     41.0
     ]
    },
    "properties": {
@@ -599,8 +599,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     47.0,
-     18.0
+     48.0,
+     17.0
     ]
    },
    "properties": {

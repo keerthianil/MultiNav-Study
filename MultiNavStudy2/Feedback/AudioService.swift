@@ -1,9 +1,10 @@
 // AudioService.swift
 // The map sounds, synthesised once and played from one audio engine:
 //   ding      1120 Hz bell, 0.16 s, for intersections, turns and crosswalk ends
-//   click     short soft click, 12 ms, repeated over crosswalks
-//   chime     two soft notes falling a fifth (784 then 523 Hz), 0.32 s,
-//             repeated at the centre of an intersection
+//   click     short click, 12 ms, repeated over crosswalks, always at the
+//             same level, raised to be heard outdoors (team, 11/05)
+//   chime     two soft notes falling a fifth (784 then 523 Hz), 0.32 s, at
+//             the centre of an intersection
 //   boundary  a low 330 Hz thud, 0.09 s, when there is no item further that way
 // The session uses the playback category so both are heard with the ringer
 // switch off, and mixes with VoiceOver and other audio.
@@ -32,7 +33,7 @@ final class AudioService {
         engine.connect(dingPlayer, to: engine.mainMixerNode, format: format)
         engine.connect(clickPlayer, to: engine.mainMixerNode, format: format)
         engine.connect(tonePlayer, to: engine.mainMixerNode, format: format)
-        clickPlayer.volume = 0.64
+        clickPlayer.volume = 1.0
         startEngine()
         observe()
     }
@@ -180,7 +181,7 @@ final class AudioService {
             let envelope = exp(-t * 280)
             let body = sin(2 * .pi * 820 * t)
             let snap = sin(2 * .pi * 1_640 * t) * exp(-t * 520)
-            samples[i] = Float((body * 0.6 + snap * 0.4) * envelope * 0.14)
+            samples[i] = Float((body * 0.6 + snap * 0.4) * envelope * 0.3)
         }
         return buffer
     }

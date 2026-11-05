@@ -182,7 +182,7 @@
    "title": "Intersection 2",
    "subtitle": "Fore Street, Moulton Street and Exchange Street",
    "file": "intersection_2",
-   "announcement": "You are at the 4-way intersection of Fore Street, Moulton Street, and Exchange Street. Your route crosses Fore Street, then continues left along Moulton Street.",
+   "announcement": "You are at the 4-way intersection of Fore Street, Moulton Street, and Exchange Street. Your route crosses Fore Street, then continues straight along Moulton Street.",
    "items": [
     {
      "category": "geometry",
