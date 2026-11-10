@@ -104,36 +104,40 @@ final class SpeechTests {
         #expect(result == false)
     }
 
-    /// The items through VoiceOver: description mode reads none, each swipe
-    /// posts one item, its place is posted only after VoiceOver finishes its
-    /// words, nothing follows, and a stop leaves nothing to come.
+    /// The items through VoiceOver: the two-finger double tap posts each
+    /// item only after VoiceOver finished the one before, its place only
+    /// after its words; a swipe posts one item and nothing follows; a stop
+    /// leaves nothing to come.
     @Test func itemsPlayOneAtATimeAndStopCleanly() async throws {
         let items = InfoCategory.allCases.map { InfoItem(category: $0, text: "About \($0.title).") }
         let player = DescriptionPlayer(announcement: "You are here.", items: items, speaker: ServiceSpeaker(service))
         player.placePause = 0
         player.toggleDetails(gesture: "Two-finger double tap")
-        #expect(posted == ["Description mode."])
-        try await voiceOverFinished("Description mode.", true)
-        #expect(posted.count == 1, "no item until a swipe")
         for n in items.indices {
-            player.step(forward: true, gesture: "Two-finger swipe up")
             #expect(posted.last == items[n].text)
+            #expect(posted.count == 2 * n + 1, "the next item is posted only after this one finishes")
             try await voiceOverFinished(items[n].text, true)
             #expect(posted.last == "\(n + 1) of 6", "the place only after the words")
             try await voiceOverFinished("\(n + 1) of 6", true)
-            #expect(player.playing == nil)
         }
-        #expect(posted.count == 1 + 2 * items.count, "nothing more was posted")
+        #expect(player.playing == nil)
+        #expect(posted.count == 2 * items.count, "nothing more was posted")
+
+        posted.removeAll()
+        player.step(forward: false, gesture: "Two-finger swipe up")
+        #expect(posted == [items[4].text], "one item, the one before the last")
+        try await voiceOverFinished(items[4].text, true)
+        try await voiceOverFinished("5 of 6", true)
+        #expect(posted == [items[4].text, "5 of 6"], "nothing follows a swipe")
 
         posted.removeAll()
         player.toggleDetails(gesture: "Two-finger double tap")
-        player.step(forward: true, gesture: "Two-finger swipe up")
-        #expect(posted == ["Description mode.", items[0].text])
+        #expect(posted == [items[0].text])
         player.toggleDetails(gesture: "Two-finger double tap")      // stop while item 1 plays
         #expect(posted.last == "Stopped.")
         try await voiceOverFinished(items[0].text, false)
         try await voiceOverFinished("Stopped.", true)
         #expect(player.playing == nil)
-        #expect(posted == ["Description mode.", items[0].text, "Stopped."], "nothing follows a stop")
+        #expect(posted == [items[0].text, "Stopped."], "nothing follows a stop")
     }
 }

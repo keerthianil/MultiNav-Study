@@ -126,7 +126,7 @@ private struct InfoSheet: View {
         NavigationStack {
             Form {
                 InfoSettingsSection(footer: "Changes apply on this map at once, and to every Trial 2 intersection "
-                                    + "after it; the next swipe starts from the first item. Each change is logged.")
+                                    + "after it; the next swipe down starts from the first item. Each change is logged.")
             }
             .navigationTitle("Information Items")
             .navigationBarTitleDisplayMode(.inline)

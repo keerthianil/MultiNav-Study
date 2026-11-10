@@ -171,8 +171,8 @@ struct RobustnessTests {
     }
 
     /// One finger for the announcement and two for the items, on every map
-    /// (team, 11/03): a two-finger double tap starts description mode and
-    /// each two-finger swipe reads one item (team, 11/05). An overview has no
+    /// (team, 11/03): a two-finger double tap plays the items (team, 11/09)
+    /// and each two-finger swipe reads one (team, 11/05). An overview has no
     /// items, so its two-finger double tap plays nothing.
     @Test func doubleTapsMeanTheSameOnEveryMap() throws {
         let canvas = TactileCanvasView(frame: screen)
@@ -184,12 +184,11 @@ struct RobustnessTests {
         intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
         #expect(player.playing == .announcement)
         intersection.canvasTwoFingerDoubleTap(canvas, gesture: "Two-finger double tap")
-        #expect(player.playing == nil, "description mode reads no item")
-        #expect(voice.said.last == "Description mode.")
-        intersection.canvasRequestsItem(canvas, forward: true, gesture: "Two-finger swipe up")
-        #expect(player.playing == .item(0))
+        #expect(player.playing == .item(0), "the items play")
+        intersection.canvasRequestsItem(canvas, forward: true, gesture: "Two-finger swipe down")
+        #expect(player.playing == .item(1))
         intersection.canvasTwoFingerDoubleTap(canvas, gesture: "Two-finger double tap")
-        #expect(player.playing == nil, "the same gesture stops an item")
+        #expect(player.playing == nil, "the same gesture stops them")
         #expect(voice.said.last == "Stopped.")
         intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
         intersection.canvas(canvas, doubleTapAt: .zero, screen: .zero)
@@ -286,12 +285,13 @@ struct RobustnessTests {
         feedback.silence()
     }
 
-    /// Two fingers up or down step through the items, three to the right
-    /// finish; anything else, or too short a swipe, means nothing.
+    /// Two fingers down or up step through the items, read from the top
+    /// (team, 11/09), three to the right finish; anything else, or too short
+    /// a swipe, means nothing.
     @Test func swipesAreReadByFingersAndDirection() {
         let far = TactileCanvasView.swipeDistance + 10
-        #expect(TactileCanvasView.swipe(fingers: 2, dx: 5, dy: -far) == .next)
-        #expect(TactileCanvasView.swipe(fingers: 2, dx: -5, dy: far) == .previous)
+        #expect(TactileCanvasView.swipe(fingers: 2, dx: 5, dy: far) == .next, "down is the next item")
+        #expect(TactileCanvasView.swipe(fingers: 2, dx: -5, dy: -far) == .previous, "up the one before")
         #expect(TactileCanvasView.swipe(fingers: 2, dx: 0, dy: -30) == nil, "too short")
         #expect(TactileCanvasView.swipe(fingers: 2, dx: far, dy: 0) == nil)
         #expect(TactileCanvasView.swipe(fingers: 2, dx: far, dy: -far) == nil, "diagonal")

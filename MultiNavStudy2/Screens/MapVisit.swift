@@ -117,7 +117,7 @@ final class MapVisit: ObservableObject {
             self?.summary?.announcementPlays += 1
             if repeated { self?.summary?.announcementRepeats += 1 }
         }
-        controller.player.onDescriptionMode = { [weak self] in
+        controller.player.onDetailsStarted = { [weak self] in
             self?.summary?.detailActivations += 1
         }
         controller.player.onItem = { [weak self] item in

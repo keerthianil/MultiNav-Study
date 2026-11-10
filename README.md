@@ -60,15 +60,17 @@ then turns left to cross Silver Street, then continues along the other side of F
 |---|---|
 | Drag one finger | explore; works the whole time, even while something is being read |
 | Double tap | play the announcement (on an overview, the route overview) again; while it plays, stop it |
-| Two-finger double tap | description mode: says "Description mode." and reads nothing more, so the next swipe starts from the first item; while an item is read, stop it |
-| Two-finger swipe up / down | read the next / previous information item, on its own |
+| Two-finger double tap | play the information items, the first to the last; while they play, stop them. The next one starts over from the first |
+| Two-finger swipe down / up | read the next / previous information item, on its own |
 | Three-finger swipe right | ready to cross: records the end time and closes the map (the VoiceOver escape gesture does the same) |
 | Single tap | a pulse, and the name of what is under the finger if it was not just said |
 
 The information items, in order: intersection geometry, traffic direction, traffic control, pedestrian
-signals, crosswalks, truncated domes and curb cuts. Each swipe reads one item and nothing after it; half a
-second after its words comes its place, "1 of 6" to "6 of 6"; in Trial 2 only the items switched on are
-counted. Stopping says "Stopped." Past the first or last item the map plays a low boundary sound. While the
+signals, crosswalks, truncated domes and curb cuts. They are a list read from the top: a swipe down reads the
+next item and a swipe up the one before, each on its own, with nothing after it. A quarter of a second after
+its words each item is followed by its place, "1 of 6" to "6 of 6"; in Trial 2 only the items switched on are
+counted. Stopping says "Stopped." Before the first item the map says "Start of details.", past the last "End
+of details.", each with a low boundary sound. While the
 announcement or an item plays, the map keeps vibrating and sounding but holds back names, so the description
 is heard to the end. The gestures are the same on every map: one finger for the map and its announcement, two
 fingers for the information items. An overview has no items, so there the two-finger gestures give the
@@ -91,23 +93,24 @@ traveller's.
 ### Intersection maps
 
 Each junction at its true angles from OpenStreetMap, with the walking path from "You are here", at the
-corner where the participant is lined up, to "End of intersection route". Every map is turned the way the
-participant faces there, so the first crossing points up; the return maps are turned for the return
-approach. Crosswalks follow the team's descriptions (zebra or unmarked, straight or angled) and the aerial
-photos.
+corner where the participant is lined up, to "End of intersection route" (at intersection 5, "Destination,
+Gorham's Corner"). Every map is turned the way the participant faces there, so the first crossing points up;
+the return maps are turned for the return approach. Crosswalks follow the team's descriptions (zebra or
+unmarked, straight or angled) and the aerial photos. Intersections 3 and 4 sit as near the middle of the
+screen as their whole walk allows.
 
 | Under the finger | Looks like | Vibration | Sound | Speech |
 |---|---|---|---|---|
-| Turn | orange dot | rhythmic pulse, as on the path | ding every 0.4 s | "Turn left" or "Turn right" |
+| Turn | orange dot | rhythmic pulse, as on the path | ding every 0.4 s | "Turn, left" or "Turn, right" |
 | Crosswalk end | pink dot at a corner | rhythmic pulse where the path runs through it, otherwise the sidewalk's buzz | one ding | |
-| Start or end of the path | yellow dot | fast pulse | | "You are here" or "End of intersection route" |
+| Start or end of the path | yellow dot | fast pulse | | "You are here", "End of intersection route" or "Destination, Gorham's Corner" |
 | Median | green | fast, sharp pulses, also where the path crosses it | | "Median" |
-| Path over a crosswalk | cyan on stripes | rhythmic pulse | clicks | "Route crossing Fore Street" |
+| Path over a crosswalk | cyan on stripes | rhythmic pulse | clicks | "Route crossing Fore Street", only on the crossings the route makes |
 | Path | cyan line | rhythmic pulse | | "Route" |
 | Centre of the intersection | small white ring | steady heavy buzz, as on a road | two-note chime, once | "Center" |
 | Crosswalk | white bars, or dashed lines when unmarked | road buzz over the road, the sidewalk's buzz between the road and the corner | steady clicks, one level all the way | "Silver Street crosswalk" |
 | Sidewalk | grey line | softer steady buzz | | "Fore Street sidewalk" |
-| Road | blue | steady heavy buzz | | street name |
+| Road | blue | steady heavy buzz | | street name, beyond the street's crosswalk; between the centre and the crosswalks, nothing |
 
 The path keeps one pulse from end to end, over crosswalks, turns and crosswalk ends, so it can be followed
 without a break; only its two ends and the median feel different. Nothing at a corner is still: the pink dot
@@ -125,11 +128,13 @@ flicker.
 | Route overviews | Drawn | Touch |
 |---|---|---|
 | Street (blue) | 4 wide | 2 from its line |
-| Cross street stub | 13.5 long from the square's centre; 9 for the two Fore Street stubs between intersections 2 and 4, which face each other 26.5 apart; 10 to 12 on the training overview | as a street |
+| Cross street stub | 13.5 long from the square's centre; 9 for the two Fore Street stubs between intersections 2 and 4, which face each other 26.5 apart; 15 on the training overview | as a street |
 | Route (cyan) | 3.5 wide | 3.65 from its line |
 | Intersection (red square) | 8 square, 0.5 white edge | 4.65 from its centre |
 | Start or end (yellow dot) | 6 across, 0.4 white edge | 4 from its centre |
-| Distance between squares | 12 to 26.5 | |
+| Start to intersection 1 | 16 | |
+| York Street, intersection 5 to the end | 25 | |
+| Distance between squares | 20.5 to 26.5 | |
 
 | Intersection maps | Drawn | Touch |
 |---|---|---|
@@ -138,12 +143,12 @@ flicker.
 | Route (cyan) | 4 wide with a 0.3 blue edge, along the sidewalk; ends at least 5.5 inside the screen | 3.65 from its line |
 | Crosswalk | corner to corner; zebra bars 1 along the crossing by 2.8 across, up to 3, at least 1 apart; unmarked: two dashed lines 0.35 wide, 1.4 either side of its line | 4 from its line |
 | Median (green) | 3 wide | 2.7 from its line |
-| Centre | white ring 2 across | 5 from the centre |
+| Centre | white ring 3 across | 6.5 from the centre, less where a crosswalk comes closer (6.4 at Fore and Silver), 5 where the angled crosswalk runs over it (Exchange and Moulton) |
 | Turn (orange dot) | 6 across | 3.2 from its centre |
 | Crosswalk end (pink dot) | 5 across | 2.7 from its centre |
 | Start or end of the path (yellow dot) | 6 across | 4 from its centre |
 | Between any two dots | at least 1 clear | |
-| Path after its last crosswalk | 14 (6 at Gorham's Corner), or to the screen edge | |
+| Path after its last crosswalk | 14 (12 at Gorham's Corner), or to the screen edge | |
 
 ## VoiceOver
 

@@ -20,11 +20,11 @@
     "type": "LineString",
     "coordinates": [
      [
-      18.0,
-      3.78
+      9.05,
+      0.0
      ],
      [
-      25.3,
+      15.97,
       -69.94
      ]
     ]
@@ -32,7 +32,9 @@
    "properties": {
     "name": "Union Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.39"
     }
    }
   },
@@ -43,19 +45,21 @@
     "type": "LineString",
     "coordinates": [
      [
-      18.0,
-      3.78
+      9.05,
+      0.0
      ],
      [
       41.89,
-      7.05
+      4.5
      ]
     ]
    },
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.87"
     }
    }
   },
@@ -66,11 +70,11 @@
     "type": "LineString",
     "coordinates": [
      [
-      18.0,
-      3.78
+      9.05,
+      0.0
      ],
      [
-      18.0,
+      9.05,
       70.0
      ]
     ]
@@ -78,7 +82,9 @@
    "properties": {
     "name": "Union Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.17"
     }
    }
   },
@@ -89,19 +95,21 @@
     "type": "LineString",
     "coordinates": [
      [
-      18.0,
-      3.78
+      9.05,
+      0.0
      ],
      [
       -41.84,
-      -6.11
+      -8.41
      ]
     ]
    },
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "16.19"
     }
    }
   },
@@ -111,15 +119,95 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     18.0,
-     3.78
+     9.05,
+     0.0
     ]
    },
    "properties": {
     "name": "Center",
     "custom": {
-     "radius_mm": "5.0"
+     "radius_mm": "6.5"
     }
+   }
+  },
+  {
+   "id": "sidewalk_0",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      26.85,
+      -56.0
+     ],
+     [
+      22.35,
+      -10.49
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Street sidewalk"
+   }
+  },
+  {
+   "id": "sidewalk_1",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      22.35,
+      -10.49
+     ],
+     [
+      28.0,
+      -9.72
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street sidewalk"
+   }
+  },
+  {
+   "id": "sidewalk_2",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      28.0,
+      14.91
+     ],
+     [
+      21.25,
+      13.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street sidewalk"
+   }
+  },
+  {
+   "id": "sidewalk_3",
+   "type": "sidewalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      21.25,
+      13.98
+     ],
+     [
+      21.25,
+      56.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Union Street sidewalk"
    }
   },
   {
@@ -129,12 +217,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      5.8,
+      -3.15,
       56.0
      ],
      [
-      5.8,
-      14.13
+      -3.15,
+      10.35
      ]
     ]
    },
@@ -149,12 +237,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      5.8,
-      14.13
+      -3.15,
+      10.35
      ],
      [
       -28.0,
-      8.54
+      6.24
      ]
     ]
    },
@@ -170,11 +258,11 @@
     "coordinates": [
      [
       -28.0,
-      -16.19
+      -18.49
      ],
      [
-      7.14,
-      -10.38
+      -1.81,
+      -14.16
      ]
     ]
    },
@@ -189,11 +277,11 @@
     "type": "LineString",
     "coordinates": [
      [
-      7.14,
-      -10.38
+      -1.81,
+      -14.16
      ],
      [
-      11.66,
+      2.33,
       -56.0
      ]
     ]
@@ -209,12 +297,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      7.14,
-      -10.38
+      -1.81,
+      -14.16
      ],
      [
-      31.3,
-      -6.71
+      22.35,
+      -10.49
      ]
     ]
    },
@@ -228,18 +316,43 @@
    }
   },
   {
+   "id": "crosswalk_1",
+   "type": "crosswalk",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      22.35,
+      -10.49
+     ],
+     [
+      21.25,
+      13.98
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Fore Street crosswalk",
+    "custom": {
+     "marking": "zebra",
+     "street": "Fore Street",
+     "endpoints": "both"
+    }
+   }
+  },
+  {
    "id": "crosswalk_2",
    "type": "crosswalk",
    "geometry": {
     "type": "LineString",
     "coordinates": [
      [
-      30.2,
-      17.76
+      21.25,
+      13.98
      ],
      [
-      5.8,
-      14.13
+      -3.15,
+      10.35
      ]
     ]
    },
@@ -259,12 +372,12 @@
     "type": "LineString",
     "coordinates": [
      [
-      5.8,
-      14.13
+      -3.15,
+      10.35
      ],
      [
-      -1.74,
-      -11.85
+      -10.69,
+      -15.63
      ]
     ]
    },
@@ -284,16 +397,16 @@
     "type": "LineString",
     "coordinates": [
      [
-      5.8,
-      14.13
+      -3.15,
+      10.35
      ],
      [
-      -1.74,
-      -11.85
+      -10.69,
+      -15.63
      ],
      [
-      -15.55,
-      -14.13
+      -24.5,
+      -17.91
      ]
     ]
    },
@@ -311,12 +424,12 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -1.74,
-     -11.85
+     -10.69,
+     -15.63
     ]
    },
    "properties": {
-    "name": "Turn left"
+    "name": "Turn, left"
    }
   },
   {
@@ -325,8 +438,36 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     7.14,
-     -10.38
+     -1.81,
+     -14.16
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_1",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     22.35,
+     -10.49
+    ]
+   },
+   "properties": {
+    "name": "Crosswalk end"
+   }
+  },
+  {
+   "id": "crosswalk_end_2",
+   "type": "crosswalk_end",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     21.25,
+     13.98
     ]
    },
    "properties": {

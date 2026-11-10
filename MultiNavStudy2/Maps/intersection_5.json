@@ -32,7 +32,9 @@
    "properties": {
     "name": "York Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "28.79"
     }
    }
   },
@@ -55,7 +57,9 @@
    "properties": {
     "name": "Pleasant Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "28.79"
     }
    }
   },
@@ -78,7 +82,9 @@
    "properties": {
     "name": "Center Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.5"
     }
    }
   },
@@ -101,7 +107,9 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.19"
     }
    }
   },
@@ -124,7 +132,9 @@
    "properties": {
     "name": "Center Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "19.53"
     }
    }
   },
@@ -141,7 +151,7 @@
    "properties": {
     "name": "Center",
     "custom": {
-     "radius_mm": "5.0"
+     "radius_mm": "6.5"
     }
    }
   },
@@ -449,8 +459,8 @@
       -26.76
      ],
      [
-      16.74,
-      -32.85
+      21.08,
+      -36.99
      ]
     ]
    },
@@ -458,7 +468,7 @@
     "name": "Route",
     "custom": {
      "start_text": "You are here",
-     "end_text": "End of intersection route"
+     "end_text": "Destination, Gorham's Corner"
     }
    }
   },
@@ -473,7 +483,7 @@
     ]
    },
    "properties": {
-    "name": "Turn right"
+    "name": "Turn, right"
    }
   },
   {
@@ -482,8 +492,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     13.22,
-     12.73
+     12.4,
+     -28.7
     ]
    },
    "properties": {
@@ -496,8 +506,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     10.36,
-     -26.76
+     13.22,
+     12.73
     ]
    },
    "properties": {

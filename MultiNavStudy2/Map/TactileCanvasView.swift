@@ -9,9 +9,9 @@
 //
 // Gestures, each recognised once however it arrives:
 //   double tap                      the announcement: play again or stop
-//   two-finger double tap           description mode, or stop the item being
-//                                   read (VoiceOver: the magic tap)
-//   two-finger swipe up / down      read the next / previous information item
+//   two-finger double tap           the information items: play or stop
+//                                   (VoiceOver: the magic tap)
+//   two-finger swipe down / up      read the next / previous information item
 //   three-finger swipe right        finished exploring
 //                                   (VoiceOver: also the escape gesture)
 
@@ -188,8 +188,8 @@ final class TactileCanvasView: UIView {
     @objc private func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
         guard gesture.state == .recognized else { return }
         switch gesture.direction {
-        case .up: touchSwipe(.next)
-        case .down: touchSwipe(.previous)
+        case .down: touchSwipe(.next)
+        case .up: touchSwipe(.previous)
         default: touchSwipe(.finish)
         }
     }
@@ -197,13 +197,13 @@ final class TactileCanvasView: UIView {
     enum SwipeAction: Equatable { case finish, next, previous }
 
     /// What a swipe with `fingers` fingers means once it has moved by
-    /// (dx, dy) points: two fingers up or down step through the items, three
-    /// to the right finish. Nil while it is still too short, or for any
-    /// other swipe.
+    /// (dx, dy) points: two fingers down or up step through the items, read
+    /// from the top (team, 11/09), three to the right finish. Nil while it is
+    /// still too short, or for any other swipe.
     static func swipe(fingers: Int, dx: CGFloat, dy: CGFloat) -> SwipeAction? {
         switch fingers {
         case 2 where abs(dy) > swipeDistance && abs(dx) < swipeDistance:
-            return dy < 0 ? .next : .previous
+            return dy > 0 ? .next : .previous
         case 3 where dx > swipeDistance && abs(dy) < swipeDistance:
             return .finish
         default:
@@ -217,8 +217,8 @@ final class TactileCanvasView: UIView {
         swipedThisTouch = true
         switch action {
         case .finish: delegate?.canvasRequestsFinish(self, gesture: "Three-finger swipe right")
-        case .next: delegate?.canvasRequestsItem(self, forward: true, gesture: "Two-finger swipe up")
-        case .previous: delegate?.canvasRequestsItem(self, forward: false, gesture: "Two-finger swipe down")
+        case .next: delegate?.canvasRequestsItem(self, forward: true, gesture: "Two-finger swipe down")
+        case .previous: delegate?.canvasRequestsItem(self, forward: false, gesture: "Two-finger swipe up")
         }
     }
 

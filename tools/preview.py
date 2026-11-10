@@ -136,7 +136,7 @@ def render_intersection(doc, path):
         if f["properties"].get("custom", {}).get("mark") == "no":
             continue
         x, y = P(f["geometry"]["coordinates"])
-        r = 1.0 * PX_PER_MM
+        r = 1.5 * PX_PER_MM   # the 3 mm ring
         draw.ellipse([x - r, y - r, x + r, y + r], outline=WHITE, width=max(1, int(0.4 * PX_PER_MM)))
     for f in _features(doc, "route"):
         pts = [P(p) for p in f["geometry"]["coordinates"]]

@@ -34,7 +34,7 @@ docs/                         this guide, STUDY.md, map previews
 | `Study/StudyHomeView.swift` | the researcher's screen: participant, Open Next, the maps by phase, the Trial 2 information items row, Data Files; the Information Items screen and Settings (behind the gear) |
 | `Screens/MapScreen.swift` | a map full screen, with Done, the title and (Trial 2) the information items sheet |
 | `Screens/MapVisit.swift` | one visit: starts the session if needed, plays the announcement when the map opens, times the visit, counts plays, writes the visit row when it ends |
-| `Map/DescriptionPlayer.swift` | the announcement and the information items: description mode, one item per swipe with its place after a pause, stop, start over |
+| `Map/DescriptionPlayer.swift` | the announcement and the information items: play them all or stop, one item per swipe, each with its place after a short pause |
 | `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps, double taps, two-finger double taps, two-finger swipes up and down and the three-finger swipe right, VoiceOver direct touch, magic tap, scroll and escape |
 | `Map/OverviewController.swift` | route overviews: drawing, hit-testing, feedback, gestures |
 | `Map/IntersectionController.swift` | intersection maps: drawing, hit-testing, feedback, gestures |
@@ -87,7 +87,8 @@ corner or the end. The route carries the street of each leg (`streets`), so touc
 Street". Where the next leg leaves an intersection in another direction, its cue ends with "Turn."
 (`OVERVIEW_TURN_TEXT`, added by `overview_cue`). Stubs are the streets the walk does not follow, each with its
 own length: 13.5 mm on the route overview, except the two Fore Street stubs that face each other between
-intersections 2 and 4. The layouts follow the team's mockups and are not to scale.
+intersections 2 and 4, and 15 mm on the training overview. The layouts follow the team's mockups and are not
+to scale.
 
 ### Intersection maps
 
@@ -99,7 +100,12 @@ intersections 2 and 4. The layouts follow the team's mockups and are not to scal
   participant stands at the corner and the first crossing points up.
 * **Roads** are 18 mm wide and run off the screen. Sidewalk centre lines run 12.2 mm from each road's centre
   (`SIDEWALK_OFFSET`) and meet at the corners, leaving 1.2 mm between road and sidewalk. The README lists
-  every size and touch radius.
+  every size and touch radius. Each road carries the stretch between the junction and its crosswalk
+  (`quiet_from_mm`, `quiet_to_mm`, mm along the road), where the app does not name it.
+* **The centre** is felt `CENTER_R` (6.5 mm) round, or less where a crosswalk comes closer, never under 5 mm.
+* **Framing**: a stop with `"frame": "junction"` (intersections 3 and 4) moves the view only as far as its
+  whole walk needs, keeping the junction near the middle; other maps centre the walk when it does not fit
+  round the junction.
 * **Crosswalks** run corner to corner on the legs listed in the spec. `straight` squares one up when its ends
   are more than 2 mm uneven; `skew` moves one end further out along its arm, for the crosswalks the team
   describes as angled. A leg with a `median` gets a green strip from just inside its crosswalk outwards, and
@@ -138,14 +144,17 @@ VoiceOver reads only its short name when the map opens.
   still reaches the open map (`MapVisit.current`). With no map open it is left to the system.
 * Two-finger swipes up and down, and the three-finger swipe right, are seen by a gesture recogniser and by a
   raw-touch check (`TactileCanvasView.swipe`); each is acted on once per touch, so quick swipes in a row all
-  count. Up and down step through the information items, with the map's boundary sound past either end. Inside the direct-touch area VoiceOver passes these
+  count. Down and up step to the next and previous information item, with the map's boundary sound past
+  either end. Inside the direct-touch area VoiceOver passes these
   swipes to the app as touches, so a two-finger swipe does not start VoiceOver's read-all there. Right, and
   VoiceOver's scroll right and escape gestures, mean ready to cross.
 * A second finger stops exploring, so multi-finger gestures do not buzz.
 
 Each controller hit-tests in millimetres in a fixed priority order (see the tables in the README). On an
 intersection map the median comes before the path, so it is felt where the path crosses it, and the centre
-after it, so it never interrupts the path. Once the finger is on an element it keeps it within an extra 0.8 mm,
+after it, so it never interrupts the path. The path says "Route crossing" only on its segments that run along
+a crosswalk (`IntersectionMap.routeCrossings`, worked out at load), and a road between the centre and its
+crosswalk is felt but not named. Once the finger is on an element it keeps it within an extra 0.8 mm,
 so a finger resting on an edge does not flicker between two elements. Move events are logged at most 10 times
 a second; feedback reacts to every move.
 
@@ -161,10 +170,11 @@ ends every phrase waiting, so the player cannot get stuck holding map names back
 VoiceOver path with simulated announcement-finished notifications, since the simulator has no VoiceOver.
 
 `DescriptionPlayer` keeps one thing playing at a time. Starting anything cuts off what was playing; a stop by
-the participant says "Stopped."; a token makes sure a late report from an older phrase is ignored. The
-two-finger double tap only says "Description mode." and sets the next swipe to the first item. Each swipe
-plays one item: its words, then after `placePause` (0.5 s) its place among the items played (`place`): "2 of
-6", or "2 of 4" in Trial 2 with two items off. Nothing follows until the next swipe. Controllers ask `player.isPlaying` before saying a map name, so names
+the participant says "Stopped."; a token makes sure a late report from an older phrase is ignored. An item is
+its words, then after `placePause` (0.25 s) its place among the items played (`place`): "2 of 6", or "2 of 4"
+in Trial 2 with two items off. The two-finger double tap plays every item in turn; a swipe plays one item and
+nothing after it. Before the first item a swipe up says "Start of details.", past the last a swipe down "End
+of details.". Controllers ask `player.isPlaying` before saying a map name, so names
 never cut the description off. `MapVisit` counts what the player reports for the visits log.
 
 ## Feedback

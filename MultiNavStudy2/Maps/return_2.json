@@ -32,7 +32,9 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "10.31",
+     "quiet_to_mm": "74.9"
     }
    }
   },
@@ -55,7 +57,9 @@
    "properties": {
     "name": "Exchange Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.71"
     }
    }
   },
@@ -78,7 +82,9 @@
    "properties": {
     "name": "Moulton Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.52"
     }
    }
   },
@@ -314,7 +320,7 @@
     ]
    },
    "properties": {
-    "name": "Turn right"
+    "name": "Turn, right"
    }
   }
  ]

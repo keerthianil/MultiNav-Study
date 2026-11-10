@@ -45,8 +45,9 @@ AREA = {"osm": "osm/old_port_area.json", "origin": (43.6560, -70.2540)}
 START_TEXT = "You are here"
 END_TEXT = "End of intersection route"
 
-# What a turn dot says, by the way the route turns there (team, 10/30).
-TURN_TEXT = {"left": "Turn left", "right": "Turn right"}
+# What a turn dot says, by the way the route turns there (team, 10/30); the
+# comma gives a short pause before the direction (team, 11/09).
+TURN_TEXT = {"left": "Turn, left", "right": "Turn, right"}
 
 # Added to an overview intersection's cue where the route turns there. No
 # direction: left and right on the map need not be the traveller's (team, 11/05).
@@ -70,7 +71,7 @@ def items(*texts):
 # with OVERVIEW_TURN_TEXT. Stubs are the streets the walk does not follow,
 # each with a direction, a length in mm from the square's centre and a name.
 # On the route overview they are 13.5 mm, half again as long as the first
-# 9 mm (team, 11/05).
+# 9 mm (team, 11/05); on the training overview 15 mm (team, 11/09).
 
 TRAINING_OVERVIEW = {
     "id": "training_overview",
@@ -79,29 +80,31 @@ TRAINING_OVERVIEW = {
     "description": ("Your route to Nick's Bakery is approximately 0.5 miles away, primarily travelling "
                     "Northeast. There are 3 intersections along the route, with 2 turns and 4 total "
                     "street crossings."),
-    "start": {"at": (16.0, 104.0), "text": "Start of route: You are here, at Home.", "label": "Start of Route",
+    # Pear Street sits 3 mm further right and Orange Road is 22 mm, so the
+    # 15 mm stubs fit between the screen edges.
+    "start": {"at": (19.0, 104.0), "text": "Start of route: You are here, at Home.", "label": "Start of Route",
               "label_side": "right"},
     "legs": [
         {"dir": 0, "len": 28.0, "street": "Pear Street", "node": {
             "kind": "intersection", "number": 1,
             "text": "Intersection 1: 4-way intersection of Pear Street and Apple Street.",
-            "stubs": [(270, 12.0, "Apple Street"), (90, 12.0, "Apple Street")]}},
+            "stubs": [(270, 15.0, "Apple Street"), (90, 15.0, "Apple Street")]}},
         {"dir": 0, "len": 36.0, "street": "Pear Street", "node": {
             "kind": "intersection", "number": 2,
             "text": "Intersection 2: 3-way intersection of Pear Street and Orange Road.",
-            "stubs": [(0, 12.0, "Pear Street")]}},
-        {"dir": 90, "len": 30.0, "street": "Orange Road", "node": {
+            "stubs": [(0, 15.0, "Pear Street")]}},
+        {"dir": 90, "len": 22.0, "street": "Orange Road", "node": {
             "kind": "intersection", "number": 3,
             "text": "Intersection 3: 4-way intersection of Orange Road and Banana Lane.",
-            "stubs": [(90, 10.0, "Orange Road"), (180, 12.0, "Banana Lane")]}},
+            "stubs": [(90, 15.0, "Orange Road"), (180, 15.0, "Banana Lane")]}},
         {"dir": 0, "len": 30.0, "street": "Banana Lane", "node": {"kind": "end"}},
     ],
     "end": {"text": "End of route: Your destination, Nick's Bakery.", "label": "End of Route",
             "label_side": "left"},
     # Street names printed on the map, as in the mockup: on the route itself,
     # and Apple Street beside its right arm. (text, x, y, angle)
-    "labels": [("Pear St.", 16.0, 58.0, -90), ("Orange Rd.", 31.0, 40.0, 0), ("Banana Ln.", 46.0, 25.0, -90),
-               ("Apple St.", 40.0, 76.0, 0)],
+    "labels": [("Pear St.", 19.0, 58.0, -90), ("Orange Rd.", 30.0, 40.0, 0), ("Banana Ln.", 41.0, 25.0, -90),
+               ("Apple St.", 43.0, 76.0, 0)],
 }
 
 ROUTE_OVERVIEW = {
@@ -110,13 +113,16 @@ ROUTE_OVERVIEW = {
     "subtitle": "Dock Fore to Gorham's Corner",
     "description": ("Your route to Gorham's Corner is approximately 0.5 miles away, primarily travelling "
                     "Southwest. There are 5 intersection crossings along the route."),
-    "start": {"at": (42.0, 106.0), "text": "Start of route: You are here, at Dock Fore, 336 Fore Street.",
+    # The start sits low on the screen, 16 mm before intersection 1, so some
+    # of the route is felt before it, and York Street runs 25 mm to the end
+    # (team, 11/09).
+    "start": {"at": (42.0, 112.0), "text": "Start of route: You are here, at Dock Fore, 336 Fore Street.",
               "label": "Start of Route", "label_side": "left"},
     # Drawn with southwest at the top, the way the walk goes.
     # The two Fore Street stubs between intersections 2 and 4 face each other
     # with the squares 26.5 mm apart, so they keep 9 mm and stay apart.
     "legs": [
-        {"dir": 0, "len": 12.0, "street": "Fore Street", "node": {
+        {"dir": 0, "len": 16.0, "street": "Fore Street", "node": {
             "kind": "intersection", "number": 1,
             "text": "Intersection 1: 4-way intersection of Fore Street and Silver Street.",
             "stubs": [(270, 13.5, "Silver Street"), (90, 13.5, "Silver Street")]}},
@@ -145,7 +151,7 @@ ROUTE_OVERVIEW = {
             "text": ("Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and "
                      "Pleasant Street."),
             "stubs": [(270, 13.5, "Center Street"), (90, 13.5, "Center Street"), (0, 13.5, "Pleasant Street")]}},
-        {"dir": 315, "len": 21.0, "street": "York Street", "node": {"kind": "end"}},
+        {"dir": 315, "len": 25.0, "street": "York Street", "node": {"kind": "end"}},
     ],
     "end": {"text": "End of route: Your destination, Gorham's Corner.", "label": "End of Route",
             "label_side": "above"},
@@ -258,6 +264,10 @@ TRAINING_JUNCTION = {
 #           Street side to the Moulton Street side, "far_to_near" back
 # turns     the way the walk turns at each turn dot, in order; the build
 #           stops if the drawn walk turns differently
+# frame     "junction" keeps the intersection as near the middle of the
+#           screen as the whole walk allows, instead of centring the walk
+#           (team, 11/09)
+# end_text  what the end of the walk says, when not END_TEXT
 
 STOPS = [
     {
@@ -337,6 +347,7 @@ STOPS = [
         "junction": "commercial_union",
         "in": ("Commercial Street@47", "northwest"), "out": ("Union Street@325", "southwest"),
         "turns": ["right"],
+        "frame": "junction",
         "announcement": ("You are at the 4-way intersection of Commercial Street and Union Street. Your route "
                          "crosses Union Street, then continues right along Union Street."),
         "items": items(
@@ -354,6 +365,7 @@ STOPS = [
         "junction": "union_fore",
         "in": ("Union Street@144", "southwest"), "out": ("Fore Street@243", "northwest"),
         "turns": ["left"],
+        "frame": "junction",
         "announcement": ("You are at the 4-way intersection of Union Street and Fore Street. Your route crosses "
                          "Fore Street, then continues left along the other side of Fore Street."),
         "items": items(
@@ -372,7 +384,10 @@ STOPS = [
         "id": "intersection_5", "phase": "trial1", "log_id": "Intersection 5",
         "title": "Intersection 5", "subtitle": "Fore Street, Center Street and York Street",
         "junction": "gorhams_corner",
-        "in": ("Fore Street@55", "northwest"), "out": ("York Street@191", "east"), "end_gap": 6.0,
+        # The walk ends a little further along York Street, at the destination
+        # (team, 11/09).
+        "in": ("Fore Street@55", "northwest"), "out": ("York Street@191", "east"), "end_gap": 12.0,
+        "end_text": "Destination, Gorham's Corner",
         "rotate": 90,
         "turns": ["right"],
         "announcement": ("You are at the 5-way intersection of Fore Street, Center Street, York Street, and "
@@ -508,8 +523,14 @@ TEAM_NOTES = [
     "Fore, 26 at Exchange and Moulton, and 28 across Center Street, where York Street meets it at a sharp angle.",
     "Route overview: the cross street stubs are 13.5 mm, half again as long as before, except the two Fore "
     "Street stubs between intersections 2 and 4, which stay 9 mm: those squares are 26.5 mm apart, so longer "
-    "stubs would meet. The training overview's stubs were already 10 to 12 mm, as in the mockup, and reach "
-    "the screen edge, so they are unchanged.",
+    "stubs would meet. The training overview's stubs are 15 mm; to fit them, its Orange Road leg is 22 mm "
+    "instead of 30.",
+    "Intersections 3 and 4 now sit as near the middle of the screen as their whole walk allows, about 5 and "
+    "9 mm off centre. Intersection 1 and reversed 5 are also slightly off centre, about 7 mm, and could be "
+    "treated the same way.",
+    "Street names start beyond each street's crosswalk. On intersection 2 and reversed 2 all of Fore Street "
+    "on screen lies between its crossings, so the road itself is not named there; its crosswalks and "
+    "sidewalks still say Fore Street.",
     "Route overviews: where the route turns, the intersection's cue ends with \"Turn.\", for example "
     "\"Intersection 4: 4-way intersection of Union Street and Fore Street. Turn.\"",
     "Intersection maps: the pink dots at the corners, where a crosswalk begins, keep their one ding and now "

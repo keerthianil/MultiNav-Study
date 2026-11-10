@@ -197,7 +197,9 @@ struct StudyContentTests {
                 let m = try MapLoader.intersection(named: map.file)
                 #expect(!m.roads.isEmpty && !m.sidewalks.isEmpty && !m.crosswalks.isEmpty, "\(map.id)")
                 #expect(m.center != nil && m.centerRadius > 0, "\(map.id) has no centre point")
-                #expect(m.endpoints.map(\.announcement) == ["You are here", "End of intersection route"])
+                // The last walk of Trial 1 ends at the destination (team, 11/09).
+                let end = map.id == "intersection_5" ? "Destination, Gorham's Corner" : "End of intersection route"
+                #expect(m.endpoints.map(\.announcement) == ["You are here", end], "\(map.id)")
                 let halfW = m.size.width / 2 - 3
                 let halfH = m.size.height / 2 - 3
                 for p in m.route {
@@ -211,6 +213,120 @@ struct StudyContentTests {
                 }, "\(map.id) does not start at the corner")
                 #expect(m.roads.allSatisfy { $0.width == 18 }, "\(map.id): roads are 18 mm wide")
             }
+        }
+    }
+
+    /// Intersection 1 lies further from the start, so some route is felt
+    /// before it, and York Street runs on longer to the end (team, 11/09).
+    @Test func overviewRouteHasRoomAtBothEnds() throws {
+        let overview = try MapLoader.overview(named: "route_overview")
+        let one = try #require(overview.nodes.first { $0.number == 1 })
+        #expect(MapGeometry.distance(overview.route[0], one.position) >= 16)
+        let n = overview.route.count
+        #expect(MapGeometry.distance(overview.route[n - 2], overview.route[n - 1]) >= 25, "York Street")
+        #expect(overview.routeStreets.last == "York Street")
+    }
+
+    /// The training overview's stubs are longer too (team, 11/09): 15 mm.
+    @Test func trainingStubsAreLonger() throws {
+        let training = try MapLoader.overview(named: "training_overview")
+        var ends = 0
+        for street in training.streets where street.id.hasPrefix("cross_") {
+            let node = try #require(training.nodes.first { n in
+                street.points.contains { MapGeometry.distance($0, n.position) < 0.1 }
+            })
+            for end in street.points where MapGeometry.distance(end, node.position) > 0.1 {
+                #expect(abs(MapGeometry.distance(end, node.position) - 15) < 0.05, "\(street.name) at \(node.name)")
+                ends += 1
+            }
+        }
+        #expect(ends == 5)
+    }
+
+    /// Intersections 3 and 4 sit near the middle of the screen with their
+    /// whole walk still on it (team, 11/09), so all four legs are drawn.
+    @Test func intersectionsThreeAndFourSitNearTheMiddle() throws {
+        for id in ["intersection_3", "intersection_4"] {
+            let m = try MapLoader.intersection(named: id)
+            let center = try #require(m.center)
+            #expect(hypot(center.x, center.y) < 10, "\(id): the junction is \(center) from the middle")
+            #expect(m.crosswalks.count == 4, "\(id): every leg's crosswalk is on screen")
+            for p in m.route {
+                #expect(abs(p.x) <= m.size.width / 2 - 5 && abs(p.y) <= m.size.height / 2 - 5, "\(id): \(p)")
+            }
+        }
+    }
+
+    /// The centre is felt 6.5 mm round, or less where a crosswalk comes
+    /// closer, and never over a crosswalk (team, 11/09).
+    @Test func centreIsBigger() throws {
+        for map in maps where map.kind == .intersection {
+            let m = try MapLoader.intersection(named: map.file)
+            let center = try #require(m.center)
+            let nearest = m.crosswalks.map { MapGeometry.segmentDistance(center, $0.start, $0.end).distance }.min() ?? 99
+            if map.subtitle.contains("Moulton") {
+                #expect(m.centerRadius == 5, "\(map.id): the angled crosswalk runs over the centre")
+            } else {
+                #expect(m.centerRadius >= 6.4, "\(map.id)")
+                #expect(m.centerRadius <= nearest - MapStyle.Hit.crosswalk, "\(map.id)")
+            }
+        }
+        #expect(MapStyle.Intersection.centerMarkDiameter == 3)
+    }
+
+    /// No street is named between the centre and its crosswalk, and beyond
+    /// it a road says only its own name (team, 11/09).
+    @Test func streetNamesStartBeyondTheCrosswalk() throws {
+        for map in maps where map.kind == .intersection {
+            let m = try MapLoader.intersection(named: map.file)
+            let controller = IntersectionController(map: m, player: DescriptionPlayer(
+                announcement: map.announcement, items: map.items, speaker: FakeSpeaker()), label: "Intersection map")
+            let roadNames = Set(m.roads.map(\.name))
+            var quietSamples = 0
+            for road in m.roads {
+                let quiet = try #require(road.quiet, "\(map.id): \(road.name) has no quiet stretch")
+                let length = MapGeometry.length(of: road.points)
+                for d in stride(from: CGFloat(0), through: length, by: 0.5) {
+                    guard let p = MapGeometry.point(at: d, along: road.points),
+                          abs(p.x) < m.size.width / 2, abs(p.y) < m.size.height / 2 else { continue }
+                    let said = controller.spokenName(at: p)
+                    if quiet.contains(d) {
+                        quietSamples += 1
+                        #expect(said.map { !roadNames.contains($0) } ?? true, "\(map.id): \(said ?? "") at \(p)")
+                    } else if d > quiet.upperBound + MapStyle.Hit.crosswalk + 0.5, let said, roadNames.contains(said) {
+                        #expect(said == road.name, "\(map.id): \(said) on \(road.name) at \(p)")
+                    }
+                }
+            }
+            #expect(quietSamples > 0, "\(map.id)")
+        }
+    }
+
+    /// "Route crossing" is said only where the route crosses that street;
+    /// where it walks on past another street's crosswalk it is just "Route"
+    /// (team, 11/09).
+    @Test func routeSaysCrossingOnlyWhereItCrosses() throws {
+        for map in maps where map.kind == .intersection {
+            let m = try MapLoader.intersection(named: map.file)
+            let controller = IntersectionController(map: m, player: DescriptionPlayer(
+                announcement: map.announcement, items: map.items, speaker: FakeSpeaker()), label: "Intersection map")
+            let dots = m.turns.map(\.position) + m.crosswalkEnds.map(\.position) + m.endpoints.map(\.position)
+            for k in 0..<(m.route.count - 1) {
+                let a = m.route[k], b = m.route[k + 1]
+                let crossed = Set(m.routeCrossings[k].map { m.crosswalks[$0].street })
+                for t in stride(from: CGFloat(0.05), through: 0.95, by: 0.05) {
+                    let p = CGPoint(x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t)
+                    guard dots.allSatisfy({ MapGeometry.distance($0, p) > 4.5 }),
+                          m.medians.allSatisfy({ MapGeometry.polylineDistance(p, $0.points) > 3.5 }) else { continue }
+                    let said = controller.spokenName(at: p) ?? ""
+                    if crossed.isEmpty {
+                        #expect(said == "Route", "\(map.id) segment \(k): \(said) at \(p)")
+                    } else {
+                        #expect(crossed.map { "Route crossing \($0)" }.contains(said), "\(map.id) segment \(k): \(said)")
+                    }
+                }
+            }
+            #expect(m.routeCrossings.contains { !$0.isEmpty }, "\(map.id) crosses something")
         }
     }
 
@@ -252,14 +368,15 @@ struct StudyContentTests {
         }
     }
 
-    /// Each turn dot says which way the walk turns (team, 10/30). The first
+    /// Each turn dot says which way the walk turns (team, 10/30), with a
+    /// comma for a short pause before the direction (team, 11/09). The first
     /// turns on 1, 2, 5 and the reversed 3 and 4 went when the walks started
     /// at the corner.
     @Test func turnDotsSayWhichWay() throws {
         let expected: [String: [String]] = [
-            "intersection_1": ["Turn left"], "intersection_3": ["Turn right"], "intersection_4": ["Turn left"],
-            "intersection_5": ["Turn right"], "return_5": ["Turn left", "Turn right"],
-            "return_2": ["Turn right"], "return_1": ["Turn right", "Turn left"],
+            "intersection_1": ["Turn, left"], "intersection_3": ["Turn, right"], "intersection_4": ["Turn, left"],
+            "intersection_5": ["Turn, right"], "return_5": ["Turn, left", "Turn, right"],
+            "return_2": ["Turn, right"], "return_1": ["Turn, right", "Turn, left"],
         ]
         for map in maps where map.kind == .intersection {
             let m = try MapLoader.intersection(named: map.file)
@@ -364,8 +481,8 @@ struct StudyContentTests {
 
     /// No dash or arrow in anything spoken: VoiceOver reads them out.
     @Test func spokenTextHasNoDashes() throws {
-        var texts: [String] = ["Stopped.", "No details are turned on.", "End of details.",
-                               "Tell the researcher when you are ready.", DescriptionPlayer.modeWords]
+        var texts: [String] = ["Stopped.", "No details are turned on.", "End of details.", "Start of details.",
+                               "Tell the researcher when you are ready."]
         for map in maps {
             texts.append(map.announcement)
             texts += map.items.map(\.text)

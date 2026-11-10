@@ -3,20 +3,24 @@
 // the participant walks in is up, with the walking path through it.
 //
 // Under the finger, in priority order:
-//   turn (orange dot)           route pulse and a repeating ding, "Turn left" / "Turn right"
+//   turn (orange dot)           route pulse and a repeating ding, "Turn, left" / "Turn, right"
 //   crosswalk end (pink dot)    one ding, with the route pulse when on the route,
 //                               otherwise the sidewalk buzz
 //   route start / end (yellow)  fast pulse, "You are here" / "End of intersection route"
 //   median (green)              fast, sharp pulses, "Median", also where the
 //                               route crosses it, between the two stages
-//   route on a crosswalk        route pulse and crosswalk clicks, "Route crossing ..."
+//   route on a crosswalk        route pulse and crosswalk clicks, "Route crossing ...",
+//                               only where the route crosses that street (team, 11/09)
 //   route (cyan)                rhythmic pulse, "Route"
-//   centre of the intersection  the road's buzz and a two-note chime once, "Center"
+//   centre of the intersection  the road's buzz and a two-note chime once, "Center";
+//                               6.5 mm round, less where a crosswalk comes closer
 //   crosswalk (white)           steady clicks, with the road buzz under them over
 //                               the road and the sidewalk buzz near the corner,
 //                               "... crosswalk"
 //   sidewalk (grey)             softer steady buzz, "... sidewalk"
-//   road (blue)                 heavy buzz, street name
+//   road (blue)                 heavy buzz, street name; between the centre and the
+//                               crosswalks the road is quiet, so names start only
+//                               beyond a street's crosswalk (team, 11/09)
 // The route keeps one vibration from start to end except at its two ends
 // and the median, and a corner never goes still (team, 11/05). The centre
 // and the median always work, whatever information items the researcher
@@ -24,10 +28,10 @@
 //
 // Gestures, the same on every map (team, 11/03): double tap plays the
 // announcement again or stops it; two fingers are for the information items:
-// a two-finger double tap starts description mode (or stops an item being
-// read) and each two-finger swipe up or down reads one item, the next or the
-// one before (team, 11/05). Three-finger swipe right (or the VoiceOver
-// escape) tells the app the participant is ready to cross.
+// a two-finger double tap plays them all, or stops them, and each two-finger
+// swipe down reads the next item on its own, up the one before (team, 11/09).
+// Three-finger swipe right (or the VoiceOver escape) tells the app the
+// participant is ready to cross.
 // While the announcement or an item plays, map names are held back so they
 // do not cut it off; vibration and sounds carry on.
 
@@ -64,6 +68,8 @@ final class IntersectionController: StudyMapController {
         case median(Int)
         case sidewalk(Int)
         case road(Int)
+        /// A road between the centre and the crosswalks: felt, not named.
+        case junction(Int)
     }
 
     init(map: IntersectionMap, player: DescriptionPlayer, label: String) {
@@ -171,14 +177,21 @@ final class IntersectionController: StudyMapController {
         }) {
             return .median(i)
         }
-        let onRoute = MapGeometry.polylineDistance(p, map.route) <= h.route + slack
-        let crosswalk = nearestCrosswalk(p, slack: slack)
-        if onRoute, let crosswalk { return .routeOnCrosswalk(crosswalk) }
-        if onRoute { return .route }
+        if let segment = nearestRouteSegment(p), segment.distance <= h.route + slack {
+            // "Route crossing" only where the route runs along a crosswalk;
+            // passing the end of another street's crosswalk at a corner is
+            // just the route (team, 11/09).
+            if let crossing = nearestCrosswalk(p, among: map.routeCrossings[segment.index]) {
+                return .routeOnCrosswalk(crossing)
+            }
+            return .route
+        }
         if let center = map.center, MapGeometry.distance(p, center) <= map.centerRadius + slack {
             return .center
         }
-        if let crosswalk { return .crosswalk(crosswalk, overRoad: roadIndex(at: p) != nil) }
+        if let crosswalk = nearestCrosswalk(p, slack: slack) {
+            return .crosswalk(crosswalk, overRoad: roadIndex(at: p) != nil)
+        }
         var bestSidewalk: (index: Int, distance: CGFloat)?
         for (i, sidewalk) in map.sidewalks.enumerated() {
             let d = MapGeometry.polylineDistance(p, sidewalk.points)
@@ -187,8 +200,39 @@ final class IntersectionController: StudyMapController {
             }
         }
         if let bestSidewalk { return .sidewalk(bestSidewalk.index) }
-        if let i = roadIndex(at: p, slack: slack) { return .road(i) }
+        if let i = roadIndex(at: p, slack: slack) { return isQuiet(p, onRoad: i) ? .junction(i) : .road(i) }
         return .none
+    }
+
+    /// What a finger landing at `p` hears, for the tests.
+    func spokenName(at p: CGPoint) -> String? {
+        name(of: rawHit(at: p))
+    }
+
+    /// The route segment nearest `p`, and how far away it is.
+    private func nearestRouteSegment(_ p: CGPoint) -> (index: Int, distance: CGFloat)? {
+        var best: (index: Int, distance: CGFloat)?
+        for k in 0..<max(map.route.count - 1, 0) {
+            let d = MapGeometry.segmentDistance(p, map.route[k], map.route[k + 1]).distance
+            if d < (best?.distance ?? .infinity) { best = (k, d) }
+        }
+        return best
+    }
+
+    /// The nearest of the given crosswalks, the halves of a crossing split
+    /// by a median.
+    private func nearestCrosswalk(_ p: CGPoint, among indices: [Int]) -> Int? {
+        indices.min {
+            MapGeometry.segmentDistance(p, map.crosswalks[$0].start, map.crosswalks[$0].end).distance
+                < MapGeometry.segmentDistance(p, map.crosswalks[$1].start, map.crosswalks[$1].end).distance
+        }
+    }
+
+    /// Whether `p` is on the stretch of a road between the junction and its
+    /// crosswalk, where the road is not named.
+    private func isQuiet(_ p: CGPoint, onRoad i: Int) -> Bool {
+        guard let quiet = map.roads[i].quiet else { return false }
+        return quiet.contains(MapGeometry.arcLength(of: p, along: map.roads[i].points))
     }
 
     private func nearestCrosswalk(_ p: CGPoint, slack: CGFloat) -> Int? {
@@ -224,7 +268,7 @@ final class IntersectionController: StudyMapController {
         case .center: return 6
         case .crosswalk: return 7
         case .sidewalk: return 8
-        case .road: return 9
+        case .road, .junction: return 9
         case .none: return 10
         }
     }
@@ -247,7 +291,7 @@ final class IntersectionController: StudyMapController {
         case .crosswalk(_, let overRoad): feedback.set(.crosswalk(overRoad: overRoad))
         case .median: feedback.set(.median)
         case .sidewalk: feedback.set(.sidewalk)
-        case .road: feedback.set(.road)
+        case .road, .junction: feedback.set(.road)
         }
         if announce, let text = name(of: hit) {
             say(text, for: hit)
@@ -270,7 +314,7 @@ final class IntersectionController: StudyMapController {
 
     private func name(of hit: Hit) -> String? {
         switch hit {
-        case .none, .crosswalkEnd: return nil
+        case .none, .crosswalkEnd, .junction: return nil
         case .turn(let i): return map.turns[i].cue
         case .endpoint(let i): return map.endpoints[i].announcement
         case .routeOnCrosswalk(let i): return "Route crossing \(map.crosswalks[i].street)"
@@ -296,6 +340,7 @@ final class IntersectionController: StudyMapController {
         case .median: return "Median"
         case .sidewalk(let i): return map.sidewalks[i].name
         case .road(let i): return map.roads[i].name
+        case .junction: return "Inside the intersection"
         }
     }
 

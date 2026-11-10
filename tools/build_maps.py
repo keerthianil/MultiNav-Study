@@ -50,7 +50,9 @@ OV_DOT_R = 3.0
 # Intersection map sizes, mm.
 ROAD_HALF = 9.0
 SIDEWALK_OFFSET = 12.2     # road half 9 + a 1.2 mm gap + sidewalk half 2 (team, 11/05)
-CENTER_R = 5.0
+CENTER_R = 6.5             # touch radius of the centre (team, 11/09: a bit bigger)
+CENTER_MIN_R = 5.0         # never smaller, even where a crosswalk passes close
+CROSSWALK_TOUCH = 4.0      # how far a crosswalk is felt from its line (app: MapStyle.Hit.crosswalk)
 MIN_CROSS_T = 7.0          # nearer than this a crosswalk would lie on the other road
 MEDIAN_W = 3.0
 MEDIAN_NOSE = 2.0          # how far the median reaches in past the crosswalk's centre
@@ -345,14 +347,30 @@ def line_limit(origin, theta, inset):
     return max(0.0, min(limits))
 
 
-def frame_for(route_points):
+def frame_for(route_points, keep_junction=False):
     """Where to centre the visible area so the whole walk fits on screen.
 
     The junction stays the centre when the walk fits round it; otherwise the
-    walk is centred, keeping the junction well inside the screen."""
+    walk is centred, keeping the junction well inside the screen. With
+    `keep_junction` the view moves only as far as the walk needs, so the
+    junction stays as near the middle as it can (team, 11/09)."""
     hw, hh = REF_W / 2 - ROUTE_INSET, REF_H / 2 - ROUTE_INSET
     if all(abs(p[0]) <= hw and abs(p[1]) <= hh for p in route_points):
         return [0.0, 0.0]
+    if keep_junction:
+        frame = []
+        for axis, half in ((0, hw), (1, hh)):
+            lo = min(p[axis] for p in route_points)
+            hi = max(p[axis] for p in route_points)
+            if hi - lo > 2 * half:
+                frame.append((lo + hi) / 2)
+            elif hi > half:
+                frame.append(hi - half)
+            elif lo < -half:
+                frame.append(lo + half)
+            else:
+                frame.append(0.0)
+        return frame
     xs = [p[0] for p in route_points]
     ys = [p[1] for p in route_points]
     cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
@@ -504,14 +522,17 @@ def build_intersection(stop):
     up = turned(stop_heading(stop, j), stop)
     geo = Geometry(j, up)
     FRAME[:] = [0.0, 0.0]
-    FRAME[:] = frame_for(walking_path(geo, stop, capped=False)[0])
+    FRAME[:] = frame_for(walking_path(geo, stop, capped=False)[0], keep_junction=stop.get("frame") == "junction")
     features = []
 
-    # Roads, running off the edge of the screen.
+    # Roads, running off the edge of the screen. Each is named only beyond
+    # its crosswalk: the part between the centre and the crosswalk is quiet
+    # (team, 11/09), so names do not jump between streets in the middle.
     for k, arm in enumerate(geo.arms):
         th = geo.theta[id(arm)]
         features.append(feature("road_%d" % k, "corridor", line_geom([(0.0, 0.0), scale(unit(th), geo.far(arm, 0) + 12)]),
-                                arm.name, custom={"width_mm": ROAD_HALF * 2}))
+                                arm.name, custom={"width_mm": ROAD_HALF * 2, "quiet_from_mm": 0,
+                                                  "quiet_to_mm": round(geo.axis_t(arm), ONE_DECIMAL)}))
     features.append(feature("center", "center", point_geom((0, 0)), "Center", custom={"radius_mm": CENTER_R}))
 
     # Medians along divided arms, from just inside the crosswalk outwards.
@@ -556,7 +577,7 @@ def build_intersection(stop):
         if not arm.crossing:
             raise SystemExit("%s crosses %s, which has no crosswalk in the spec" % (stop["id"], arm))
     features.append(feature("route", "route", line_geom(path), "Route", custom={
-        "start_text": spec.START_TEXT, "end_text": spec.END_TEXT}))
+        "start_text": spec.START_TEXT, "end_text": check_spoken(stop.get("end_text", spec.END_TEXT), stop["id"])}))
     shift_features(features, FRAME)
     tidy(features)
     place_dots(features, stop["id"], stop.get("turns", []))
@@ -566,6 +587,7 @@ def build_intersection(stop):
         "heading": up,
         "arms": [(arm.name, om.compass8(arm.bearing), arm.crossing, arm.median) for arm in j.arms],
         "crossed": [arm.name for arm in crossed],
+        "end_text": stop.get("end_text", spec.END_TEXT),
     }
     return doc, facts
 
@@ -740,13 +762,18 @@ def place_dots(features, where, expected_turns):
                 continue
             pinks.append(p)
             placed.append((p, PINK_R))
-    # The small ring marking the centre is left off where a crosswalk runs over it.
+    # The small ring marking the centre is left off where a crosswalk runs over
+    # it. The centre is felt CENTER_R round, or less where a crosswalk comes
+    # closer, so it never covers a crosswalk.
     for f in features:
         if f["type"] == "center":
             c = f["geometry"]["coordinates"]
             crosswalks = [g["geometry"]["coordinates"] for g in features if g["type"] == "crosswalk"]
             if any(seg_distance(c, cw[0], cw[-1]) < 3.0 for cw in crosswalks):
                 f["properties"].setdefault("custom", {})["mark"] = "no"
+            nearest = min(seg_distance(c, cw[0], cw[-1]) for cw in crosswalks)
+            radius = max(CENTER_MIN_R, min(CENTER_R, nearest - CROSSWALK_TOUCH - 0.3))
+            f["properties"]["custom"]["radius_mm"] = str(round(radius, 1))
     for k, (p, way) in enumerate(turns):
         features.append(feature("turn_%d" % k, "turn", point_geom(p), check_spoken(spec.TURN_TEXT[way], where)))
     for k, p in enumerate(pinks):
@@ -823,19 +850,33 @@ def build_offset(stop):
         return [b_back, a_fwd, reach(a_fwd, th_fwd, stop.get("end_gap", END_GAP))]
 
     FRAME[:] = [0.0, 0.0]
-    FRAME[:] = frame_for(walk(capped=False))
+    FRAME[:] = frame_for(walk(capped=False), keep_junction=stop.get("frame") == "junction")
 
     def along(origin, theta, inset):
         return add(origin, unit(theta), line_limit(origin, theta, inset))
 
+    # Each road is quiet between the junction and its crosswalk (team,
+    # 11/09): the side streets up to their crosswalks, and the main street
+    # between its outer corners, where the crossings are.
+    def from_start(start, theta, point):
+        return round(max(0.0, dot(sub(point, start), unit(theta))), ONE_DECIMAL)
+
+    def middle(p, q):
+        return scale(add(p, q), 0.5)
+
+    main_start = along((0.0, 0.0), th_back, -12)
     features = []
     features.append(feature("road_main", "corridor",
-                            line_geom([along((0.0, 0.0), th_back, -12), along((0.0, 0.0), th_fwd, -12)]),
-                            conf["main"], custom={"width_mm": ROAD_HALF * 2}))
+                            line_geom([main_start, along((0.0, 0.0), th_fwd, -12)]),
+                            conf["main"], custom={"width_mm": ROAD_HALF * 2,
+                                                  "quiet_from_mm": from_start(main_start, th_fwd, a_back),
+                                                  "quiet_to_mm": from_start(main_start, th_fwd, b_fwd)}))
     features.append(feature("road_near", "corridor", line_geom([A, along(A, th_near, -12)]),
-                            near_arm["name"], custom={"width_mm": ROAD_HALF * 2}))
+                            near_arm["name"], custom={"width_mm": ROAD_HALF * 2, "quiet_from_mm": 0,
+                                                      "quiet_to_mm": from_start(A, th_near, middle(a_fwd, a_back))}))
     features.append(feature("road_far", "corridor", line_geom([B, along(B, th_far, -12)]),
-                            far_arm["name"], custom={"width_mm": ROAD_HALF * 2}))
+                            far_arm["name"], custom={"width_mm": ROAD_HALF * 2, "quiet_from_mm": 0,
+                                                     "quiet_to_mm": from_start(B, th_far, middle(b_back, b_fwd))}))
     features.append(feature("center", "center", point_geom((0, 0)), "Center", custom={"radius_mm": CENTER_R}))
 
     # Sidewalks. The main street's sidewalk on each side turns the corners of
@@ -868,7 +909,7 @@ def build_offset(stop):
         features += crosswalk_features("crosswalk_%s" % key, p, q, street, marks.get(key, "zebra"), False)
 
     features.append(feature("route", "route", line_geom(walk(capped=True)), "Route", custom={
-        "start_text": spec.START_TEXT, "end_text": spec.END_TEXT}))
+        "start_text": spec.START_TEXT, "end_text": check_spoken(stop.get("end_text", spec.END_TEXT), stop["id"])}))
     shift_features(features, FRAME)
     FRAME[:] = [0.0, 0.0]
     tidy(features)
@@ -882,6 +923,7 @@ def build_offset(stop):
                  (conf["main"], om.compass8(main_b + 180), "zebra" if "near_main" in drawn else None, False),
                  (far_arm["name"], om.compass8(far_arm["bearing"]), "zebra" if "far_arm" in drawn else None, False)],
         "crossed": ["%s, on the angled crosswalk between %s and %s" % (conf["main"], near_arm["name"], far_arm["name"])],
+        "end_text": stop.get("end_text", spec.END_TEXT),
     }
     return doc, facts
 
@@ -957,9 +999,9 @@ def write_study_sheet(study, facts, overviews):
     lines = ["# Study maps and wording", "",
              "Generated by `tools/build_maps.py` from `tools/study_spec.py`. Do not edit by hand.", "",
              "Everything the app says on each map, in study order. The announcement plays when a map opens",
-             "and again with a double tap. A two-finger double tap says \"Description mode.\" and each",
-             "two-finger swipe up or down then reads one information item, the next or the one before. After a",
-             "short pause each item is followed by its place among the items played, for example \"2 of 6\".",
+             "and again with a double tap. A two-finger double tap plays the information items in order, and a",
+             "two-finger swipe down or up reads the next or the previous item on its own. After a short pause",
+             "each item is followed by its place among the items played, for example \"2 of 6\".",
              "In Trial 2 the researcher can switch each item off; the announcement always plays.", "",
              "## Points for the team to confirm", ""]
     lines += ["- %s" % note for note in spec.TEAM_NOTES]
@@ -1000,6 +1042,8 @@ def write_study_sheet(study, facts, overviews):
                         ", median" if median else ""))
                 lines.append("")
                 lines.append("The route starts at the corner and crosses: %s." % join_names(f["crossed"]))
+                if f["end_text"] != spec.END_TEXT:
+                    lines.append("Its end says \"%s\"." % f["end_text"])
                 lines.append("")
                 lines.append("Turn dots: %s." % (", then ".join("\"%s\"" % t for t in f["turns"])
                                                  if f["turns"] else "none"))

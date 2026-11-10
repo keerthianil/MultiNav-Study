@@ -5,14 +5,14 @@
 //   overview the route overview) plays when the map opens. A double tap
 //   plays it again; the same gesture while it plays stops it.
 //
-//   The information items are heard one at a time (team, 11/05). A
-//   two-finger double tap starts description mode: it says "Description
-//   mode." and nothing more, and the next swipe starts from the first item.
-//   Each two-finger swipe up reads the next item and a swipe down the one
-//   before, on its own; after a short pause comes its place among the items
-//   played ("2 of 6"; in Trial 2 only the items switched on are counted),
-//   and then nothing until the next swipe. A two-finger double tap while an
-//   item is read stops it.
+//   The information items are a list read from the top (team, 11/09). A
+//   two-finger double tap plays them all, the first to the last; the same
+//   gesture while they play stops them, and the next one starts over. A
+//   two-finger swipe down reads the next item and a swipe up the one before,
+//   on its own, and nothing follows it (team, 11/05). Past the last item the
+//   map says "End of details.", before the first "Start of details.". After
+//   a short pause each item is followed by its place among the items played
+//   ("2 of 6"; in Trial 2 only the items switched on are counted).
 //
 // Stopping says "Stopped." That is how a VoiceOver announcement is cut
 // off, and it tells the participant the gesture worked. The map stays live
@@ -40,25 +40,22 @@ final class DescriptionPlayer {
         case item(Int)
     }
 
-    /// What a two-finger double tap says.
-    static let modeWords = "Description mode."
-
     let announcement: String
     /// The items this map plays, in order (only those switched on in Trial 2).
     private(set) var items: [InfoItem]
     private(set) var playing: Part?
     /// The item last played, which the next swipe moves on from; nil before
-    /// the first, and again after a two-finger double tap.
+    /// the first.
     private(set) var position: Int?
     /// Silence between an item's words and its place, so "2 of 6" stands
-    /// apart from them (team, 11/05).
-    var placePause: TimeInterval = 0.5
+    /// apart from them (team, 11/05), kept short (team, 11/09).
+    var placePause: TimeInterval = 0.25
 
     /// Called each time the announcement starts; `repeated` is false for
     /// the play when the map opens.
     var onAnnouncement: ((_ repeated: Bool) -> Void)?
-    /// Called when a two-finger double tap starts description mode.
-    var onDescriptionMode: (() -> Void)?
+    /// Called when a two-finger double tap starts the items from the first.
+    var onDetailsStarted: (() -> Void)?
     var onItem: ((InfoItem) -> Void)?
 
     private var token = 0
@@ -83,7 +80,7 @@ final class DescriptionPlayer {
     }
 
     /// New items after the researcher changes the settings. An item being
-    /// read stops, and the next swipe starts from the first item.
+    /// read stops, and the next swipe down starts from the first item.
     func setItems(_ newItems: [InfoItem]) {
         guard newItems != items else { return }
         if case .item = playing { stop(reason: "Settings changed") }
@@ -121,8 +118,8 @@ final class DescriptionPlayer {
 
     // MARK: The information items
 
-    /// The two-finger double tap: stops the item being read, otherwise
-    /// starts description mode, which reads nothing until a swipe.
+    /// The two-finger double tap: stops the items while they play, otherwise
+    /// plays them all from the first.
     func toggleDetails(gesture: String) {
         if case .item = playing {
             stopWithWord(gesture: gesture)
@@ -134,16 +131,14 @@ final class DescriptionPlayer {
             feedback.speak("No details are turned on.", queued: false)
             return
         }
-        cutOffCurrent(by: "description mode")
-        position = nil
-        log.event(.description, "Description mode", detail: gesture)
-        onDescriptionMode?()
-        feedback.speak(Self.modeWords, queued: false)
+        log.event(.description, "Details started", detail: gesture)
+        onDetailsStarted?()
+        play(item: 0, gesture: gesture, continuing: true)
     }
 
-    /// A two-finger swipe: reads the next or previous item, and only that
-    /// one. Returns false, after the boundary sound, when there is no item
-    /// that way.
+    /// A two-finger swipe: reads the next item (down) or the one before
+    /// (up), and only that one. Returns false, after the boundary sound,
+    /// when there is no item that way.
     @discardableResult
     func step(forward: Bool, gesture: String) -> Bool {
         guard !items.isEmpty else {
@@ -152,7 +147,8 @@ final class DescriptionPlayer {
             if !isPlaying { feedback.speak("No details are turned on.", queued: false) }
             return false
         }
-        var target = position.map { $0 + (forward ? 1 : -1) } ?? 0
+        // Before any item the list is at its top: the next is the first.
+        let target = position.map { $0 + (forward ? 1 : -1) } ?? (forward ? 0 : -1)
         if target >= items.count {
             log.event(.description, "No next item", detail: gesture)
             feedback.boundary()
@@ -160,21 +156,19 @@ final class DescriptionPlayer {
             return false
         }
         if target < 0 {
-            // Back from the first item: hear it again, unless it is playing now.
-            if playing == .item(0) {
-                log.event(.description, "No previous item", detail: gesture)
-                feedback.boundary()
-                return false
-            }
-            target = 0
+            log.event(.description, "No previous item", detail: gesture)
+            feedback.boundary()
+            if !isPlaying { feedback.speak("Start of details.", queued: false) }
+            return false
         }
         feedback.confirm()
-        play(item: target, gesture: gesture)
+        play(item: target, gesture: gesture, continuing: false)
         return true
     }
 
-    /// One item: its words, a pause, then its place. Nothing follows it.
-    private func play(item index: Int, gesture: String) {
+    /// One item: its words, a pause, then its place; then the next item when
+    /// `continuing` (the two-finger double tap), otherwise nothing.
+    private func play(item index: Int, gesture: String, continuing: Bool) {
         cutOffCurrent(by: "item \(items[index].category.number)")
         token += 1
         let mine = token
@@ -191,19 +185,25 @@ final class DescriptionPlayer {
             }
             if self.placePause > 0 {
                 DispatchQueue.main.asyncAfter(deadline: .now() + self.placePause) { [weak self] in
-                    self?.sayPlace(of: index, token: mine)
+                    self?.sayPlace(of: index, token: mine, continuing: continuing)
                 }
             } else {
-                self.sayPlace(of: index, token: mine)
+                self.sayPlace(of: index, token: mine, continuing: continuing)
             }
         }
     }
 
-    private func sayPlace(of index: Int, token mine: Int) {
+    private func sayPlace(of index: Int, token mine: Int, continuing: Bool) {
         guard token == mine else { return }
         feedback.speakTracked(place(index), queued: false) { [weak self] finished in
             guard let self, self.token == mine else { return }
             self.itemEnded(index, finished: finished)
+            guard finished, continuing else { return }
+            if index + 1 < self.items.count {
+                self.play(item: index + 1, gesture: "Continued", continuing: true)
+            } else {
+                self.log.event(.description, "Details finished")
+            }
         }
     }
 

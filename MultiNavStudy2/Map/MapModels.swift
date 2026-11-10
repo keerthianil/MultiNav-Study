@@ -24,6 +24,10 @@ struct MapLine {
     let name: String
     let points: [CGPoint]
     let width: CGFloat
+    /// On an intersection map, the stretch of a road (mm along it from its
+    /// first point) between the junction and its crosswalk, where its name is
+    /// not said (team, 11/09).
+    var quiet: ClosedRange<CGFloat>? = nil
 }
 
 struct RouteEndpoint {
@@ -132,6 +136,9 @@ struct IntersectionMap {
     /// False where a crosswalk runs over the centre, so its ring is not drawn there.
     let showsCenterMark: Bool
     let route: [CGPoint]
+    /// For each segment of the route, the crosswalks it runs along: the
+    /// crossings it makes. Empty where the route follows a sidewalk.
+    let routeCrossings: [[Int]]
     let endpoints: [RouteEndpoint]
     /// Crosswalk ends drawn as pink dots, placed by the map generator so no
     /// two dots overlap.
@@ -221,7 +228,12 @@ enum MapLoader {
             let width = CGFloat(Double(custom["width_mm"] ?? "") ?? 0)
             switch element.elementType {
             case .corridor:
-                roads.append(MapLine(id: element.id, name: name, points: element.points, width: width))
+                var road = MapLine(id: element.id, name: name, points: element.points, width: width)
+                if let from = Double(custom["quiet_from_mm"] ?? ""), let to = Double(custom["quiet_to_mm"] ?? ""),
+                   to > from {
+                    road.quiet = CGFloat(from)...CGFloat(to)
+                }
+                roads.append(road)
             case .median:
                 medians.append(MapLine(id: element.id, name: name, points: element.points, width: width))
             case .sidewalk:
@@ -260,6 +272,14 @@ enum MapLoader {
         let crosswalkEnds = crosswalkEndPoints.map {
             CrosswalkEndDot(position: $0, onRoute: MapGeometry.polylineDistance($0, route) < 0.5)
         }
+        // A route segment crosses the crosswalks that lie along it, both ends
+        // on the segment; elsewhere it only passes the end of one.
+        let routeCrossings = (0..<(route.count - 1)).map { k in
+            crosswalks.indices.filter { i in
+                MapGeometry.segmentDistance(crosswalks[i].start, route[k], route[k + 1]).distance < 0.5
+                    && MapGeometry.segmentDistance(crosswalks[i].end, route[k], route[k + 1]).distance < 0.5
+            }
+        }
 
         // Stripes and markings are painted only over the roadway.
         func isOnRoadway(_ p: CGPoint) -> Bool {
@@ -283,7 +303,7 @@ enum MapLoader {
             size: CGSize(width: document.bounds.width, height: document.bounds.height),
             roads: roads, medians: medians, sidewalks: sidewalks, crosswalks: crosswalks,
             center: center, centerRadius: centerRadius, showsCenterMark: showsCenterMark,
-            route: route,
+            route: route, routeCrossings: routeCrossings,
             endpoints: [
                 RouteEndpoint(kind: .start, position: route[0], announcement: startText),
                 RouteEndpoint(kind: .end, position: route[route.count - 1], announcement: endText),

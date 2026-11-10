@@ -49,7 +49,8 @@ enum MapStyle {
         static let dotBorder: CGFloat = 0.4
         static let turnDiameter: CGFloat = 6.0
         static let endpointDiameter: CGFloat = 6.0
-        static let centerMarkDiameter: CGFloat = 2.0
+        /// A little larger than the first 2 mm (team, 11/09).
+        static let centerMarkDiameter: CGFloat = 3.0
     }
 
     /// How close a fingertip must be, in mm, to count as touching.

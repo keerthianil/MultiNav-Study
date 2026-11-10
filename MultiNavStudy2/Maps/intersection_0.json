@@ -32,7 +32,9 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.15"
     }
    }
   },
@@ -55,7 +57,9 @@
    "properties": {
     "name": "Pearl Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "13.64"
     }
    }
   },
@@ -78,7 +82,9 @@
    "properties": {
     "name": "Fore Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "12.42"
     }
    }
   },
@@ -101,7 +107,9 @@
    "properties": {
     "name": "Pearl Street",
     "custom": {
-     "width_mm": "18.0"
+     "width_mm": "18.0",
+     "quiet_from_mm": "0",
+     "quiet_to_mm": "10.93"
     }
    }
   },
@@ -118,7 +126,7 @@
    "properties": {
     "name": "Center",
     "custom": {
-     "radius_mm": "5.0"
+     "radius_mm": "6.5"
     }
    }
   },
