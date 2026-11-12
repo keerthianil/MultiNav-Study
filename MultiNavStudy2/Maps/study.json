@@ -45,57 +45,11 @@
  ],
  "maps": [
   {
-   "id": "training_overview",
-   "kind": "overview",
-   "phase": "training",
-   "log_id": "Training route overview",
-   "title": "Training route overview",
-   "subtitle": "Home to Nick's Bakery",
-   "file": "training_overview",
-   "announcement": "Your route to Nick's Bakery is approximately 0.5 miles away, primarily travelling Northeast. There are 3 intersections along the route, with 2 turns and 4 total street crossings.",
-   "items": []
-  },
-  {
-   "id": "training_intersection",
-   "kind": "intersection",
-   "phase": "training",
-   "log_id": "Training intersection",
-   "title": "Training intersection",
-   "subtitle": "Pear Street and Apple Street",
-   "file": "training_intersection",
-   "announcement": "You are at the 4-way intersection of Pear Street and Apple Street. Your route crosses Apple Street, then continues along Pear Street.",
-   "items": [
-    {
-     "category": "geometry",
-     "text": "This is a four-way, plus-shaped intersection."
-    },
-    {
-     "category": "direction",
-     "text": "Both Pear Street and Apple Street have two-way traffic."
-    },
-    {
-     "category": "control",
-     "text": "The intersection is controlled by stop signs in all directions."
-    },
-    {
-     "category": "signals",
-     "text": "There are no pedestrian signals at this intersection."
-    },
-    {
-     "category": "crosswalks",
-     "text": "Your route crossing uses a straight zebra crosswalk."
-    },
-    {
-     "category": "domes",
-     "text": "The truncated domes are not aligned with the direction of the crosswalk when crossing Apple Street."
-    }
-   ]
-  },
-  {
    "id": "route_overview",
    "kind": "overview",
    "phase": "training",
    "log_id": "Route overview",
+   "in_use": true,
    "title": "Route overview",
    "subtitle": "Dock Fore to Gorham's Corner",
    "file": "route_overview",
@@ -107,6 +61,7 @@
    "kind": "intersection",
    "phase": "practice",
    "log_id": "Intersection 0",
+   "in_use": true,
    "title": "Intersection 0, practice",
    "subtitle": "Fore Street and Pearl Street",
    "file": "intersection_0",
@@ -143,6 +98,7 @@
    "kind": "intersection",
    "phase": "trial1",
    "log_id": "Intersection 1",
+   "in_use": true,
    "title": "Intersection 1",
    "subtitle": "Fore Street and Silver Street",
    "file": "intersection_1",
@@ -179,6 +135,7 @@
    "kind": "intersection",
    "phase": "trial1",
    "log_id": "Intersection 2",
+   "in_use": true,
    "title": "Intersection 2",
    "subtitle": "Fore Street, Moulton Street and Exchange Street",
    "file": "intersection_2",
@@ -215,6 +172,7 @@
    "kind": "intersection",
    "phase": "trial1",
    "log_id": "Intersection 3",
+   "in_use": true,
    "title": "Intersection 3",
    "subtitle": "Commercial Street and Union Street",
    "file": "intersection_3",
@@ -251,6 +209,7 @@
    "kind": "intersection",
    "phase": "trial1",
    "log_id": "Intersection 4",
+   "in_use": true,
    "title": "Intersection 4",
    "subtitle": "Union Street and Fore Street",
    "file": "intersection_4",
@@ -287,6 +246,7 @@
    "kind": "intersection",
    "phase": "trial1",
    "log_id": "Intersection 5",
+   "in_use": true,
    "title": "Intersection 5",
    "subtitle": "Fore Street, Center Street and York Street",
    "file": "intersection_5",
@@ -323,6 +283,7 @@
    "kind": "intersection",
    "phase": "trial2",
    "log_id": "Reversed intersection 5",
+   "in_use": true,
    "title": "Reversed intersection 5",
    "subtitle": "Center Street, Fore Street and York Street",
    "file": "return_5",
@@ -359,6 +320,7 @@
    "kind": "intersection",
    "phase": "trial2",
    "log_id": "Reversed intersection 4",
+   "in_use": true,
    "title": "Reversed intersection 4",
    "subtitle": "Fore Street and Union Street",
    "file": "return_4",
@@ -395,6 +357,7 @@
    "kind": "intersection",
    "phase": "trial2",
    "log_id": "Reversed intersection 3",
+   "in_use": true,
    "title": "Reversed intersection 3",
    "subtitle": "Union Street and Commercial Street",
    "file": "return_3",
@@ -431,6 +394,7 @@
    "kind": "intersection",
    "phase": "trial2",
    "log_id": "Reversed intersection 2",
+   "in_use": true,
    "title": "Reversed intersection 2",
    "subtitle": "Moulton Street, Fore Street and Exchange Street",
    "file": "return_2",
@@ -467,6 +431,7 @@
    "kind": "intersection",
    "phase": "trial2",
    "log_id": "Reversed intersection 1",
+   "in_use": true,
    "title": "Reversed intersection 1",
    "subtitle": "Fore Street and Silver Street",
    "file": "return_1",
@@ -495,6 +460,55 @@
     {
      "category": "domes",
      "text": "There are curb cuts with no truncated domes when crossing either street."
+    }
+   ]
+  },
+  {
+   "id": "training_overview",
+   "kind": "overview",
+   "phase": "training",
+   "log_id": "Training route overview",
+   "in_use": false,
+   "title": "Training route overview",
+   "subtitle": "Home to Nick's Bakery",
+   "file": "training_overview",
+   "announcement": "Your route to Nick's Bakery is approximately 0.5 miles away, primarily travelling Northeast. There are 3 intersections along the route, with 2 turns and 4 total street crossings.",
+   "items": []
+  },
+  {
+   "id": "training_intersection",
+   "kind": "intersection",
+   "phase": "training",
+   "log_id": "Training intersection",
+   "in_use": false,
+   "title": "Training intersection",
+   "subtitle": "Pear Street and Apple Street",
+   "file": "training_intersection",
+   "announcement": "You are at the 4-way intersection of Pear Street and Apple Street. Your route crosses Apple Street, then continues along Pear Street.",
+   "items": [
+    {
+     "category": "geometry",
+     "text": "This is a four-way, plus-shaped intersection."
+    },
+    {
+     "category": "direction",
+     "text": "Both Pear Street and Apple Street have two-way traffic."
+    },
+    {
+     "category": "control",
+     "text": "The intersection is controlled by stop signs in all directions."
+    },
+    {
+     "category": "signals",
+     "text": "There are no pedestrian signals at this intersection."
+    },
+    {
+     "category": "crosswalks",
+     "text": "Your route crossing uses a straight zebra crosswalk."
+    },
+    {
+     "category": "domes",
+     "text": "The truncated domes are not aligned with the direction of the crosswalk when crossing Apple Street."
     }
    ]
   }

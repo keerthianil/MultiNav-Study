@@ -2,15 +2,16 @@
 // Plays what a map says about itself, the way the research team asked:
 //
 //   The announcement (the intersection and the route's crossings, or on an
-//   overview the route overview) plays when the map opens. A double tap
-//   plays it again; the same gesture while it plays stops it.
+//   overview the route overview) plays with a double tap, never by itself
+//   (team, 11/12); the same gesture while it plays stops it.
 //
 //   The information items are a list read from the top (team, 11/09). A
 //   two-finger double tap plays them all, the first to the last; the same
 //   gesture while they play stops them, and the next one starts over. A
 //   two-finger swipe down reads the next item and a swipe up the one before,
 //   on its own, and nothing follows it (team, 11/05). Past the last item the
-//   map says "End of details.", before the first "Start of details.". After
+//   map says "End of details.", before the first "Start of details.", every
+//   time, cutting off whatever is being read (team, 11/12). After
 //   a short pause each item is followed by its place among the items played
 //   ("2 of 6"; in Trial 2 only the items switched on are counted).
 //
@@ -137,33 +138,37 @@ final class DescriptionPlayer {
     }
 
     /// A two-finger swipe: reads the next item (down) or the one before
-    /// (up), and only that one. Returns false, after the boundary sound,
-    /// when there is no item that way.
+    /// (up), and only that one. Returns false, after the boundary sound and
+    /// the words for the end, when there is no item that way.
     @discardableResult
     func step(forward: Bool, gesture: String) -> Bool {
         guard !items.isEmpty else {
-            log.event(.description, "No items to play", detail: gesture)
-            feedback.boundary()
-            if !isPlaying { feedback.speak("No details are turned on.", queued: false) }
+            atEnd("No items to play", saying: "No details are turned on.", gesture: gesture)
             return false
         }
         // Before any item the list is at its top: the next is the first.
         let target = position.map { $0 + (forward ? 1 : -1) } ?? (forward ? 0 : -1)
         if target >= items.count {
-            log.event(.description, "No next item", detail: gesture)
-            feedback.boundary()
-            if !isPlaying { feedback.speak("End of details.", queued: false) }
+            atEnd("No next item", saying: "End of details.", gesture: gesture)
             return false
         }
         if target < 0 {
-            log.event(.description, "No previous item", detail: gesture)
-            feedback.boundary()
-            if !isPlaying { feedback.speak("Start of details.", queued: false) }
+            atEnd("No previous item", saying: "Start of details.", gesture: gesture)
             return false
         }
         feedback.confirm()
         play(item: target, gesture: gesture, continuing: false)
         return true
+    }
+
+    /// A swipe past either end of the items: the boundary sound and the words,
+    /// every time. They cut off whatever is being read, so they are heard
+    /// even while the first or last item still plays (team, 11/12).
+    private func atEnd(_ event: String, saying words: String, gesture: String) {
+        cutOffCurrent(by: words)
+        log.event(.description, event, detail: gesture)
+        feedback.boundary()
+        feedback.speak(words, queued: false)
     }
 
     /// One item: its words, a pause, then its place; then the next item when

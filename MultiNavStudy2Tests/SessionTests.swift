@@ -30,12 +30,26 @@ struct SessionTests {
         #expect(session.nextMap?.id == StudyContent.maps[1].id)
         for map in StudyContent.maps where map.phase != .trial2 { session.markFinished(map) }
         #expect(session.phaseBetweenMaps == "Customization")
+        #expect(StudyContent.maps.filter(\.inUse).first?.id == "route_overview")
         let trial2 = try #require(StudyContent.maps(in: .trial2).first)
         _ = session.beginVisit(trial2)
         #expect(session.phaseBetweenMaps == "Trial 2, between intersections")
         session.end(reason: "Test finished")
         #expect(!session.isActive)
         #expect(!StudyLog.shared.isSessionActive)
+    }
+
+    /// Open Next never offers the maps no longer in use (team, 11/12).
+    @Test func openNextSkipsTheMapsNotInUse() {
+        let session = StudySession(defaults: freshDefaults())
+        session.startIfNeeded(participantID: "P09")
+        #expect(session.nextMap?.id == "route_overview")
+        for map in StudyContent.maps where map.inUse {
+            #expect(session.nextMap?.inUse == true)
+            session.markFinished(map)
+        }
+        #expect(session.nextMap == nil, "every map in use explored")
+        session.end(reason: "Test finished")
     }
 
     @Test func sessionSurvivesARelaunch() {

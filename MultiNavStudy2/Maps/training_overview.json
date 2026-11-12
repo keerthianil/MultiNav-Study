@@ -192,7 +192,7 @@
    "properties": {
     "name": "Intersection 2",
     "custom": {
-     "cue": "Intersection 2: 3-way intersection of Pear Street and Orange Road. Turn.",
+     "cue": "Turn. Intersection 2: 3-way intersection of Pear Street and Orange Road.",
      "number": "2"
     }
    }
@@ -210,7 +210,7 @@
    "properties": {
     "name": "Intersection 3",
     "custom": {
-     "cue": "Intersection 3: 4-way intersection of Orange Road and Banana Lane. Turn.",
+     "cue": "Turn. Intersection 3: 4-way intersection of Orange Road and Banana Lane.",
      "number": "3"
     }
    }

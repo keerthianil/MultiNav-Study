@@ -118,6 +118,39 @@ struct RobustnessTests {
         }
     }
 
+    /// Nothing plays by itself when a map opens; the announcement waits for
+    /// the participant's double tap (team, 11/12).
+    @Test func nothingPlaysWhenAMapOpens() async throws {
+        let store = SettingsStore.shared
+        let saved = store.settings
+        defer { store.settings = saved }
+        store.settings.participantID = "TEST"
+        for id in ["route_overview", "intersection_1"] {
+            let map = try #require(StudyContent.map(id: id))
+            let visit = MapVisit(map: map)
+            let controller = try #require(visit.controller)
+            visit.appear()
+            try await Task.sleep(nanoseconds: 1_500_000_000)
+            #expect(controller.player.playing == nil, "\(id) played on its own")
+            let canvas = TactileCanvasView(frame: screen)
+            controller.canvas(canvas, doubleTapAt: .zero, screen: .zero)
+            #expect(controller.player.playing == .announcement, "\(id): a double tap plays it")
+            visit.finish(by: "Done button")
+            #expect(controller.player.playing == nil)
+        }
+        StudySession.shared.end(reason: "Test finished")
+        Self.removeTestLogs()
+    }
+
+    /// A tap or swipe that starts in the half second after a map appears is
+    /// the end of the gesture that opened it, so it is left out.
+    @Test func gesturesAsAMapOpensAreLeftOut() {
+        #expect(!TactileCanvasView.counts(gestureAt: 100.2, shownAt: 100))
+        #expect(!TactileCanvasView.counts(gestureAt: 100.49, shownAt: 100))
+        #expect(TactileCanvasView.counts(gestureAt: 100.5, shownAt: 100))
+        #expect(TactileCanvasView.counts(gestureAt: 100, shownAt: -.infinity), "not yet on screen")
+    }
+
     @Test func gestureCanBeTurnedOff() throws {
         let store = SettingsStore.shared
         let saved = store.settings

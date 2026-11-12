@@ -13,10 +13,13 @@ struct StudyContentTests {
 
     @Test func studyOrder() {
         #expect(maps.map(\.id) == [
-            "training_overview", "training_intersection", "route_overview", "intersection_0",
+            "route_overview", "intersection_0",
             "intersection_1", "intersection_2", "intersection_3", "intersection_4", "intersection_5",
             "return_5", "return_4", "return_3", "return_2", "return_1",
+            "training_overview", "training_intersection",
         ])
+        // The made-up training maps are kept but no longer used (team, 11/12).
+        #expect(maps.filter { !$0.inUse }.map(\.id) == ["training_overview", "training_intersection"])
         #expect(StudyContent.maps(in: .training).count == 3)
         #expect(StudyContent.maps(in: .practice).map(\.logID) == ["Intersection 0"])
         #expect(StudyContent.maps(in: .trial1).map(\.logID) == (1...5).map { "Intersection \($0)" })
@@ -76,23 +79,23 @@ struct StudyContentTests {
         let overview = try MapLoader.overview(named: "route_overview")
         #expect(overview.endpoints[0].announcement == "Start of route: You are here, at Dock Fore, 336 Fore Street.")
         #expect(overview.endpoints[1].announcement == "End of route: Your destination, Gorham's Corner.")
-        // "Turn." where the route turns, and the wharves opposite Moulton
-        // Street and Union Street named (team, 11/05).
+        // "Turn." first where the route turns (team, 11/12), and the wharves
+        // opposite Moulton Street and Union Street named (team, 11/05).
         #expect(overview.nodes.map(\.cue) == [
             "Intersection 1: 4-way intersection of Fore Street and Silver Street.",
-            "Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street. Turn.",
-            "4-way intersection of Commercial Street, Moulton Street, and Long Wharf. Turn.",
-            "Intersection 3: 4-way intersection of Commercial Street, Union Street, and Union Wharf. Turn.",
-            "Intersection 4: 4-way intersection of Union Street and Fore Street. Turn.",
-            "Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and Pleasant Street. "
-                + "Turn.",
+            "Turn. Intersection 2: 4-way intersection of Fore Street, Moulton Street, and Exchange Street.",
+            "Turn. 4-way intersection of Commercial Street, Moulton Street, and Long Wharf.",
+            "Turn. Intersection 3: 4-way intersection of Commercial Street, Union Street, and Union Wharf.",
+            "Turn. Intersection 4: 4-way intersection of Union Street and Fore Street.",
+            "Turn. Intersection 5: 5-way intersection of Fore Street, Center Street, York Street, and "
+                + "Pleasant Street.",
         ])
         #expect(overview.nodes.map(\.number) == [1, 2, 0, 3, 4, 5], "the added square has no number")
         let training = try MapLoader.overview(named: "training_overview")
         #expect(training.nodes.map(\.cue) == [
             "Intersection 1: 4-way intersection of Pear Street and Apple Street.",
-            "Intersection 2: 3-way intersection of Pear Street and Orange Road. Turn.",
-            "Intersection 3: 4-way intersection of Orange Road and Banana Lane. Turn.",
+            "Turn. Intersection 2: 3-way intersection of Pear Street and Orange Road.",
+            "Turn. Intersection 3: 4-way intersection of Orange Road and Banana Lane.",
         ])
         #expect(training.endpoints[1].announcement == "End of route: Your destination, Nick's Bakery.")
     }
@@ -110,7 +113,7 @@ struct StudyContentTests {
                 }
                 let a = overview.route[i - 1], b = overview.route[i], c = overview.route[i + 1]
                 let turnsHere = abs((b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x)) > 0.5
-                #expect(node.cue.hasSuffix(" Turn.") == turnsHere, "\(file): \(node.cue)")
+                #expect(node.cue.hasPrefix("Turn. ") == turnsHere, "\(file): \(node.cue)")
             }
         }
     }

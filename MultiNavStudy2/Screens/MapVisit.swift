@@ -56,7 +56,7 @@ final class MapVisit: ObservableObject {
         self.loadError = loadError
     }
 
-    /// What VoiceOver reads as the map opens, before the announcement.
+    /// What VoiceOver reads as the map opens.
     static func canvasLabel(for map: StudyMap) -> String {
         switch map.phase {
         case .training: return "Training intersection map"
@@ -113,9 +113,12 @@ final class MapVisit: ObservableObject {
                 self.feedback.speak("Tell the researcher when you are ready.")
             }
         }
-        controller.player.onAnnouncement = { [weak self] repeated in
-            self?.summary?.announcementPlays += 1
-            if repeated { self?.summary?.announcementRepeats += 1 }
+        // Every play is the participant's: the first counts as a play, the
+        // rest also as repeats.
+        controller.player.onAnnouncement = { [weak self] _ in
+            guard let self, self.summary != nil else { return }
+            self.summary?.announcementPlays += 1
+            if (self.summary?.announcementPlays ?? 0) > 1 { self.summary?.announcementRepeats += 1 }
         }
         controller.player.onDetailsStarted = { [weak self] in
             self?.summary?.detailActivations += 1
@@ -131,29 +134,17 @@ final class MapVisit: ObservableObject {
         }
     }
 
-    /// VoiceOver moves to the map and reads its name; the announcement
-    /// follows once it has. Without VoiceOver the announcement plays at once.
+    /// VoiceOver moves to the map and reads its name. Nothing else is read
+    /// until the participant asks: the announcement plays only with a double
+    /// tap (team, 11/12).
     private func announce() {
         let token = UUID()
         announcementToken = token
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
-            guard let self, self.announcementToken == token, !self.isFinished, let controller = self.controller else { return }
-            if UIAccessibility.isVoiceOverRunning {
-                guard let canvas = controller.canvas, canvas.window != nil else { return }
-                UIAccessibility.post(notification: .screenChanged, argument: canvas)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                    guard let self, self.announcementToken == token, !self.isFinished else { return }
-                    self.playOpeningAnnouncement(queued: true)
-                }
-            } else {
-                self.playOpeningAnnouncement(queued: false)
-            }
+            guard let self, self.announcementToken == token, !self.isFinished, let controller = self.controller,
+                  UIAccessibility.isVoiceOverRunning, let canvas = controller.canvas, canvas.window != nil else { return }
+            UIAccessibility.post(notification: .screenChanged, argument: canvas)
         }
-    }
-
-    private func playOpeningAnnouncement(queued: Bool) {
-        guard let player = controller?.player, !player.isPlaying else { return }
-        player.playAnnouncement(gesture: "Map opened", repeated: false, queued: queued)
     }
 
     // MARK: Information items (Trial 2)

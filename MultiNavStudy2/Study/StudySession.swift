@@ -97,9 +97,10 @@ final class StudySession: ObservableObject {
         state?.finished.contains(map.id) ?? false
     }
 
-    /// The first map in study order not yet explored to the end.
+    /// The first map in study order not yet explored to the end, leaving
+    /// out the maps no longer in use.
     var nextMap: StudyMap? {
-        StudyContent.maps.first { !isFinished($0) }
+        StudyContent.maps.first { $0.inUse && !isFinished($0) }
     }
 
     /// The phase the study is in while no map is open, for logging changes to

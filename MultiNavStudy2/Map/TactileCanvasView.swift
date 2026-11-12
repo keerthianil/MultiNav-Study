@@ -14,6 +14,9 @@
 //   two-finger swipe down / up      read the next / previous information item
 //   three-finger swipe right        finished exploring
 //                                   (VoiceOver: also the escape gesture)
+// A tap, double tap or swipe that starts in the half second after the map
+// appears is left out: it belongs to the gesture that opened the map, so
+// nothing plays unless the participant asks for it (team, 11/12).
 
 import UIKit
 
@@ -82,6 +85,10 @@ final class TactileCanvasView: UIView {
     /// quick second swipe always counts.
     private var swipedThisTouch = false
     private var lastVoiceOverFinish: TimeInterval = 0
+    /// When the map appeared in a window; gestures starting within
+    /// `settleTime` of it are left out.
+    private var shownAt: TimeInterval = -.infinity
+    static let settleTime: TimeInterval = 0.5
 
     private let tapMaxDisplacement: CGFloat = 28
     private let tapMaxDuration: TimeInterval = 0.45
@@ -113,6 +120,17 @@ final class TactileCanvasView: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not used")
+    }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil { shownAt = CACurrentMediaTime() }
+    }
+
+    /// Whether a gesture that started at `time` counts: not in the moment
+    /// after the map appeared at `shownAt`.
+    static func counts(gestureAt time: TimeInterval, shownAt: TimeInterval) -> Bool {
+        time - shownAt >= settleTime
     }
 
     // MARK: Layout and drawing
@@ -181,7 +199,9 @@ final class TactileCanvasView: UIView {
     }
 
     override func accessibilityPerformMagicTap() -> Bool {
-        twoFingerDoubleTap(gesture: "VoiceOver magic tap")
+        if Self.counts(gestureAt: CACurrentMediaTime(), shownAt: shownAt) {
+            twoFingerDoubleTap(gesture: "VoiceOver magic tap")
+        }
         return true
     }
 
@@ -215,6 +235,7 @@ final class TactileCanvasView: UIView {
     private func touchSwipe(_ action: SwipeAction) {
         guard !swipedThisTouch else { return }
         swipedThisTouch = true
+        guard Self.counts(gestureAt: fingersStartTime, shownAt: shownAt) else { return }
         switch action {
         case .finish: delegate?.canvasRequestsFinish(self, gesture: "Three-finger swipe right")
         case .next: delegate?.canvasRequestsItem(self, forward: true, gesture: "Two-finger swipe down")
@@ -314,7 +335,7 @@ final class TactileCanvasView: UIView {
         activeTouch = nil
         let point = touch.location(in: self)
         report(.ended, point)
-        guard !sequenceHadExtraFingers else { return }
+        guard !sequenceHadExtraFingers, Self.counts(gestureAt: touchStartTime, shownAt: shownAt) else { return }
 
         let duration = touch.timestamp - touchStartTime
         let displacement = hypot(point.x - touchStart.x, point.y - touchStart.y)
@@ -360,7 +381,8 @@ final class TactileCanvasView: UIView {
             swipeStart = nil
         }
         guard mostFingers == 2, time - fingersStartTime < twoFingerTapMaxDuration,
-              fingersMoved < tapMaxDisplacement else { return }
+              fingersMoved < tapMaxDisplacement,
+              Self.counts(gestureAt: fingersStartTime, shownAt: shownAt) else { return }
         let now = CACurrentMediaTime()
         if now - lastTwoFingerTap < twoFingerDoubleTapInterval {
             lastTwoFingerTap = 0

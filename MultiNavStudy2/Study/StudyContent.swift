@@ -75,14 +75,20 @@ struct StudyMap: Codable, Hashable, Identifiable {
     let title: String
     let subtitle: String
     let file: String
-    /// Spoken when the map opens: the route overview, or the intersection
-    /// announcement and route direction.
+    /// Played with a double tap: the route overview, or the intersection
+    /// announcement and route direction. Nothing plays by itself when the map
+    /// opens (team, 11/12).
     let announcement: String
     let items: [InfoItem]
+    /// False for the maps kept but no longer used, the made-up training route
+    /// and intersection: the first screen lists them last and Open Next skips
+    /// them (team, 11/12).
+    let inUse: Bool
 
     enum CodingKeys: String, CodingKey {
         case id, kind, phase, title, subtitle, file, announcement, items
         case logID = "log_id"
+        case inUse = "in_use"
     }
 
     /// The items played on this map, in order: all of them, except in Trial 2,

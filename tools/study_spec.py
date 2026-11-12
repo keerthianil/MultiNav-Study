@@ -49,8 +49,9 @@ END_TEXT = "End of intersection route"
 # comma gives a short pause before the direction (team, 11/09).
 TURN_TEXT = {"left": "Turn, left", "right": "Turn, right"}
 
-# Added to an overview intersection's cue where the route turns there. No
-# direction: left and right on the map need not be the traveller's (team, 11/05).
+# Said first in an overview intersection's cue where the route turns there
+# (team, 11/12). No direction: left and right on the map need not be the
+# traveller's (team, 11/05).
 OVERVIEW_TURN_TEXT = "Turn."
 
 
@@ -67,7 +68,7 @@ def items(*texts):
 # up) and a length in mm along a street, ending at a node. The route says
 # which street it is on ("Route on Fore Street"). Nodes are intersections (a
 # red square with a spoken cue, numbered when it is one of the study's), plain
-# corners, or the end. Where the route turns at an intersection, its cue ends
+# corners, or the end. Where the route turns at an intersection, its cue starts
 # with OVERVIEW_TURN_TEXT. Stubs are the streets the walk does not follow,
 # each with a direction, a length in mm from the square's centre and a name.
 # On the route overview they are 13.5 mm, half again as long as the first
@@ -531,8 +532,8 @@ TEAM_NOTES = [
     "Street names start beyond each street's crosswalk. On intersection 2 and reversed 2 all of Fore Street "
     "on screen lies between its crossings, so the road itself is not named there; its crosswalks and "
     "sidewalks still say Fore Street.",
-    "Route overviews: where the route turns, the intersection's cue ends with \"Turn.\", for example "
-    "\"Intersection 4: 4-way intersection of Union Street and Fore Street. Turn.\"",
+    "Route overviews: where the route turns, the intersection's cue starts with \"Turn.\", for example "
+    "\"Turn. Intersection 4: 4-way intersection of Union Street and Fore Street.\"",
     "Intersection maps: the pink dots at the corners, where a crosswalk begins, keep their one ding and now "
     "vibrate like the sidewalk, as does the end of a crosswalk between the road and the corner, so a corner "
     "has no dead spot. The dots can be left out if the team prefers.",
@@ -542,6 +543,12 @@ TEAM_NOTES = [
 
 # The order the researcher's screen lists the maps in, and the order "Next"
 # follows. Overviews and intersections share one list.
-ORDER = ["training_overview", "training_intersection", "route_overview", "intersection_0",
+ORDER = ["route_overview", "intersection_0",
          "intersection_1", "intersection_2", "intersection_3", "intersection_4", "intersection_5",
-         "return_5", "return_4", "return_3", "return_2", "return_1"]
+         "return_5", "return_4", "return_3", "return_2", "return_1",
+         "training_overview", "training_intersection"]
+
+# Maps kept but no longer used (team, 11/12): the made-up training route and
+# intersection. They are listed last on the researcher's screen, and Open Next
+# skips them.
+NOT_IN_USE = ["training_overview", "training_intersection"]

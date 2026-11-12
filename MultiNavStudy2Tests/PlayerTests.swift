@@ -171,28 +171,47 @@ struct PlayerTests {
     /// The list reads from the top: a swipe down starts it, up before the
     /// first says "Start of details." and down past the last "End of
     /// details." (team, 11/09).
+    /// The list reads from the top: a swipe down starts it. Past either end
+    /// the map says "Start of details." or "End of details." every time, with
+    /// the boundary sound, cutting off an item still being read (team, 11/12).
     @Test func swipesStopAtTheEnds() {
         let (p, voice) = player()
         #expect(!p.step(forward: false, gesture: "Two-finger swipe up"), "already at the top")
         #expect(voice.boundaries == 1)
-        #expect(voice.said.last == "Start of details.")
+        #expect(voice.said == ["Start of details."])
         #expect(p.step(forward: true, gesture: "Two-finger swipe down"), "a swipe down reads the first item")
         #expect(p.playing == .item(0))
         #expect(!p.step(forward: false, gesture: "Two-finger swipe up"), "nothing before the first item")
         #expect(voice.boundaries == 2)
-        #expect(p.playing == .item(0), "the first item keeps playing")
-        hear(voice)
-        #expect(!p.step(forward: false, gesture: "Two-finger swipe up"))
-        #expect(voice.said.last == "Start of details.")
-        for _ in 1..<items.count { #expect(p.step(forward: true, gesture: "Two-finger swipe down")) }
+        #expect(voice.said.last == "Start of details.", "said even while the first item plays")
+        #expect(voice.said.count == 2)
+        #expect(p.playing == nil, "the words cut the item off")
+        #expect(voice.current == nil, "nothing follows them")
+        for _ in 1..<items.count {
+            #expect(p.step(forward: true, gesture: "Two-finger swipe down"))
+        }
+        #expect(p.playing == .item(items.count - 1))
         #expect(!p.step(forward: true, gesture: "Two-finger swipe down"))
-        #expect(p.playing == .item(items.count - 1), "the last item keeps playing")
-        hear(voice)
+        #expect(voice.said.last == "End of details.", "said even while the last item plays")
+        #expect(p.playing == nil)
         #expect(!p.step(forward: true, gesture: "Two-finger swipe down"))
-        #expect(voice.said.last == "End of details.")
-        #expect(voice.boundaries == 5)
+        #expect(voice.said.suffix(2) == ["End of details.", "End of details."], "and again after it")
+        #expect(voice.boundaries == 4)
         #expect(p.step(forward: false, gesture: "Two-finger swipe up"))
         #expect(p.playing == .item(items.count - 2))
+    }
+
+    /// The double tap plays every item to the end; a swipe down after the
+    /// last says "End of details." at once, during its place too.
+    @Test func endOfDetailsAfterPlayingThemAll() {
+        let (p, voice) = player()
+        p.toggleDetails(gesture: "Two-finger double tap")
+        for _ in 0..<(items.count - 1) { hear(voice) }
+        voice.finish()
+        #expect(voice.current == "6 of 6")
+        #expect(!p.step(forward: true, gesture: "Two-finger swipe down"))
+        #expect(voice.said == ["End of details."])
+        #expect(p.playing == nil)
     }
 
     @Test func announcementAndDetailsCutEachOtherOff() {
@@ -226,7 +245,10 @@ struct PlayerTests {
         p.toggleDetails(gesture: "Two-finger double tap")
         #expect(p.playing == nil)
         #expect(voice.said == ["No details are turned on."])
-        #expect(!p.step(forward: true, gesture: "Two-finger swipe up"))
+        p.playAnnouncement(gesture: "Double tap", repeated: false)
+        #expect(!p.step(forward: true, gesture: "Two-finger swipe down"))
+        #expect(voice.said.last == "No details are turned on.", "said every time")
+        #expect(voice.boundaries == 1)
     }
 
     @Test func speakingColumn() {

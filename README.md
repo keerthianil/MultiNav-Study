@@ -14,7 +14,7 @@ package ([ProjectMultiNav](https://github.com/Hariprasath88/ProjectMultiNav)).
 
 | Phase | Where | Maps |
 |---|---|---|
-| Training | indoors | a made-up route overview (Home to Nick's Bakery) and intersection (Pear Street and Apple Street) to learn the gestures, then the overview of the real route |
+| Training | indoors | the overview of the real route; a made-up route overview (Home to Nick's Bakery) and intersection (Pear Street and Apple Street) are kept but no longer used |
 | Practice | Fore Street and Pearl Street | intersection 0, repeated as often as needed |
 | Trial 1 | to Gorham's Corner | intersections 1 to 5, every information item on |
 | Customization | between the trials | the participant picks the information items for Trial 2 |
@@ -41,6 +41,8 @@ The first screen follows the study from top to bottom.
 4. **Customization**, between the trials: *Information items* shows which of the six items Trial 2 plays (all
    on by default) and opens their switches. Practice and Trial 1 always play every item.
 5. **Data Files**: view, share and delete the logs.
+6. **Training maps not in use**, at the bottom: the made-up training route and intersection, kept in case they
+   are needed. Open Next skips them.
 
 The gear at the top opens **Settings**, which rarely change: whether the participant can finish with a gesture
 (on), the system voice speed (used when VoiceOver is off), and whether the map is shown on screen (off keeps it
@@ -52,14 +54,15 @@ at any intersection. There is no Back button.
 
 ## On a map
 
-When a map opens, its announcement plays: the route overview, or the intersection and the route's crossings
-("You are at the 4-way intersection of Fore Street and Silver Street. Your route first crosses Fore Street and
-then turns left to cross Silver Street, then continues along the other side of Fore Street.").
+Nothing is read when a map opens. A double tap plays its announcement: the route overview, or the
+intersection and the route's crossings ("You are at the 4-way intersection of Fore Street and Silver Street.
+Your route first crosses Fore Street and then turns left to cross Silver Street, then continues along the other
+side of Fore Street.").
 
 | Gesture | What it does |
 |---|---|
 | Drag one finger | explore; works the whole time, even while something is being read |
-| Double tap | play the announcement (on an overview, the route overview) again; while it plays, stop it |
+| Double tap | play the announcement (on an overview, the route overview); while it plays, stop it |
 | Two-finger double tap | play the information items, the first to the last; while they play, stop them. The next one starts over from the first |
 | Two-finger swipe down / up | read the next / previous information item, on its own |
 | Three-finger swipe right | ready to cross: records the end time and closes the map (the VoiceOver escape gesture does the same) |
@@ -69,8 +72,9 @@ The information items, in order: intersection geometry, traffic direction, traff
 signals, crosswalks, truncated domes and curb cuts. They are a list read from the top: a swipe down reads the
 next item and a swipe up the one before, each on its own, with nothing after it. A quarter of a second after
 its words each item is followed by its place, "1 of 6" to "6 of 6"; in Trial 2 only the items switched on are
-counted. Stopping says "Stopped." Before the first item the map says "Start of details.", past the last "End
-of details.", each with a low boundary sound. While the
+counted. Stopping says "Stopped." A swipe up before the first item says "Start of details." and a swipe down
+past the last "End of details.", every time, with a low boundary sound, cutting off an item still being read.
+While the
 announcement or an item plays, the map keeps vibrating and sounding but holds back names, so the description
 is heard to the end. The gestures are the same on every map: one finger for the map and its announcement, two
 fingers for the information items. An overview has no items, so there the two-finger gestures give the
@@ -80,13 +84,13 @@ boundary sound.
 
 Laid out like the team's mockups, not to scale, with the start near the bottom. The square without a number
 is the corner of Commercial Street and Moulton Street, where the route turns. Where the route turns, the
-square's cue ends with "Turn."; it gives no direction, since left and right on the map need not be the
+square's cue starts with "Turn."; it gives no direction, since left and right on the map need not be the
 traveller's.
 
 | Under the finger | Looks like | Vibration | Sound | Speech |
 |---|---|---|---|---|
 | Start or end | yellow dot | fast pulse | | "Start of route: You are here, at Dock Fore, 336 Fore Street." |
-| Intersection | red square | slow pulse | one ding as the finger arrives | "Intersection 4: 4-way intersection of Union Street and Fore Street. Turn." |
+| Intersection | red square | slow pulse | one ding as the finger arrives | "Turn. Intersection 4: 4-way intersection of Union Street and Fore Street." |
 | Route | cyan line | rhythmic pulse | | the street it runs along: "Route on Fore Street" |
 | Cross street | blue line | steady heavy buzz | | street name |
 
@@ -158,7 +162,8 @@ down steps through the items rather than reading the screen. With VoiceOver on, 
 VoiceOver announcements in the listener's own voice and rate; the app follows when each announcement ends, so
 an item's place comes only after its words. The two-finger double tap also works as VoiceOver's magic tap, and
 the three-finger swipe right as its scroll and escape gestures. When a map opens, VoiceOver moves onto it and
-reads its name ("Intersection map"), then the announcement follows.
+reads its name ("Intersection map"); the announcement waits for a double tap. A tap or swipe in the half second
+after a map appears is left out, so the end of the gesture that opened the map cannot start anything.
 
 The two-finger double tap works even when VoiceOver focus has moved to the top bar. Closing a map, opening the
 Trial 2 sheet or switching VoiceOver on or off stops whatever is being read, and nothing carries on after it.

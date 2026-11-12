@@ -4,7 +4,8 @@
 // items between the trials. "Open Next" opens the next map in study order,
 // so between intersections the researcher needs one button. Any map can be
 // opened again, for example to repeat the practice; each visit is logged
-// with its number. Options are behind the gear in the top bar.
+// with its number. The two made-up training maps, no longer used, come last
+// (team, 11/12). Options are behind the gear in the top bar.
 
 import SwiftUI
 
@@ -37,6 +38,7 @@ struct StudyHomeView: View {
                     }
                     .accessibilityHint("View, share and delete the study logs.")
                 }
+                notInUseSection
             }
             .navigationTitle("MultiNav Study 2")
             .toolbar {
@@ -124,14 +126,31 @@ struct StudyHomeView: View {
 
     private func phaseSection(_ phase: StudyPhase, header: String) -> some View {
         Section {
-            ForEach(StudyContent.maps(in: phase)) { map in
-                MapRow(map: map, visits: session.visits(map), finished: session.isFinished(map),
-                       isNext: session.nextMap?.id == map.id) {
-                    open(map)
-                }
+            ForEach(StudyContent.maps(in: phase).filter(\.inUse)) { map in
+                row(map)
             }
         } header: {
             Text(header)
+        }
+    }
+
+    /// The maps kept but no longer used, at the bottom.
+    private var notInUseSection: some View {
+        Section {
+            ForEach(StudyContent.maps.filter { !$0.inUse }) { map in
+                row(map)
+            }
+        } header: {
+            Text("Training maps not in use")
+        } footer: {
+            Text("Kept in case they are needed. Open Next skips them.")
+        }
+    }
+
+    private func row(_ map: StudyMap) -> some View {
+        MapRow(map: map, visits: session.visits(map), finished: session.isFinished(map),
+               isNext: session.nextMap?.id == map.id) {
+            open(map)
         }
     }
 
@@ -208,8 +227,8 @@ struct InfoItemsView: View {
     var body: some View {
         Form {
             InfoSettingsSection(footer: "Trial 2 plays only the items switched on. Practice and Trial 1 always play "
-                                + "all six, the announcement always plays, and the map's sounds and vibration never "
-                                + "change. Every change is logged.")
+                                + "all six, the announcement is never switched off, and the map's sounds and vibration "
+                                + "never change. Every change is logged.")
         }
         .navigationTitle("Information Items")
         .navigationBarTitleDisplayMode(.inline)

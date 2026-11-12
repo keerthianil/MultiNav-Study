@@ -28,12 +28,12 @@ docs/                         this guide, STUDY.md, map previews
 | File | What it does |
 |---|---|
 | `App/MultiNavStudy2App.swift` | `@main`; resumes a session the app was closed in, starts the feedback engines, logs launch, background and foreground; its `AppDelegate` hands a magic tap made with VoiceOver focus on the top bar to the open map |
-| `Study/StudyContent.swift` | reads `Maps/study.json`: every map in study order with its phase, log name, announcement and information items; `InfoCategory` and `StudyPhase` |
+| `Study/StudyContent.swift` | reads `Maps/study.json`: every map in study order with its phase, log name, announcement, information items and whether it is in use (`inUse`, from `NOT_IN_USE` in the spec); `InfoCategory` and `StudyPhase` |
 | `Study/StudySettings.swift` | the participant ID, the information items for Trial 2 (`InfoSettings`), and the options, saved in UserDefaults by `SettingsStore`; each change to an item is logged |
 | `Study/StudySession.swift` | one participant's session: start, end, visits per map, which maps are done, the next map, kept in UserDefaults so it survives a relaunch |
-| `Study/StudyHomeView.swift` | the researcher's screen: participant, Open Next, the maps by phase, the Trial 2 information items row, Data Files; the Information Items screen and Settings (behind the gear) |
+| `Study/StudyHomeView.swift` | the researcher's screen: participant, Open Next, the maps by phase, the Trial 2 information items row, Data Files, and at the bottom the training maps not in use; the Information Items screen and Settings (behind the gear) |
 | `Screens/MapScreen.swift` | a map full screen, with Done, the title and (Trial 2) the information items sheet |
-| `Screens/MapVisit.swift` | one visit: starts the session if needed, plays the announcement when the map opens, times the visit, counts plays, writes the visit row when it ends |
+| `Screens/MapVisit.swift` | one visit: starts the session if needed, moves VoiceOver onto the map when it opens (nothing is read until the participant asks), times the visit, counts plays, writes the visit row when it ends |
 | `Map/DescriptionPlayer.swift` | the announcement and the information items: play them all or stop, one item per swipe, each with its place after a short pause |
 | `Map/TactileCanvasView.swift` | the touch surface: draws a `MapScene`, reads raw touches, detects taps, double taps, two-finger double taps, two-finger swipes up and down and the three-finger swipe right, VoiceOver direct touch, magic tap, scroll and escape |
 | `Map/OverviewController.swift` | route overviews: drawing, hit-testing, feedback, gestures |
@@ -84,7 +84,7 @@ touch, or if a route end falls off the screen.
 Each overview is a list of legs from the start, each a screen direction and a length in mm along a street,
 ending at an intersection (red square with its spoken cue, numbered when it is one of the study's), a plain
 corner or the end. The route carries the street of each leg (`streets`), so touching it says "Route on Fore
-Street". Where the next leg leaves an intersection in another direction, its cue ends with "Turn."
+Street". Where the next leg leaves an intersection in another direction, its cue starts with "Turn."
 (`OVERVIEW_TURN_TEXT`, added by `overview_cue`). Stubs are the streets the walk does not follow, each with its
 own length: 13.5 mm on the route overview, except the two Fore Street stubs that face each other between
 intersections 2 and 4, and 15 mm on the training overview. The layouts follow the team's mockups and are not
@@ -174,7 +174,10 @@ the participant says "Stopped."; a token makes sure a late report from an older 
 its words, then after `placePause` (0.25 s) its place among the items played (`place`): "2 of 6", or "2 of 4"
 in Trial 2 with two items off. The two-finger double tap plays every item in turn; a swipe plays one item and
 nothing after it. Before the first item a swipe up says "Start of details.", past the last a swipe down "End
-of details.". Controllers ask `player.isPlaying` before saying a map name, so names
+of details.", every time, cutting off whatever is being read (`atEnd`). Nothing plays when a map opens; the
+first double tap plays the announcement, and each later one counts as a repeat in the visits log.
+`TactileCanvasView` leaves out taps and swipes that start within 0.5 s of the map appearing (`settleTime`).
+Controllers ask `player.isPlaying` before saying a map name, so names
 never cut the description off. `MapVisit` counts what the player reports for the visits log.
 
 ## Feedback
