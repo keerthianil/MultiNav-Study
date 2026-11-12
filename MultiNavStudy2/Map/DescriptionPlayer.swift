@@ -52,8 +52,9 @@ final class DescriptionPlayer {
     /// apart from them (team, 11/05), kept short (team, 11/09).
     var placePause: TimeInterval = 0.25
 
-    /// Called each time the announcement starts; `repeated` is false for
-    /// the play when the map opens.
+    /// Called each time the announcement starts, with the caller's `repeated`
+    /// flag. Nothing plays it when a map opens, so the visit counts its own
+    /// plays and repeats (team, 11/12).
     var onAnnouncement: ((_ repeated: Bool) -> Void)?
     /// Called when a two-finger double tap starts the items from the first.
     var onDetailsStarted: (() -> Void)?
@@ -91,8 +92,8 @@ final class DescriptionPlayer {
 
     // MARK: The announcement
 
-    /// Plays the announcement from the start. `queued` waits for VoiceOver to
-    /// finish reading the new screen's name first.
+    /// Plays the announcement from the start; `queued` waits for the speech
+    /// already under way to end first.
     func playAnnouncement(gesture: String, repeated: Bool, queued: Bool = false) {
         cutOffCurrent(by: "announcement")
         token += 1
